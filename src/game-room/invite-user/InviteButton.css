@@ -1,0 +1,288 @@
+/* InviteButton.css */
+
+/* Button Style */
+.my-action-btn.my-invite {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.3);
+  justify-content: center;
+}
+
+.my-action-btn.my-invite:hover {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: #22c55e;
+  transform: translateY(-2px);
+}
+
+/* Modal Overlay */
+.my-invite-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: my-fadeInOverlay 0.3s ease-out;
+}
+
+@keyframes my-fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal */
+.my-invite-modal {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: my-slideInModal 0.3s ease-out;
+}
+
+@keyframes my-slideInModal {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Modal Header */
+.my-invite-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 2rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.my-invite-modal-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.my-invite-close-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: #cbd5e1;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-invite-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  transform: rotate(90deg);
+}
+
+/* Modal Content */
+.my-invite-modal-content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Section */
+.my-invite-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.my-invite-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f8fafc;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.my-invite-description {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Input Group */
+.my-invite-input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.my-invite-input {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #f8fafc;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.my-invite-input:focus {
+  outline: none;
+  border-color: #22c55e;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.my-invite-input.my-invite-code {
+  font-family: "Courier New", monospace;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+/* Copy Button */
+.my-invite-copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.25rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 10px;
+  color: #3b82f6;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.my-invite-copy-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+}
+
+.my-invite-copy-btn:active {
+  transform: translateY(0);
+}
+
+/* Email Form */
+.my-invite-email-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.my-invite-send-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.25rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+  color: #22c55e;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.my-invite-send-btn:hover {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: #22c55e;
+  transform: translateY(-2px);
+}
+
+.my-invite-send-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .my-invite-modal {
+    max-width: 95%;
+    margin: 1rem;
+  }
+
+  .my-invite-modal-header {
+    padding: 1.5rem 1.5rem 1rem;
+  }
+
+  .my-invite-modal-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .my-invite-modal-content {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .my-invite-input-group,
+  .my-invite-email-form {
+    flex-direction: column;
+  }
+
+  .my-invite-copy-btn,
+  .my-invite-send-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .my-invite-modal-header {
+    padding: 1.25rem 1.25rem 0.75rem;
+  }
+
+  .my-invite-modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .my-invite-modal-content {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .my-invite-section h3 {
+    font-size: 1rem;
+  }
+
+  .my-invite-description {
+    font-size: 0.85rem;
+  }
+
+  .my-invite-input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9rem;
+  }
+
+  .my-invite-copy-btn,
+  .my-invite-send-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+}
