@@ -1,0 +1,6 @@
+@Predicto.Gateway_HostAddress = http://localhost:5116
+
+GET {{Predicto.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
