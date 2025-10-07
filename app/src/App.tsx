@@ -6,6 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useState } from "react";
+import "./i18n/i18n";
 import Navigation from "./nav/Navigation";
 import LoginPage from "./login/LoginPage";
 import HomePage from "./home/HomePage";
@@ -21,13 +22,11 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const handleLogin = (token: string) => {
-    //setAuthToken(token);
     setIsAuthenticated(true);
     localStorage.setItem("authToken", token);
   };
 
   const handleLogout = () => {
-    //setAuthToken(null);
     setIsAuthenticated(false);
     localStorage.removeItem("authToken");
   };

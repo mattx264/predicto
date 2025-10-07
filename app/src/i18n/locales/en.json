@@ -1,0 +1,93 @@
+{
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "rooms": "Rooms",
+    "ranking": "Ranking",
+    "howToPlay": "How to Play",
+    "logout": "Logout",
+    "login": "Log In",
+    "register": "Sign Up",
+    "notifications": "Notifications",
+    "profile": "View Profile"
+  },
+  "common": {
+    "welcome": "Welcome",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "points": "pts",
+    "vs": "vs",
+    "pln": "PLN"
+  },
+  "auth": {
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "loginTitle": "Log in to PREDICTO",
+    "registerTitle": "Sign up for PREDICTO",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  "rooms": {
+    "title": "Available Rooms",
+    "create": "Create Room",
+    "join": "Join",
+    "players": "Players",
+    "status": "Status",
+    "active": "Active",
+    "waiting": "Waiting",
+    "ended": "Ended"
+  },
+  "ranking": {
+    "title": "Player Ranking",
+    "position": "Position",
+    "player": "Player",
+    "points": "Points",
+    "wins": "Wins"
+  },
+  "dashboard": {
+    "title": "Your Dashboard",
+    "welcomeBack": "Welcome back",
+    "subtitle": "Here's an overview of your active games",
+    "createRoom": "Create Room",
+    "stats": {
+      "globalRank": "Global Rank",
+      "totalPoints": "Total Points",
+      "roomsWon": "Rooms Won",
+      "winRate": "Win Rate",
+      "currentStreak": "Current Streak",
+      "activeRooms": "Active Rooms"
+    },
+    "yourRooms": "Your Rooms",
+    "tabs": {
+      "active": "Active",
+      "pending": "Pending",
+      "ended": "Ended"
+    },
+    "emptyRooms": "No rooms in this category",
+    "yourPosition": "Your position:",
+    "participants": "Participants:",
+    "finalPosition": "Final position",
+    "waitingToStart": "Waiting to start",
+    "upcomingMatches": "Upcoming Matches",
+    "predicted": "Predicted",
+    "notPredicted": "To predict",
+    "notifications": "Notifications",
+    "recentResults": "Recent Results",
+    "actualScore": "Score:",
+    "yourPrediction": "Your prediction:",
+    "timeAgo": {
+      "minutesAgo": "min ago",
+      "hoursAgo": "hrs ago",
+      "daysAgo": "days ago",
+      "justNow": "Just now"
+    }
+  }
+}

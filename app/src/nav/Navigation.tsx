@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Users,
   Trophy,
@@ -14,6 +15,7 @@ import {
 import "./Navigation.css";
 import UserProfileModal from "../user-profile-modal/UserProfileModal";
 import NotificationBell from "../notifications/NotificationsBell";
+import LanguageSwitcher from "../i18n/language-switcher/LanguageSwitcher";
 
 interface NavigationProps {
   isAuthenticated?: boolean;
@@ -26,6 +28,7 @@ const Navigation: React.FC<NavigationProps> = ({
   onLogout,
   username = "Gracz",
 }) => {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeNav, setActiveNav] = useState("home");
@@ -37,25 +40,25 @@ const Navigation: React.FC<NavigationProps> = ({
   const navItems = [
     {
       id: "home",
-      label: isAuthenticated ? "Dashboard" : "Strona główna",
+      label: isAuthenticated ? t("nav.dashboard") : t("nav.home"),
       icon: <ChartNoAxesCombined className="nav-icon" />,
       path: isAuthenticated ? "/dashboard" : "/",
     },
     {
       id: "rooms",
-      label: "Pokoje",
+      label: t("nav.rooms"),
       icon: <Users className="nav-icon" />,
       path: "/rooms",
     },
     {
       id: "ranking",
-      label: "Ranking",
+      label: t("nav.ranking"),
       icon: <Trophy className="nav-icon" />,
       path: "/ranking",
     },
     {
       id: "jak-grac",
-      label: "Jak grać",
+      label: t("nav.howToPlay"),
       icon: <BookOpen className="nav-icon" />,
       path: "/jak-grac",
     },
@@ -158,6 +161,8 @@ const Navigation: React.FC<NavigationProps> = ({
               <>
                 <NotificationBell />
 
+                <LanguageSwitcher />
+
                 <button
                   className="user-profile-btn"
                   onClick={() => setIsProfileOpen(true)}
@@ -173,16 +178,18 @@ const Navigation: React.FC<NavigationProps> = ({
 
                 <button onClick={handleLogout} className="btn-logout">
                   <LogOut className="logout-icon" />
-                  <span>Wyloguj</span>
+                  <span>{t("nav.logout")}</span>
                 </button>
               </>
             ) : (
               <>
+                <LanguageSwitcher />
+
                 <Link to="/login">
-                  <button className="btn-secondary">Zaloguj się</button>
+                  <button className="btn-secondary">{t("nav.login")}</button>
                 </Link>
                 <Link to="/register">
-                  <button className="btn-primary">Zarejestruj się</button>
+                  <button className="btn-primary">{t("nav.register")}</button>
                 </Link>
               </>
             )}
@@ -202,11 +209,17 @@ const Navigation: React.FC<NavigationProps> = ({
 
         <div className={`mobile-menu ${isMenuOpen ? "open" : ""}`}>
           <div className="mobile-menu-content">
-            {isAuthenticated && (
-              <div className="mobile-notifications-wrapper">
-                <NotificationBell />
+            <div className="mobile-top-actions">
+              {isAuthenticated && (
+                <div className="mobile-notifications-wrapper">
+                  <NotificationBell />
+                </div>
+              )}
+
+              <div className="mobile-language-wrapper">
+                <LanguageSwitcher />
               </div>
-            )}
+            </div>
 
             {navItems.map((item) => (
               <button
@@ -238,24 +251,24 @@ const Navigation: React.FC<NavigationProps> = ({
                     </div>
                     <div className="user-details">
                       <span className="username">{username}</span>
-                      <span className="user-status">Zobacz profil</span>
+                      <span className="user-status">{t("nav.profile")}</span>
                     </div>
                   </div>
                   <button onClick={handleLogout} className="btn-logout mobile">
                     <LogOut className="logout-icon" />
-                    <span>Wyloguj się</span>
+                    <span>{t("nav.logout")}</span>
                   </button>
                 </>
               ) : (
                 <>
                   <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                     <button className="btn-secondary mobile">
-                      Zaloguj się
+                      {t("nav.login")}
                     </button>
                   </Link>
                   <Link to="/register" onClick={() => setIsMenuOpen(false)}>
                     <button className="btn-primary mobile">
-                      Zarejestruj się
+                      {t("nav.register")}
                     </button>
                   </Link>
                 </>

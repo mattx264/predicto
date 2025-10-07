@@ -1,5 +1,3 @@
-/* Navigation.css */
-
 .navigation {
   position: fixed;
   top: 0;
@@ -35,7 +33,6 @@
   height: 70px;
 }
 
-/* Logo */
 .nav-logo {
   text-decoration: none;
   z-index: 10;
@@ -87,7 +84,6 @@
   font-size: 1.5rem;
 }
 
-/* Desktop Navigation - Centered Icons */
 .nav-links {
   display: flex;
   gap: 0.75rem;
@@ -158,7 +154,6 @@
   height: 18px;
 }
 
-/* Ping Animation */
 .ping-animation {
   position: absolute;
   inset: -2px;
@@ -186,7 +181,6 @@
   border-radius: 50%;
 }
 
-/* Tooltip */
 .nav-tooltip {
   position: absolute;
   top: 100%;
@@ -208,7 +202,6 @@
   opacity: 1;
 }
 
-/* Desktop Auth Section */
 .nav-actions {
   display: flex;
   align-items: center;
@@ -356,7 +349,6 @@
   height: 16px;
 }
 
-/* Mobile Menu Button */
 .mobile-menu-btn {
   display: none;
   background: transparent;
@@ -376,7 +368,6 @@
   height: 24px;
 }
 
-/* Mobile Menu */
 .mobile-menu {
   max-height: 0;
   overflow: hidden;
@@ -384,7 +375,7 @@
 }
 
 .mobile-menu.open {
-  max-height: 700px;
+  max-height: 800px;
 }
 
 .mobile-menu-content {
@@ -392,6 +383,65 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.mobile-top-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.5rem;
+}
+
+.mobile-notifications-wrapper {
+  padding: 0 1.5rem;
+}
+
+.mobile-notifications-wrapper .notification-bell-container {
+  width: 100%;
+}
+
+.mobile-notifications-wrapper .notification-bell-button {
+  width: 100%;
+  height: 50px;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.mobile-notifications-wrapper .notification-bell-button::before {
+  content: "Powiadomienia";
+  color: #cbd5e1;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.mobile-notifications-wrapper .notification-dropdown {
+  left: 0;
+  right: auto;
+  width: 100%;
+}
+
+.mobile-language-wrapper {
+  padding: 0 1.5rem;
+  position: relative;
+}
+
+.mobile-language-wrapper .language-button {
+  width: 100%;
+  justify-content: center;
+  height: 50px;
+  font-size: 1rem;
+}
+
+.mobile-language-wrapper .language-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 1.5rem;
+  right: 1.5rem;
+  width: auto;
+  transform: none;
+  z-index: 1001;
 }
 
 .mobile-link {
@@ -479,7 +529,6 @@
   justify-content: center;
 }
 
-/* Responsive Design */
 .desktop-only {
   display: flex;
 }
@@ -513,37 +562,4 @@
     width: 28px;
     height: 28px;
   }
-}
-/* Dodaj na końcu pliku Navigation.css */
-
-/* Powiadomienia w mobile menu */
-.mobile-notifications-wrapper {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: center;
-}
-
-.mobile-notifications-wrapper .notification-bell-container {
-  width: 100%;
-}
-
-.mobile-notifications-wrapper .notification-bell-button {
-  width: 100%;
-  height: 50px;
-  justify-content: center;
-  gap: 0.75rem;
-}
-
-.mobile-notifications-wrapper .notification-bell-button::before {
-  content: "Powiadomienia";
-  color: #cbd5e1;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.mobile-notifications-wrapper .notification-dropdown {
-  left: 0;
-  right: auto;
-  width: 100%;
 }

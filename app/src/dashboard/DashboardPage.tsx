@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Plus,
   TrendingUp,
@@ -58,6 +59,7 @@ interface RecentResult {
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState<
     "active" | "pending" | "ended"
   >("active");
@@ -76,7 +78,7 @@ const DashboardPage: React.FC = () => {
       id: "1",
       type: "invite",
       message: 'AnnaWiśniewska zaprosiła Cię do pokoju "Liga Mistrzów 2025"',
-      time: "5 min temu",
+      time: `5 ${t("dashboard.timeAgo.minutesAgo")}`,
       isNew: true,
     },
     {
@@ -84,14 +86,14 @@ const DashboardPage: React.FC = () => {
       type: "match",
       message:
         "Za 2 godziny mecz Manchester City vs Liverpool - nie zapomnij wytypować!",
-      time: "1 godz. temu",
+      time: `1 ${t("dashboard.timeAgo.hoursAgo")}`,
       isNew: true,
     },
     {
       id: "3",
       type: "result",
       message: "Zdobyłeś 5 punktów za mecz Arsenal vs Chelsea",
-      time: "3 godz. temu",
+      time: `3 ${t("dashboard.timeAgo.hoursAgo")}`,
       isNew: false,
     },
   ];
@@ -241,18 +243,17 @@ const DashboardPage: React.FC = () => {
         <div className="dashboard-header">
           <div className="header-text">
             <h1 className="dashboard-title">
-              Witaj ponownie, <span className="username-highlight">Gracz</span>!
+              {t("dashboard.welcomeBack")},{" "}
+              <span className="username-highlight">Gracz</span>!
             </h1>
-            <p className="dashboard-subtitle">
-              Oto przegląd Twoich aktywnych rozgrywek
-            </p>
+            <p className="dashboard-subtitle">{t("dashboard.subtitle")}</p>
           </div>
           <button
             className="btn-create-room"
             onClick={() => navigate("/create-room")}
           >
             <Plus size={20} />
-            <span>Stwórz pokój</span>
+            <span>{t("dashboard.createRoom")}</span>
           </button>
         </div>
 
@@ -262,7 +263,9 @@ const DashboardPage: React.FC = () => {
               <Trophy className="stat-icon-dash" />
             </div>
             <div className="stat-info-dash">
-              <span className="stat-label-dash">Ranking globalny</span>
+              <span className="stat-label-dash">
+                {t("dashboard.stats.globalRank")}
+              </span>
               <span className="stat-value-dash">#{userStats.globalRank}</span>
             </div>
           </div>
@@ -272,7 +275,9 @@ const DashboardPage: React.FC = () => {
               <Target className="stat-icon-dash" />
             </div>
             <div className="stat-info-dash">
-              <span className="stat-label-dash">Suma punktów</span>
+              <span className="stat-label-dash">
+                {t("dashboard.stats.totalPoints")}
+              </span>
               <span className="stat-value-dash">{userStats.totalPoints}</span>
             </div>
           </div>
@@ -282,7 +287,9 @@ const DashboardPage: React.FC = () => {
               <Medal className="stat-icon-dash" />
             </div>
             <div className="stat-info-dash">
-              <span className="stat-label-dash">Wygrane pokoje</span>
+              <span className="stat-label-dash">
+                {t("dashboard.stats.roomsWon")}
+              </span>
               <span className="stat-value-dash">{userStats.roomsWon}</span>
             </div>
           </div>
@@ -292,7 +299,9 @@ const DashboardPage: React.FC = () => {
               <TrendingUp className="stat-icon-dash" />
             </div>
             <div className="stat-info-dash">
-              <span className="stat-label-dash">Win rate</span>
+              <span className="stat-label-dash">
+                {t("dashboard.stats.winRate")}
+              </span>
               <span className="stat-value-dash">{userStats.winRate}%</span>
             </div>
           </div>
@@ -302,7 +311,9 @@ const DashboardPage: React.FC = () => {
               <Zap className="stat-icon-dash" />
             </div>
             <div className="stat-info-dash">
-              <span className="stat-label-dash">Aktualna seria</span>
+              <span className="stat-label-dash">
+                {t("dashboard.stats.currentStreak")}
+              </span>
               <span className="stat-value-dash">{userStats.currentStreak}</span>
             </div>
           </div>
@@ -314,7 +325,7 @@ const DashboardPage: React.FC = () => {
               <div className="section-header">
                 <h2 className="section-title">
                   <Users size={24} />
-                  Twoje pokoje
+                  {t("dashboard.yourRooms")}
                 </h2>
                 <div className="room-tabs">
                   <button
@@ -323,7 +334,7 @@ const DashboardPage: React.FC = () => {
                     }`}
                     onClick={() => setSelectedTab("active")}
                   >
-                    Aktywne (
+                    {t("dashboard.tabs.active")} (
                     {userRooms.filter((r) => r.status === "active").length})
                   </button>
                   <button
@@ -332,7 +343,7 @@ const DashboardPage: React.FC = () => {
                     }`}
                     onClick={() => setSelectedTab("pending")}
                   >
-                    Oczekujące (
+                    {t("dashboard.tabs.pending")} (
                     {userRooms.filter((r) => r.status === "pending").length})
                   </button>
                   <button
@@ -341,7 +352,7 @@ const DashboardPage: React.FC = () => {
                     }`}
                     onClick={() => setSelectedTab("ended")}
                   >
-                    Zakończone (
+                    {t("dashboard.tabs.ended")} (
                     {userRooms.filter((r) => r.status === "ended").length})
                   </button>
                 </div>
@@ -351,7 +362,7 @@ const DashboardPage: React.FC = () => {
                 {filteredRooms.length === 0 ? (
                   <div className="empty-state">
                     <Trophy className="empty-icon" size={48} />
-                    <p>Brak pokoi w tej kategorii</p>
+                    <p>{t("dashboard.emptyRooms")}</p>
                   </div>
                 ) : (
                   filteredRooms.map((room) => (
@@ -378,16 +389,18 @@ const DashboardPage: React.FC = () => {
                           <div className="room-item-stats">
                             <div className="room-stat">
                               <span className="room-stat-label">
-                                Twoja pozycja:
+                                {t("dashboard.yourPosition")}
                               </span>
                               <div className="room-stat-value">
                                 {getRankBadge(room.yourRank)}
-                                <span>{room.yourPoints} pkt</span>
+                                <span>
+                                  {room.yourPoints} {t("common.points")}
+                                </span>
                               </div>
                             </div>
                             <div className="room-stat">
                               <span className="room-stat-label">
-                                Uczestnicy:
+                                {t("dashboard.participants")}
                               </span>
                               <span className="room-stat-value">
                                 {room.participants}/{room.maxParticipants}
@@ -399,7 +412,7 @@ const DashboardPage: React.FC = () => {
                             <div className="next-match">
                               <Clock size={14} />
                               <span className="next-match-text">
-                                {room.nextMatch.homeTeam} vs{" "}
+                                {room.nextMatch.homeTeam} {t("common.vs")}{" "}
                                 {room.nextMatch.awayTeam}
                               </span>
                               <span className="next-match-date">
@@ -415,7 +428,7 @@ const DashboardPage: React.FC = () => {
                       {room.status === "pending" && (
                         <div className="room-pending-info">
                           <AlertCircle size={16} />
-                          <span>Czeka na rozpoczęcie rozgrywek</span>
+                          <span>{t("dashboard.waitingToStart")}</span>
                         </div>
                       )}
 
@@ -423,7 +436,10 @@ const DashboardPage: React.FC = () => {
                         <div className="room-ended-info">
                           <div className="final-position">
                             {getRankBadge(room.yourRank)}
-                            <span>Finalna pozycja - {room.yourPoints} pkt</span>
+                            <span>
+                              {t("dashboard.finalPosition")} - {room.yourPoints}{" "}
+                              {t("common.points")}
+                            </span>
                           </div>
                         </div>
                       )}
@@ -439,7 +455,7 @@ const DashboardPage: React.FC = () => {
               <div className="section-header">
                 <h2 className="section-title">
                   <Calendar size={24} />
-                  Nadchodzące mecze
+                  {t("dashboard.upcomingMatches")}
                 </h2>
               </div>
 
@@ -453,7 +469,7 @@ const DashboardPage: React.FC = () => {
                     <div className="match-item-room">{match.roomName}</div>
                     <div className="match-item-teams">
                       <span>{match.homeTeam}</span>
-                      <span className="vs-text">vs</span>
+                      <span className="vs-text">{t("common.vs")}</span>
                       <span>{match.awayTeam}</span>
                     </div>
                     <div className="match-item-date">
@@ -470,12 +486,12 @@ const DashboardPage: React.FC = () => {
                     {match.isPredicted ? (
                       <span className="predicted-badge">
                         <CheckCircle size={14} />
-                        Wytypowano
+                        {t("dashboard.predicted")}
                       </span>
                     ) : (
                       <span className="not-predicted-badge">
                         <AlertCircle size={14} />
-                        Do wytypowania
+                        {t("dashboard.notPredicted")}
                       </span>
                     )}
                   </div>
@@ -489,7 +505,7 @@ const DashboardPage: React.FC = () => {
               <div className="section-header">
                 <h2 className="section-title">
                   <Bell size={24} />
-                  Powiadomienia
+                  {t("dashboard.notifications")}
                 </h2>
               </div>
 
@@ -507,12 +523,11 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-         
             <div className="section-card">
               <div className="section-header">
                 <h2 className="section-title">
                   <Target size={24} />
-                  Ostatnie wyniki
+                  {t("dashboard.recentResults")}
                 </h2>
               </div>
 
@@ -525,18 +540,22 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <div className="result-match">
                       <span>
-                        {result.homeTeam} vs {result.awayTeam}
+                        {result.homeTeam} {t("common.vs")} {result.awayTeam}
                       </span>
                     </div>
                     <div className="result-scores">
                       <div className="result-score">
-                        <span className="score-label">Wynik:</span>
+                        <span className="score-label">
+                          {t("dashboard.actualScore")}
+                        </span>
                         <span className="score-value">
                           {result.actualScore.home} - {result.actualScore.away}
                         </span>
                       </div>
                       <div className="result-score">
-                        <span className="score-label">Twój typ:</span>
+                        <span className="score-label">
+                          {t("dashboard.yourPrediction")}
+                        </span>
                         <span className="score-value">
                           {result.yourPrediction.home} -{" "}
                           {result.yourPrediction.away}

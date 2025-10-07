@@ -57,7 +57,6 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
           className={`room-card ${room.status}`}
           onClick={() => onRoomClick(room.id)}
         >
-       }
           <div className="room-card-header">
             <div className="room-title-row">
               <h3 className="room-name">{room.name}</h3>
@@ -70,13 +69,11 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
             {getStatusBadge(room.status)}
           </div>
 
-
           <div className="league-badge">
             <Trophy size={14} />
             <span>{room.league}</span>
           </div>
 
-    
           <div className="room-info-grid">
             <div className="info-item">
               <Users className="info-icon" size={16} />
@@ -100,7 +97,6 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
             </div>
           </div>
 
-       
           <div className="room-creator">
             <div className="creator-avatar">
               {room.creator.charAt(0).toUpperCase()}
@@ -108,7 +104,6 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
             <span className="creator-name">Organizator: {room.creator}</span>
           </div>
 
-      
           <div className="room-card-footer">
             <div className="fee-info">
               <span className="fee-label">Wpisowe:</span>
@@ -120,7 +115,6 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
             </div>
           </div>
 
-        
           <div className="participants-progress">
             <div
               className="progress-fill"

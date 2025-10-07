@@ -1,0 +1,93 @@
+{
+  "nav": {
+    "home": "Strona główna",
+    "dashboard": "Dashboard",
+    "rooms": "Pokoje",
+    "ranking": "Ranking",
+    "howToPlay": "Jak grać",
+    "logout": "Wyloguj",
+    "login": "Zaloguj się",
+    "register": "Zarejestruj się",
+    "notifications": "Powiadomienia",
+    "profile": "Zobacz profil"
+  },
+  "common": {
+    "welcome": "Witaj",
+    "loading": "Ładowanie...",
+    "error": "Błąd",
+    "success": "Sukces",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "close": "Zamknij",
+    "points": "pkt",
+    "vs": "vs",
+    "pln": "PLN"
+  },
+  "auth": {
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "email": "Email",
+    "loginTitle": "Zaloguj się do PREDICTO",
+    "registerTitle": "Zarejestruj się w PREDICTO",
+    "forgotPassword": "Zapomniałeś hasła?",
+    "noAccount": "Nie masz konta?",
+    "hasAccount": "Masz już konto?"
+  },
+  "rooms": {
+    "title": "Dostępne pokoje",
+    "create": "Utwórz pokój",
+    "join": "Dołącz",
+    "players": "Graczy",
+    "status": "Status",
+    "active": "Aktywny",
+    "waiting": "Oczekuje",
+    "ended": "Zakończony"
+  },
+  "ranking": {
+    "title": "Ranking graczy",
+    "position": "Pozycja",
+    "player": "Gracz",
+    "points": "Punkty",
+    "wins": "Wygrane"
+  },
+  "dashboard": {
+    "title": "Twój Dashboard",
+    "welcomeBack": "Witaj ponownie",
+    "subtitle": "Oto przegląd Twoich aktywnych rozgrywek",
+    "createRoom": "Stwórz pokój",
+    "stats": {
+      "globalRank": "Ranking globalny",
+      "totalPoints": "Suma punktów",
+      "roomsWon": "Wygrane pokoje",
+      "winRate": "Win rate",
+      "currentStreak": "Aktualna seria",
+      "activeRooms": "Aktywne pokoje"
+    },
+    "yourRooms": "Twoje pokoje",
+    "tabs": {
+      "active": "Aktywne",
+      "pending": "Oczekujące",
+      "ended": "Zakończone"
+    },
+    "emptyRooms": "Brak pokoi w tej kategorii",
+    "yourPosition": "Twoja pozycja:",
+    "participants": "Uczestnicy:",
+    "finalPosition": "Finalna pozycja",
+    "waitingToStart": "Czeka na rozpoczęcie rozgrywek",
+    "upcomingMatches": "Nadchodzące mecze",
+    "predicted": "Wytypowano",
+    "notPredicted": "Do wytypowania",
+    "notifications": "Powiadomienia",
+    "recentResults": "Ostatnie wyniki",
+    "actualScore": "Wynik:",
+    "yourPrediction": "Twój typ:",
+    "timeAgo": {
+      "minutesAgo": "min temu",
+      "hoursAgo": "godz. temu",
+      "daysAgo": "dni temu",
+      "justNow": "Teraz"
+    }
+  }
+}
