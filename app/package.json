@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@microsoft/signalr": "^9.0.6",
+    "@preact/signals-react": "^3.3.1",
     "flag-icons": "^7.5.0",
     "i18next": "^25.5.3",
     "lucide-react": "^0.544.0",

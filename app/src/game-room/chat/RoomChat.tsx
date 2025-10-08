@@ -1,15 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Trash2, Flag, MoreVertical } from "lucide-react";
+import { Send, Trash2, Flag, MoreVertical, Users } from "lucide-react";
 import "./RoomChat.css";
-
-interface ChatMessage {
-  id: string;
-  userId: string;
-  username: string;
-  avatar: string;
-  content: string;
-  timestamp: string;
-}
+import { useChat } from "../../hooks/useChat";
 
 interface RoomChatProps {
   currentUserId: string;
@@ -17,73 +9,35 @@ interface RoomChatProps {
   roomId: string;
 }
 
-const RoomChat: React.FC<RoomChatProps> = ({ currentUserId, isCreator }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "1",
-      userId: "user2",
-      username: "AnnaWiśniewska",
-      avatar: "A",
-      content: "Hej! Ktoś obstawia dzisiejszy mecz?",
-      timestamp: "2024-10-27T15:30:00",
-    },
-    {
-      id: "2",
-      userId: "user3",
-      username: "PiotrNowak",
-      avatar: "P",
-      content: "Ja stawiłem na City 2:1",
-      timestamp: "2024-10-27T15:31:00",
-    },
-    {
-      id: "3",
-      userId: "user1",
-      username: "JanKowalski",
-      avatar: "J",
-      content: "Dokładnie taki sam typ!",
-      timestamp: "2024-10-27T15:32:00",
-    },
-    {
-      id: "4",
-      userId: "user4",
-      username: "MariaKowalczyk",
-      avatar: "M",
-      content: "Liverpool wygra moim zdaniem",
-      timestamp: "2024-10-27T15:33:00",
-    },
-  ]);
-
+const RoomChat: React.FC<RoomChatProps> = ({
+  currentUserId,
+  isCreator,
+  roomId,
+}) => {
   const [newMessage, setNewMessage] = useState("");
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const { messages, onlineUsers, sendMessage, deleteMessage } = useChat({
+    id: roomId,
+    type: "room",
+    name: "Czat pokoju",
+  });
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length]);
 
   const handleSendMessage = () => {
-    if (newMessage.trim() === "") return;
+    if (!newMessage.trim()) return;
 
-    const message: ChatMessage = {
-      id: Date.now().toString(),
-      userId: currentUserId,
-      username: "Gracz",
-      avatar: "G",
-      content: newMessage,
-      timestamp: new Date().toISOString(),
-    };
-
-    setMessages([...messages, message]);
+    sendMessage(newMessage, currentUserId, "Gracz");
     setNewMessage("");
   };
 
   const handleDelete = (messageId: string) => {
     if (window.confirm("Czy na pewno chcesz usunąć tę wiadomość?")) {
-      setMessages(messages.filter((msg) => msg.id !== messageId));
+      deleteMessage(messageId);
       setActiveMenu(null);
     }
   };
@@ -103,64 +57,74 @@ const RoomChat: React.FC<RoomChatProps> = ({ currentUserId, isCreator }) => {
 
   return (
     <div className="room-chat">
-      <div className="chat-messages-container">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`chat-message ${
-              message.userId === currentUserId ? "own" : ""
-            }`}
-          >
-            <div className="chat-message-avatar">{message.avatar}</div>
+      <div className="chat-header-info">
+        <div className="online-indicator">
+          <Users size={16} />
+          <span>{onlineUsers} online</span>
+        </div>
+      </div>
 
-            <div className="chat-message-content">
-              <div className="chat-message-header">
-                <span className="chat-message-username">
-                  {message.username}
-                </span>
-                <span className="chat-message-time">
-                  {formatTime(message.timestamp)}
-                </span>
+      <div className="chat-messages-container">
+        {messages.length === 0 ? (
+          <div className="chat-empty-state">
+            <p>Brak wiadomości. Rozpocznij rozmowę! 💬</p>
+          </div>
+        ) : (
+          messages.map((message) => (
+            <div
+              key={message.id}
+              className={`chat-message ${
+                message.userId === currentUserId ? "own" : ""
+              }`}
+            >
+              <div className="chat-message-avatar">{message.avatar}</div>
+
+              <div className="chat-message-content">
+                <div className="chat-message-header">
+                  <span className="chat-message-username">
+                    {message.username}
+                  </span>
+                  <span className="chat-message-time">
+                    {formatTime(message.timestamp)}
+                  </span>
+                </div>
+
+                <div className="chat-message-text">{message.content}</div>
               </div>
 
-              <div className="chat-message-text">{message.content}</div>
-            </div>
+              <div className="chat-message-menu">
+                <button
+                  className="chat-menu-trigger"
+                  onClick={() =>
+                    setActiveMenu(activeMenu === message.id ? null : message.id)
+                  }
+                >
+                  <MoreVertical size={16} />
+                </button>
 
-            <div className="chat-message-menu">
-              <button
-                className="chat-menu-trigger"
-                onClick={() =>
-                  setActiveMenu(activeMenu === message.id ? null : message.id)
-                }
-              >
-                <MoreVertical size={16} />
-              </button>
-
-              {activeMenu === message.id && (
-                <div className="chat-menu-dropdown">
-                  {(message.userId === currentUserId || isCreator) && (
-                    <button
-                      className="chat-menu-item danger"
-                      onClick={() => handleDelete(message.id)}
-                    >
-                      <Trash2 size={14} />
-                      Usuń
-                    </button>
-                  )}
-                  {message.userId !== currentUserId && (
-                    <button
-                      className="chat-menu-item"
-                      onClick={() => handleReport()}
-                    >
-                      <Flag size={14} />
-                      Zgłoś
-                    </button>
-                  )}
-                </div>
-              )}
+                {activeMenu === message.id && (
+                  <div className="chat-menu-dropdown">
+                    {(message.userId === currentUserId || isCreator) && (
+                      <button
+                        className="chat-menu-item danger"
+                        onClick={() => handleDelete(message.id)}
+                      >
+                        <Trash2 size={14} />
+                        Usuń
+                      </button>
+                    )}
+                    {message.userId !== currentUserId && (
+                      <button className="chat-menu-item" onClick={handleReport}>
+                        <Flag size={14} />
+                        Zgłoś
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         <div ref={messagesEndRef} />
       </div>
 
@@ -172,7 +136,8 @@ const RoomChat: React.FC<RoomChatProps> = ({ currentUserId, isCreator }) => {
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
               handleSendMessage();
             }
           }}

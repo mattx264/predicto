@@ -1,15 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, Send, Clock, Users, MessageSquare } from "lucide-react";
 import "./MatchLiveModal.css";
-
-interface ChatMessage {
-  id: string;
-  userId: string;
-  username: string;
-  avatar: string;
-  message: string;
-  timestamp: Date;
-}
+import { useChat } from "../../hooks/useChat";
 
 interface Match {
   id: string;
@@ -39,46 +31,24 @@ const MatchLiveModal: React.FC<MatchLiveModalProps> = ({
   currentUserId,
   onClose,
 }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "1",
-      userId: "user2",
-      username: "AnnaWiśniewska",
-      avatar: "A",
-      message: "Co za mecz! Niesamowite tempo!",
-      timestamp: new Date(Date.now() - 120000),
-    },
-    {
-      id: "2",
-      userId: "user3",
-      username: "PiotrNowak",
-      avatar: "P",
-      message: "Bramka! 1-0!",
-      timestamp: new Date(Date.now() - 60000),
-    },
-  ]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [onlineUsers] = useState(12);
   const [isChatExpanded, setIsChatExpanded] = useState(false);
+
+  const { messages, onlineUsers, sendMessage } = useChat({
+    id: match.id,
+    type: "match",
+    name: `${match.homeTeam} vs ${match.awayTeam}`,
+  });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages.length]);
 
-  const sendMessage = () => {
+  const handleSendMessage = () => {
     if (!newMessage.trim()) return;
 
-    const message: ChatMessage = {
-      id: Date.now().toString(),
-      userId: currentUserId,
-      username: "Ty",
-      avatar: "T",
-      message: newMessage,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, message]);
+    sendMessage(newMessage, currentUserId, "Ty");
     setNewMessage("");
 
     setTimeout(() => {
@@ -89,7 +59,7 @@ const MatchLiveModal: React.FC<MatchLiveModalProps> = ({
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+      handleSendMessage();
     }
   };
 
@@ -218,34 +188,44 @@ const MatchLiveModal: React.FC<MatchLiveModalProps> = ({
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
-              <button className="send-button" onClick={sendMessage}>
+              <button
+                className="send-button"
+                onClick={handleSendMessage}
+                disabled={!newMessage.trim()}
+              >
                 <Send size={20} />
               </button>
             </div>
 
             <div className="chat-messages">
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`chat-message ${
-                    msg.userId === currentUserId ? "own-message" : ""
-                  }`}
-                >
-                  <div className="message-avatar">{msg.avatar}</div>
-                  <div className="message-content">
-                    <div className="message-header">
-                      <span className="message-username">{msg.username}</span>
-                      <span className="message-time">
-                        {msg.timestamp.toLocaleTimeString("pl-PL", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                    <div className="message-text">{msg.message}</div>
-                  </div>
+              {messages.length === 0 ? (
+                <div className="chat-empty-state">
+                  <p>Brak komentarzy. Bądź pierwszy! ⚽</p>
                 </div>
-              ))}
+              ) : (
+                messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`chat-message ${
+                      msg.userId === currentUserId ? "own-message" : ""
+                    }`}
+                  >
+                    <div className="message-avatar">{msg.avatar}</div>
+                    <div className="message-content">
+                      <div className="message-header">
+                        <span className="message-username">{msg.username}</span>
+                        <span className="message-time">
+                          {new Date(msg.timestamp).toLocaleTimeString("pl-PL", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </div>
+                      <div className="message-text">{msg.content}</div>
+                    </div>
+                  </div>
+                ))
+              )}
               <div ref={messagesEndRef} />
             </div>
 
@@ -258,7 +238,11 @@ const MatchLiveModal: React.FC<MatchLiveModalProps> = ({
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
-              <button className="send-button" onClick={sendMessage}>
+              <button
+                className="send-button"
+                onClick={handleSendMessage}
+                disabled={!newMessage.trim()}
+              >
                 <Send size={20} />
               </button>
             </div>
