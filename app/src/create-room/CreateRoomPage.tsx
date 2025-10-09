@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -12,8 +12,16 @@ import {
   Check,
   AlertCircle,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay, Keyboard } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "./CreateRoomPage.css";
+import PrizePoolPreview from "./prize-pool-preview/PrizePoolPreview";
 
 interface TournamentTemplate {
   id: string;
@@ -23,11 +31,15 @@ interface TournamentTemplate {
   matchesCount: number;
   startDate: string;
   endDate: string;
-  image: string;
+  logoUrl: string; // Zmienione z image na logoUrl
 }
 
 const CreateRoomPage: React.FC = () => {
   const navigate = useNavigate();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const roomNameRef = useRef<HTMLInputElement>(null);
+  const maxParticipantsRef = useRef<HTMLInputElement>(null);
+  const entryFeeRef = useRef<HTMLInputElement>(null);
 
   const tournamentTemplates: TournamentTemplate[] = [
     {
@@ -38,7 +50,7 @@ const CreateRoomPage: React.FC = () => {
       matchesCount: 96,
       startDate: "2024-09-17",
       endDate: "2024-12-11",
-      image: "🏆",
+      logoUrl: "/tournament-logos/championsleague.jpg",
     },
     {
       id: "2",
@@ -48,7 +60,7 @@ const CreateRoomPage: React.FC = () => {
       matchesCount: 110,
       startDate: "2024-10-26",
       endDate: "2025-01-04",
-      image: "⚽",
+      logoUrl: "/tournament-logos/premier-league.jpg",
     },
     {
       id: "3",
@@ -58,7 +70,7 @@ const CreateRoomPage: React.FC = () => {
       matchesCount: 190,
       startDate: "2024-08-15",
       endDate: "2024-12-22",
-      image: "🇪🇸",
+      logoUrl: "/tournament-logos/laliga.jpg",
     },
     {
       id: "4",
@@ -68,7 +80,7 @@ const CreateRoomPage: React.FC = () => {
       matchesCount: 153,
       startDate: "2024-08-23",
       endDate: "2024-12-15",
-      image: "🇩🇪",
+      logoUrl: "/tournament-logos/bundesliga.jpg",
     },
     {
       id: "5",
@@ -78,7 +90,7 @@ const CreateRoomPage: React.FC = () => {
       matchesCount: 150,
       startDate: "2024-08-17",
       endDate: "2024-12-08",
-      image: "🇮🇹",
+      logoUrl: "/tournament-logos/serie-a.png",
     },
     {
       id: "6",
@@ -88,7 +100,7 @@ const CreateRoomPage: React.FC = () => {
       matchesCount: 90,
       startDate: "2024-07-19",
       endDate: "2024-12-07",
-      image: "🇵🇱",
+      logoUrl: "/tournament-logos/ekstraklasa.jpg",
     },
   ];
 
@@ -104,6 +116,12 @@ const CreateRoomPage: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [step]);
 
   const selectedTemplate = tournamentTemplates.find(
     (t) => t.id === formData.tournamentTemplateId
@@ -140,26 +158,44 @@ const CreateRoomPage: React.FC = () => {
 
   const validateStep2 = () => {
     const newErrors: Record<string, string> = {};
+    let firstErrorField: HTMLElement | null = null;
 
     if (!formData.roomName.trim()) {
       newErrors.roomName = "Nazwa pokoju jest wymagana";
+      if (!firstErrorField) firstErrorField = roomNameRef.current;
     } else if (formData.roomName.length < 3) {
       newErrors.roomName = "Nazwa pokoju musi mieć co najmniej 3 znaki";
+      if (!firstErrorField) firstErrorField = roomNameRef.current;
     }
 
     if (formData.maxParticipants < 2) {
       newErrors.maxParticipants = "Minimalna liczba uczestników to 2";
+      if (!firstErrorField) firstErrorField = maxParticipantsRef.current;
     } else if (formData.maxParticipants > 50) {
       newErrors.maxParticipants = "Maksymalna liczba uczestników to 50";
+      if (!firstErrorField) firstErrorField = maxParticipantsRef.current;
     }
 
     if (formData.entryFee < 0) {
       newErrors.entryFee = "Wpisowe nie może być ujemne";
+      if (!firstErrorField) firstErrorField = entryFeeRef.current;
     } else if (formData.entryFee > 10000) {
       newErrors.entryFee = "Maksymalne wpisowe to 10000 PLN";
+      if (!firstErrorField) firstErrorField = entryFeeRef.current;
     }
 
     setErrors(newErrors);
+
+    if (firstErrorField && Object.keys(newErrors).length > 0) {
+      setTimeout(() => {
+        firstErrorField?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        firstErrorField?.focus();
+      }, 100);
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -193,7 +229,7 @@ const CreateRoomPage: React.FC = () => {
 
   return (
     <div className="create-room-page">
-      <div className="create-room-container">
+      <div className="create-room-container" ref={contentRef}>
         <div className="create-room-header">
           <button className="back-btn" onClick={() => navigate("/rooms")}>
             <ArrowLeft className="back-icon" />
@@ -257,56 +293,96 @@ const CreateRoomPage: React.FC = () => {
               </div>
             )}
 
-            <div className="templates-grid">
-              {tournamentTemplates.map((template) => (
-                <div
-                  key={template.id}
-                  className={`template-card ${
-                    formData.tournamentTemplateId === template.id
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      tournamentTemplateId: template.id,
-                    })
-                  }
-                >
-                  {formData.tournamentTemplateId === template.id && (
-                    <div className="selected-badge">
-                      <Check size={16} />
+            <div className="templates-swiper-container">
+              <Swiper
+                modules={[Navigation, Pagination, Autoplay, Keyboard]}
+                spaceBetween={20}
+                slidesPerView={1}
+                navigation={{
+                  prevEl: ".swiper-button-prev-custom",
+                  nextEl: ".swiper-button-next-custom",
+                }}
+                pagination={{
+                  clickable: true,
+                  dynamicBullets: true,
+                }}
+                autoplay={{
+                  delay: 5000,
+                  disableOnInteraction: true,
+                }}
+                keyboard={{
+                  enabled: true,
+                  onlyInViewport: true,
+                }}
+                className="templates-swiper"
+              >
+                {tournamentTemplates.map((template) => (
+                  <SwiperSlide key={template.id}>
+                    <div
+                      className={`template-card ${
+                        formData.tournamentTemplateId === template.id
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          tournamentTemplateId: template.id,
+                        })
+                      }
+                    >
+                      {formData.tournamentTemplateId === template.id && (
+                        <div className="selected-badge">
+                          <Check size={16} />
+                        </div>
+                      )}
+
+                      {/* Logo zamiast emoji */}
+                      <div className="template-logo-container">
+                        <img
+                          src={template.logoUrl}
+                          alt={template.league}
+                          className="template-logo"
+                        />
+                      </div>
+
+                      <h3 className="template-name">{template.name}</h3>
+
+                      <div className="template-league">
+                        <Trophy size={14} />
+                        <span>{template.league}</span>
+                      </div>
+
+                      <p className="template-description">
+                        {template.description}
+                      </p>
+
+                      <div className="template-info">
+                        <div className="info-item">
+                          <Calendar size={14} />
+                          <span>
+                            {new Date(template.startDate).toLocaleDateString(
+                              "pl-PL"
+                            )}
+                          </span>
+                        </div>
+                        <div className="info-item">
+                          <span className="matches-count">
+                            {template.matchesCount} meczów
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  )}
+                  </SwiperSlide>
+                ))}
+              </Swiper>
 
-                  <div className="template-icon">{template.image}</div>
-
-                  <h3 className="template-name">{template.name}</h3>
-
-                  <div className="template-league">
-                    <Trophy size={14} />
-                    <span>{template.league}</span>
-                  </div>
-
-                  <p className="template-description">{template.description}</p>
-
-                  <div className="template-info">
-                    <div className="info-item">
-                      <Calendar size={14} />
-                      <span>
-                        {new Date(template.startDate).toLocaleDateString(
-                          "pl-PL"
-                        )}
-                      </span>
-                    </div>
-                    <div className="info-item">
-                      <span className="matches-count">
-                        {template.matchesCount} meczów
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <button className="swiper-button-prev-custom">
+                <ChevronLeft size={24} />
+              </button>
+              <button className="swiper-button-next-custom">
+                <ChevronRight size={24} />
+              </button>
             </div>
 
             <div className="step-actions">
@@ -338,6 +414,7 @@ const CreateRoomPage: React.FC = () => {
                   Nazwa pokoju *
                 </label>
                 <input
+                  ref={roomNameRef}
                   type="text"
                   name="roomName"
                   value={formData.roomName}
@@ -356,6 +433,7 @@ const CreateRoomPage: React.FC = () => {
                   Maksymalna liczba uczestników *
                 </label>
                 <input
+                  ref={maxParticipantsRef}
                   type="number"
                   name="maxParticipants"
                   value={formData.maxParticipants}
@@ -380,6 +458,7 @@ const CreateRoomPage: React.FC = () => {
                   Wpisowe (PLN) *
                 </label>
                 <input
+                  ref={entryFeeRef}
                   type="number"
                   name="entryFee"
                   value={formData.entryFee}
@@ -395,6 +474,11 @@ const CreateRoomPage: React.FC = () => {
                 <span className="field-hint">
                   Maksymalne wpisowe: 10,000 PLN
                 </span>
+
+                <PrizePoolPreview
+                  entryFee={formData.entryFee}
+                  maxParticipants={formData.maxParticipants}
+                />
               </div>
 
               <div className="form-group">
@@ -450,31 +534,6 @@ const CreateRoomPage: React.FC = () => {
                   rows={4}
                 />
               </div>
-
-              <div className="form-group">
-                <label className="form-label">
-                  <Info size={18} />
-                  Dodatkowe zasady (opcjonalnie)
-                </label>
-                <textarea
-                  name="rules"
-                  value={formData.rules}
-                  onChange={handleInputChange}
-                  placeholder="Opisz specjalne zasady pokoju..."
-                  className="form-textarea"
-                  rows={4}
-                />
-              </div>
-
-              <div className="prize-preview">
-                <Trophy className="prize-icon" />
-                <div className="prize-content">
-                  <span className="prize-label">Przewidywana pula nagród</span>
-                  <span className="prize-value">
-                    {calculatePrizePool()} PLN
-                  </span>
-                </div>
-              </div>
             </div>
 
             <div className="step-actions">
@@ -505,7 +564,11 @@ const CreateRoomPage: React.FC = () => {
               <div className="summary-section">
                 <h4 className="section-title">Turniej</h4>
                 <div className="summary-item">
-                  <span className="item-icon">{selectedTemplate?.image}</span>
+                  <img
+                    src={selectedTemplate?.logoUrl}
+                    alt={selectedTemplate?.league}
+                    className="summary-logo"
+                  />
                   <div className="item-content">
                     <span className="item-label">Nazwa turnieju</span>
                     <span className="item-value">{selectedTemplate?.name}</span>

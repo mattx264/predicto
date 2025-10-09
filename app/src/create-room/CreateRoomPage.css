@@ -199,22 +199,19 @@
   margin-bottom: 2rem;
 }
 
-/* Templates Grid */
-.templates-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
+/* Template Card Styles */
 .template-card {
-  padding: 1.5rem;
+  padding: 2rem 1.5rem;
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .template-card:hover {
@@ -244,10 +241,26 @@
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.5);
 }
 
-.template-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  text-align: center;
+/* Logo Container */
+.template-logo-container {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.template-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
 }
 
 .template-name {
@@ -255,6 +268,7 @@
   font-size: 1.1rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
+  text-align: center;
 }
 
 .template-league {
@@ -276,12 +290,15 @@
   font-size: 0.9rem;
   line-height: 1.6;
   margin-bottom: 1rem;
+  flex: 1;
+  text-align: center;
 }
 
 .template-info {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -524,10 +541,12 @@
   gap: 1rem;
 }
 
-.item-icon {
-  font-size: 1.5rem;
+.summary-logo {
   width: 40px;
-  text-align: center;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .item-icon-svg {
@@ -698,6 +717,103 @@
   animation: sparkle 2s ease-in-out infinite;
 }
 
+/* Templates Swiper */
+.templates-swiper-container {
+  position: relative;
+  margin-bottom: 2rem;
+  padding: 0 70px;
+  width: 100%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.templates-swiper {
+  padding: 20px 0 50px;
+  width: 100%;
+}
+
+.templates-swiper .swiper-wrapper {
+  align-items: stretch;
+}
+
+.templates-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  width: 100%;
+}
+
+.templates-swiper .template-card {
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 450px;
+}
+
+/* Swiper Navigation Buttons */
+.swiper-button-prev-custom,
+.swiper-button-next-custom {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.1);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22c55e;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.swiper-button-prev-custom {
+  left: 0;
+}
+
+.swiper-button-next-custom {
+  right: 0;
+}
+
+.swiper-button-prev-custom:hover,
+.swiper-button-next-custom:hover {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: #22c55e;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+}
+
+.swiper-button-prev-custom.swiper-button-disabled,
+.swiper-button-next-custom.swiper-button-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Swiper Pagination */
+.templates-swiper .swiper-pagination {
+  bottom: 10px;
+}
+
+.templates-swiper .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.templates-swiper .swiper-pagination-bullet-active {
+  background: #22c55e;
+  width: 24px;
+  border-radius: 5px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .create-room-container {
@@ -728,10 +844,6 @@
   .step-line {
     width: 40px;
     margin: 0 0.25rem;
-  }
-
-  .templates-grid {
-    grid-template-columns: 1fr;
   }
 
   .privacy-toggle {
@@ -765,46 +877,98 @@
   .prize-value {
     font-size: 1.5rem;
   }
-}
 
-@media (max-width: 480px) {
-  .progress-steps {
-    padding: 1rem 0.5rem;
+  .templates-swiper-container {
+    padding: 0 50px;
+    max-width: 600px;
   }
 
-  .step {
-    flex: 1;
-    min-width: 0;
+  .swiper-button-prev-custom,
+  .swiper-button-next-custom {
+    width: 36px;
+    height: 36px;
   }
 
-  .step-circle {
-    width: 32px;
-    height: 32px;
-    font-size: 0.8rem;
+  .swiper-button-prev-custom svg,
+  .swiper-button-next-custom svg {
+    width: 20px;
+    height: 20px;
   }
 
-  .step-label {
-    font-size: 0.65rem;
-    max-width: 60px;
+  .templates-swiper .template-card {
+    min-height: 400px;
   }
 
-  .step-line {
-    width: 30px;
-    margin: 0 0.15rem;
-    flex-shrink: 0;
+  .template-logo-container {
+    width: 100px;
+    height: 100px;
   }
 
-  .page-title {
-    font-size: 1.75rem;
-    gap: 0.5rem;
-  }
+  @media (max-width: 480px) {
+    .progress-steps {
+      padding: 1rem 0.5rem;
+    }
 
-  .title-icon {
-    width: 32px;
-    height: 32px;
-  }
+    .step {
+      flex: 1;
+      min-width: 0;
+    }
 
-  .step-title {
-    font-size: 1.5rem;
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      font-size: 0.8rem;
+    }
+
+    .step-label {
+      font-size: 0.65rem;
+      max-width: 60px;
+    }
+
+    .step-line {
+      width: 30px;
+      margin: 0 0.15rem;
+      flex-shrink: 0;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      gap: 0.5rem;
+    }
+
+    .title-icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    .step-title {
+      font-size: 1.5rem;
+    }
+
+    .templates-swiper-container {
+      padding: 0 40px;
+    }
+
+    .swiper-button-prev-custom,
+    .swiper-button-next-custom {
+      width: 32px;
+      height: 32px;
+    }
+
+    .swiper-button-prev-custom svg,
+    .swiper-button-next-custom svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .templates-swiper .template-card {
+      min-height: 380px;
+      padding: 1.25rem;
+    }
+
+    .template-logo-container {
+      width: 90px;
+      height: 90px;
+    }
   }
 }
