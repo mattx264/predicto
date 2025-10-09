@@ -13,8 +13,8 @@ import {
   Target,
   MessageSquare,
   MessageCircle,
-  RefreshCw,
   AlertCircle,
+  BarChart3,
 } from "lucide-react";
 import "./RoomPage.css";
 
@@ -25,6 +25,7 @@ import RoomLeaderboard from "./leaderboard/RoomLeaderboard";
 import RoomMatches from "./room-matches/RoomMatches";
 import RoomInfo from "./room-info/RoomInfo";
 import InviteButton from "./invite-user/InviteButton";
+import LeagueTable from "./league-table/LeagueTable";
 
 import { useRoom } from "../hooks/useRoom";
 import type { Match, Participant } from "../types/room.types";
@@ -36,9 +37,7 @@ const RoomPage: React.FC = () => {
 
   const currentUserId = "user1";
 
-  const { room, isLoading, error, connectionStatus, refetch } = useRoom(
-    id || ""
-  );
+  const { room, isLoading, error, connectionStatus } = useRoom(id || "");
 
   const mockParticipants: Participant[] = [
     {
@@ -59,10 +58,237 @@ const RoomPage: React.FC = () => {
       homeTeam: "Manchester City",
       awayTeam: "Liverpool",
       date: "2024-10-27T15:00:00",
-      status: "finished",
+      status: "live",
       actualScore: { home: 2, away: 1 },
       userPrediction: { home: 2, away: 1 },
       points: 5,
+    },
+  ];
+
+  const mockTeams = [
+    {
+      id: "1",
+      position: 1,
+      teamName: "Manchester City",
+      matchesPlayed: 10,
+      wins: 8,
+      draws: 1,
+      losses: 1,
+      goalsFor: 28,
+      goalsAgainst: 10,
+      goalDifference: 18,
+      points: 25,
+      lastFiveMatches: ["W", "W", "W", "D", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "2",
+      position: 2,
+      teamName: "Real Madrid",
+      matchesPlayed: 10,
+      wins: 7,
+      draws: 2,
+      losses: 1,
+      goalsFor: 24,
+      goalsAgainst: 12,
+      goalDifference: 12,
+      points: 23,
+      lastFiveMatches: ["W", "D", "W", "W", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "3",
+      position: 3,
+      teamName: "Bayern Munich",
+      matchesPlayed: 10,
+      wins: 7,
+      draws: 1,
+      losses: 2,
+      goalsFor: 26,
+      goalsAgainst: 14,
+      goalDifference: 12,
+      points: 22,
+      lastFiveMatches: ["W", "W", "L", "W", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "4",
+      position: 4,
+      teamName: "Liverpool",
+      matchesPlayed: 10,
+      wins: 6,
+      draws: 3,
+      losses: 1,
+      goalsFor: 22,
+      goalsAgainst: 11,
+      goalDifference: 11,
+      points: 21,
+      lastFiveMatches: ["D", "W", "W", "D", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "5",
+      position: 5,
+      teamName: "PSG",
+      matchesPlayed: 10,
+      wins: 6,
+      draws: 2,
+      losses: 2,
+      goalsFor: 20,
+      goalsAgainst: 13,
+      goalDifference: 7,
+      points: 20,
+      lastFiveMatches: ["W", "L", "W", "D", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "6",
+      position: 6,
+      teamName: "Barcelona",
+      matchesPlayed: 10,
+      wins: 5,
+      draws: 3,
+      losses: 2,
+      goalsFor: 19,
+      goalsAgainst: 14,
+      goalDifference: 5,
+      points: 18,
+      lastFiveMatches: ["D", "W", "L", "W", "D"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "7",
+      position: 7,
+      teamName: "Inter Milan",
+      matchesPlayed: 10,
+      wins: 5,
+      draws: 2,
+      losses: 3,
+      goalsFor: 17,
+      goalsAgainst: 15,
+      goalDifference: 2,
+      points: 17,
+      lastFiveMatches: ["L", "W", "W", "D", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "8",
+      position: 8,
+      teamName: "Juventus",
+      matchesPlayed: 10,
+      wins: 4,
+      draws: 4,
+      losses: 2,
+      goalsFor: 16,
+      goalsAgainst: 14,
+      goalDifference: 2,
+      points: 16,
+      lastFiveMatches: ["D", "D", "W", "L", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "9",
+      position: 9,
+      teamName: "Arsenal",
+      matchesPlayed: 10,
+      wins: 4,
+      draws: 3,
+      losses: 3,
+      goalsFor: 15,
+      goalsAgainst: 14,
+      goalDifference: 1,
+      points: 15,
+      lastFiveMatches: ["L", "D", "W", "W", "D"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "10",
+      position: 10,
+      teamName: "Atletico Madrid",
+      matchesPlayed: 10,
+      wins: 4,
+      draws: 3,
+      losses: 3,
+      goalsFor: 14,
+      goalsAgainst: 13,
+      goalDifference: 1,
+      points: 15,
+      lastFiveMatches: ["W", "L", "D", "W", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "11",
+      position: 11,
+      teamName: "AC Milan",
+      matchesPlayed: 10,
+      wins: 4,
+      draws: 2,
+      losses: 4,
+      goalsFor: 13,
+      goalsAgainst: 15,
+      goalDifference: -2,
+      points: 14,
+      lastFiveMatches: ["L", "W", "L", "D", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "12",
+      position: 12,
+      teamName: "Borussia Dortmund",
+      matchesPlayed: 10,
+      wins: 3,
+      draws: 4,
+      losses: 3,
+      goalsFor: 14,
+      goalsAgainst: 16,
+      goalDifference: -2,
+      points: 13,
+      lastFiveMatches: ["D", "L", "D", "W", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "13",
+      position: 13,
+      teamName: "Chelsea",
+      matchesPlayed: 10,
+      wins: 3,
+      draws: 3,
+      losses: 4,
+      goalsFor: 12,
+      goalsAgainst: 16,
+      goalDifference: -4,
+      points: 12,
+      lastFiveMatches: ["L", "D", "L", "W", "D"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "14",
+      position: 14,
+      teamName: "Napoli",
+      matchesPlayed: 10,
+      wins: 3,
+      draws: 2,
+      losses: 5,
+      goalsFor: 11,
+      goalsAgainst: 17,
+      goalDifference: -6,
+      points: 11,
+      lastFiveMatches: ["L", "L", "W", "D", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "15",
+      position: 15,
+      teamName: "RB Leipzig",
+      matchesPlayed: 10,
+      wins: 2,
+      draws: 4,
+      losses: 4,
+      goalsFor: 10,
+      goalsAgainst: 16,
+      goalDifference: -6,
+      points: 10,
+      lastFiveMatches: ["D", "L", "D", "L", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "16",
+      position: 16,
+      teamName: "Benfica",
+      matchesPlayed: 10,
+      wins: 2,
+      draws: 3,
+      losses: 5,
+      goalsFor: 9,
+      goalsAgainst: 18,
+      goalDifference: -9,
+      points: 9,
+      lastFiveMatches: ["L", "D", "L", "W", "L"] as ("W" | "D" | "L")[],
     },
   ];
 
@@ -70,6 +296,7 @@ const RoomPage: React.FC = () => {
 
   const isCreator = currentUserId === displayRoom?.creator;
   const isParticipant = true;
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "open":
@@ -176,22 +403,9 @@ const RoomPage: React.FC = () => {
               </div>
 
               <div className="my-room-header-actions">
-                {/* ✅ Przycisk odświeżania */}
-                <button
-                  className="my-action-btn my-refresh"
-                  onClick={refetch}
-                  disabled={isLoading}
-                  title="Odśwież dane pokoju"
-                >
-                  <RefreshCw
-                    size={20}
-                    className={isLoading ? "spinning" : ""}
-                  />
-                </button>
-
                 <InviteButton
                   roomId={displayRoom.id}
-                  inviteCode="MOCK-CODE" 
+                  inviteCode="MOCK-CODE"
                   roomName={displayRoom.name}
                 />
                 <button
@@ -266,6 +480,7 @@ const RoomPage: React.FC = () => {
           </div>
         </div>
 
+        {/* ✅ ZAKTUALIZOWANE ZAKŁADKI - dodana "Tabela" */}
         <div className="my-room-tabs">
           <button
             className={`my-tab ${activeTab === "matches" ? "my-active" : ""}`}
@@ -274,6 +489,16 @@ const RoomPage: React.FC = () => {
             <Target size={20} />
             <span>Mecze ({mockMatches.length})</span>
           </button>
+
+          {/* ✅ NOWA ZAKŁADKA */}
+          <button
+            className={`my-tab ${activeTab === "table" ? "my-active" : ""}`}
+            onClick={() => setActiveTab("table")}
+          >
+            <BarChart3 size={20} />
+            <span>Tabela</span>
+          </button>
+
           <button
             className={`my-tab ${
               activeTab === "leaderboard" ? "my-active" : ""
@@ -322,6 +547,10 @@ const RoomPage: React.FC = () => {
             />
           )}
 
+          {activeTab === "table" && (
+            <LeagueTable teams={mockTeams} highlightedTeams={[]} />
+          )}
+
           {activeTab === "leaderboard" && (
             <RoomLeaderboard
               participants={mockParticipants}
@@ -355,14 +584,14 @@ const RoomPage: React.FC = () => {
 
           {activeTab === "info" && (
             <RoomInfo
-              tournamentName={displayRoom.league} 
+              tournamentName={displayRoom.league}
               league={displayRoom.league}
               startDate={displayRoom.startDate}
               endDate={displayRoom.endDate}
               isPrivate={displayRoom.isPrivate}
               inviteCode="MOCK-CODE"
-              description="Mock description" 
-              rules="Mock rules" 
+              description="Mock description"
+              rules="Mock rules"
             />
           )}
         </div>
