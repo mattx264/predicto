@@ -28,7 +28,7 @@ import InviteButton from "./invite-user/InviteButton";
 import LeagueTable from "./league-table/LeagueTable";
 
 import { useRoom } from "../hooks/useRoom";
-import type { Match, Participant } from "../types/room.types";
+import type { Match, Participant } from "../types/types";
 
 const RoomPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

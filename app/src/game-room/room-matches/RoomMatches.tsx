@@ -14,7 +14,7 @@ import "./RoomMatches.css";
 import MatchLiveModal from "../match-live/MatchLiveModal";
 import LivePredictionsModal from "../match-live/predictions/LivePredictionsModal";
 import VictoryParticles from "./victory-effect/VictoryEffect";
-import type { Match } from "../../types/room.types";
+import type { Match } from "../../types/types";
 
 interface RoomMatchesProps {
   matches: Match[];

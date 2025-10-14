@@ -11,7 +11,7 @@ import {
   setRoomsLoading,
   setRoomsError,
 } from "../signals/rooms.signals";
-import { mapRoomDtoToRoom, type RoomDTO, type Room } from "../types/room.types";
+import { mapRoomDtoToRoom, type RoomDTO, type Room } from "../types/types";
 
 interface UseRoomsReturn {
   rooms: Room[];

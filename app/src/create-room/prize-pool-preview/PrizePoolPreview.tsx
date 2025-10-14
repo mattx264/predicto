@@ -1,19 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Trophy } from "lucide-react";
+import { effect } from "@preact/signals-react";
 import "./PrizePoolPreview.css";
+import { prizePoolTargetSignal } from "../../signals/create-room-form.signals";
 
-interface PrizePoolPreviewProps {
-  entryFee: number;
-  maxParticipants: number;
-}
+const PrizePoolPreview: React.FC = () => {
+  const targetValue = prizePoolTargetSignal.value;
 
-const PrizePoolPreview: React.FC<PrizePoolPreviewProps> = ({
-  entryFee,
-  maxParticipants,
-}) => {
-  const targetValue = entryFee * maxParticipants;
   const [displayValue, setDisplayValue] = useState(targetValue);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  effect(() => {
+    const newTargetValue = prizePoolTargetSignal.value;
+
+    if (newTargetValue !== displayValue) {
+      setIsAnimating(true);
+      const duration = 300;
+      const steps = 25;
+      const stepDuration = duration / steps;
+      let currentStep = 0;
+      const startValue = displayValue;
+
+      const timer = setInterval(() => {
+        currentStep++;
+        const progress = currentStep / steps;
+        const easeProgress = 1 - Math.pow(1 - progress, 2);
+
+        if (currentStep >= steps) {
+          setDisplayValue(newTargetValue);
+          setIsAnimating(false);
+          clearInterval(timer);
+        } else {
+          setDisplayValue(
+            startValue + (newTargetValue - startValue) * easeProgress
+          );
+        }
+      }, stepDuration);
+
+      return () => clearInterval(timer);
+    }
+  });
 
   const getWowLevel = (value: number) => {
     if (value >= 10000) return "mega";
@@ -24,37 +50,6 @@ const PrizePoolPreview: React.FC<PrizePoolPreviewProps> = ({
   };
 
   const wowLevel = getWowLevel(targetValue);
-
-  useEffect(() => {
-    if (targetValue !== displayValue) {
-      setIsAnimating(true);
-
-      const duration = 300;
-      const steps = 25;
-      const stepDuration = duration / steps;
-      let currentStep = 0;
-      const startValue = displayValue;
-
-      const timer = setInterval(() => {
-        currentStep++;
-        const progress = currentStep / steps;
-
-        const easeProgress = 1 - Math.pow(1 - progress, 2);
-
-        if (currentStep >= steps) {
-          setDisplayValue(targetValue);
-          setIsAnimating(false);
-          clearInterval(timer);
-        } else {
-          setDisplayValue(
-            startValue + (targetValue - startValue) * easeProgress
-          );
-        }
-      }, stepDuration);
-
-      return () => clearInterval(timer);
-    }
-  }, [targetValue, displayValue]);
 
   const formatNumber = (num: number) => {
     return Math.round(num).toLocaleString("pl-PL");

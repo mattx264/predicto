@@ -1,5 +1,5 @@
 import { signal, computed } from "@preact/signals-react";
-import type { Room } from "../types/room.types";
+import type { Room } from "../types/types";
 
 export const currentRoomSignal = signal<Room | null>(null);
 

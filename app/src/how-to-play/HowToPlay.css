@@ -23,10 +23,10 @@
 .hero-icon {
   color: #22c55e;
   margin-bottom: 1.5rem;
-  animation: float 3s ease-in-out infinite;
+  animation: float-hero 3s ease-in-out infinite;
 }
 
-@keyframes float {
+@keyframes float-hero {
   0%,
   100% {
     transform: translateY(0);

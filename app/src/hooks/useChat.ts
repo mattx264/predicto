@@ -8,7 +8,7 @@ import {
   currentChannelOnlineUsersSignal,
   loadMockMessages,
 } from "../signals/chat.signals";
-import type { ChatChannel, ChatMessage } from "../types/room.types";
+import type { ChatChannel, ChatMessage } from "../types/types";
 
 interface UseChatReturn {
   messages: ChatMessage[];

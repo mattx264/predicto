@@ -7,7 +7,7 @@ import MyRooms from "../my-rooms/MyRooms";
 import AllRoomsCards from "./rooms-cards/AllRoomsCards";
 import RoomsFilters from "./rooms-filter/RoomsFilters";
 import RoomsStats from "./rooms-stats/RoomsStats";
-import type { Room } from "../types/room.types";
+import type { Room } from "../types/types";
 import { useRooms } from "../hooks/useRooms";
 
 const RoomsPage: React.FC = () => {
@@ -23,7 +23,7 @@ const RoomsPage: React.FC = () => {
 
   const currentUserId = "user1";
 
-  const { rooms, isLoading, error, connectionStatus, refetch } = useRooms();
+  const { rooms, isLoading, error, refetch } = useRooms();
 
   const mockRooms: Room[] = [
     {
@@ -77,33 +77,6 @@ const RoomsPage: React.FC = () => {
     }
   };
 
-  const getConnectionStatusBadge = () => {
-    switch (connectionStatus) {
-      case "connected":
-        return (
-          <span className="connection-status connected">
-            🟢 Połączono z serwerem
-          </span>
-        );
-      case "connecting":
-        return (
-          <span className="connection-status connecting">🟡 Łączenie...</span>
-        );
-      case "reconnecting":
-        return (
-          <span className="connection-status reconnecting">
-            🟡 Ponowne łączenie...
-          </span>
-        );
-      case "error":
-        return (
-          <span className="connection-status error">🔴 Błąd połączenia</span>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="rooms-page">
       <div className="rooms-container">
@@ -116,19 +89,8 @@ const RoomsPage: React.FC = () => {
             <p className="page-subtitle">
               Dołącz do istniejących rozgrywek lub stwórz własny pokój
             </p>
-            {/* ✅ Status połączenia */}
-            {getConnectionStatusBadge()}
           </div>
           <div className="header-actions">
-            {/* ✅ Przycisk odświeżania */}
-            <button
-              className="refresh-btn"
-              onClick={refetch}
-              disabled={isLoading}
-              title="Odśwież listę pokoi"
-            >
-              <RefreshCw size={20} className={isLoading ? "spinning" : ""} />
-            </button>
             <button
               className="create-room-btn"
               onClick={() => navigate("/create-room")}

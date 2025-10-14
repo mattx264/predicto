@@ -12,7 +12,7 @@ import {
   setRoomError,
   clearCurrentRoom,
 } from "../signals/room-detail.signals";
-import { mapRoomDtoToRoom, type RoomDTO, type Room } from "../types/room.types";
+import { mapRoomDtoToRoom, type RoomDTO, type Room } from "../types/types";
 
 interface UseRoomReturn {
   room: Room | null;

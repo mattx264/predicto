@@ -3,6 +3,25 @@ export enum RoomStatusDTO {
   InProgress = 1,
   Completed = 2,
 }
+export interface RoomFormData {
+  tournamentTemplateId: string;
+  roomName: string;
+  maxParticipants: number;
+  entryFee: number;
+  isPrivate: boolean;
+  description: string;
+  rules: {
+    scoring: {
+      exactScore: number;
+      correctOutcome: number;
+    };
+    deadline: string;
+    joker: {
+      enabled: boolean;
+      count: number;
+    };
+  };
+}
 export interface Match {
   id: string;
   homeTeam: string;

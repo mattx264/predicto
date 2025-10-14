@@ -1,5 +1,5 @@
 import { signal, computed } from "@preact/signals-react";
-import type { ChatChannel, ChatMessage } from "../types/room.types";
+import type { ChatChannel, ChatMessage } from "../types/types";
 
 export type ChatChannelType = "room" | "match";
 

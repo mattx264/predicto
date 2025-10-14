@@ -1,8 +1,8 @@
 import * as signalR from "@microsoft/signalr";
 import { signalRService } from "./signalr.service";
-import type { RoomDTO } from "../../types/room.types";
 
-const BACKEND_URL = "https://localhost:7174";
+import apiService from "./api.service";
+import type { RoomDTO } from "../../types/types";
 
 export class RoomHubService {
   private connections: Map<string, signalR.HubConnection> = new Map();
@@ -18,21 +18,21 @@ export class RoomHubService {
       existingConnection &&
       existingConnection.state === signalR.HubConnectionState.Connected
     ) {
-      console.log(`⚠️ Already connected to room ${roomId}`);
+      console.log(`⚠️ Już połączono z pokojem ${roomId}`);
       return;
     }
 
-    const ROOM_HUB_URL = `${BACKEND_URL}/roomHub/${roomId}`;
+    const ROOM_HUB_URL = `${apiService.getBackendUrl()}/roomHub/${roomId}`;
 
     const connection = signalRService.createConnection(ROOM_HUB_URL);
 
     connection.on("GetRoom", (room: RoomDTO) => {
-      console.log(`📥 Received room data for room ${roomId}:`, room);
+      console.log(`📥 Otrzymano dane dla pokoju ${roomId}:`, room);
       onRoomDataReceived(room);
     });
 
     connection.on("RoomUpdated", (room: RoomDTO) => {
-      console.log(`🔄 Room ${roomId} updated:`, room);
+      console.log(`🔄 Pokój ${roomId} został zaktualizowany:`, room);
       onRoomDataReceived(room);
     });
 
@@ -41,7 +41,7 @@ export class RoomHubService {
     try {
       await signalRService.startConnection(connection, `RoomHub/${roomId}`);
     } catch (error) {
-      console.error(`❌ Failed to connect to room ${roomId}:`, error);
+      console.error(`❌ Błąd połączenia z pokojem ${roomId}:`, error);
       this.connections.delete(connectionKey);
       throw error;
     }
@@ -54,7 +54,7 @@ export class RoomHubService {
     if (connection) {
       await signalRService.stopConnection(connection);
       this.connections.delete(connectionKey);
-      console.log(`✅ Disconnected from room ${roomId}`);
+      console.log(`✅ Rozłączono z pokojem ${roomId}`);
     }
   }
 
