@@ -71,8 +71,18 @@
   flex-direction: column;
   overflow: hidden;
   z-index: 999;
+  animation: fadeInDown 0.2s ease-out forwards;
 }
-
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .notification-header {
   padding: 1.25rem 1.5rem;
   background: rgba(0, 0, 0, 0.3);

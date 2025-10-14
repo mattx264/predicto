@@ -3,7 +3,7 @@ import { X, Send, Clock, Users, MessageSquare } from "lucide-react";
 import "./MatchLiveModal.css";
 import { useChat } from "../../hooks/useChat";
 
-interface Match {
+export interface Match {
   id: string;
   homeTeam: string;
   awayTeam: string;
@@ -14,8 +14,10 @@ interface Match {
     away: number;
   };
   userPrediction?: {
-    home: number;
-    away: number;
+    home?: number;
+    away?: number;
+    winner?: "home" | "draw" | "away";
+    joker?: boolean;
   };
   points?: number;
 }

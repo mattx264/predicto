@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Clock,
   Lock,
@@ -6,33 +6,27 @@ import {
   XCircle,
   Minus,
   MessageSquare,
+  BarChart,
+  Trophy,
+  Star,
 } from "lucide-react";
 import "./RoomMatches.css";
 import MatchLiveModal from "../match-live/MatchLiveModal";
-
-interface Match {
-  id: string;
-  homeTeam: string;
-  awayTeam: string;
-  date: string;
-  status: "upcoming" | "live" | "finished";
-  actualScore?: {
-    home: number;
-    away: number;
-  };
-  userPrediction?: {
-    home: number;
-    away: number;
-  };
-  points?: number;
-}
+import LivePredictionsModal from "../match-live/predictions/LivePredictionsModal";
+import VictoryParticles from "./victory-effect/VictoryEffect";
+import type { Match } from "../../types/room.types";
 
 interface RoomMatchesProps {
   matches: Match[];
   isParticipant: boolean;
   currentUserId: string;
 }
-
+interface PredictionPayload {
+  joker: boolean;
+  winner?: "home" | "draw" | "away" | null;
+  home?: number;
+  away?: number;
+}
 const RoomMatches: React.FC<RoomMatchesProps> = ({
   matches,
   isParticipant,
@@ -42,7 +36,42 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
   const [selectedLiveMatch, setSelectedLiveMatch] = useState<Match | null>(
     null
   );
-  const [prediction, setPrediction] = useState({ home: 0, away: 0 });
+  const [livePredictionsMatch, setLivePredictionsMatch] =
+    useState<Match | null>(null);
+
+  const [predictionType, setPredictionType] = useState<"winner" | "score">(
+    "winner"
+  );
+  const [selectedWinner, setSelectedWinner] = useState<
+    "home" | "draw" | "away" | null
+  >(null);
+  const [exactScore, setExactScore] = useState({ home: 0, away: 0 });
+  const [useJoker, setUseJoker] = useState(false);
+
+  useEffect(() => {
+    if (selectedMatch) {
+      const match = matches.find((m) => m.id === selectedMatch);
+      const pred = match?.userPrediction;
+
+      if (pred) {
+        if (pred.winner) {
+          setPredictionType("winner");
+          setSelectedWinner(pred.winner);
+          setExactScore({ home: 0, away: 0 });
+        } else if (pred.home !== undefined && pred.away !== undefined) {
+          setPredictionType("score");
+          setExactScore({ home: pred.home, away: pred.away });
+          setSelectedWinner(null);
+        }
+        setUseJoker(pred.joker || false);
+      } else {
+        setPredictionType("winner");
+        setSelectedWinner(null);
+        setExactScore({ home: 0, away: 0 });
+        setUseJoker(false);
+      }
+    }
+  }, [selectedMatch, matches]);
 
   const getMatchStatusBadge = (match: Match) => {
     switch (match.status) {
@@ -80,9 +109,24 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
   };
 
   const handlePredictionSubmit = (matchId: string) => {
-    console.log("Submitting prediction for match", matchId, prediction);
+    const predictionPayload: PredictionPayload = {
+      joker: useJoker,
+    };
+
+    if (predictionType === "winner") {
+      predictionPayload.winner = selectedWinner;
+    } else {
+      predictionPayload.home = exactScore.home;
+      predictionPayload.away = exactScore.away;
+    }
+
+    console.log("Submitting prediction for match", matchId, predictionPayload);
+
     setSelectedMatch(null);
-    setPrediction({ home: 0, away: 0 });
+  };
+
+  const isVictoryMatch = (match: Match): boolean => {
+    return match.status === "finished" && match.points === 5;
   };
 
   return (
@@ -97,7 +141,24 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
 
         <div className="matches-list">
           {matches.map((match) => (
-            <div key={match.id} className={`match-card ${match.status}`}>
+            <div
+              key={match.id}
+              className={`match-card ${match.status} ${
+                isVictoryMatch(match) ? "victory-card" : ""
+              }`}
+            >
+              {isVictoryMatch(match) && (
+                <VictoryParticles show={true} type="fireworks" />
+              )}
+
+              {isVictoryMatch(match) && (
+                <div className="victory-banner">
+                  <Trophy size={16} />
+                  <span>Perfekcyjny typ!</span>
+                  <Trophy size={16} />
+                </div>
+              )}
+
               <div className="match-header">
                 <div className="match-date">
                   <Clock size={14} />
@@ -117,45 +178,69 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
               <div className="match-teams">
                 <div className="team home">
                   <span className="team-name">{match.homeTeam}</span>
-                  {match.actualScore && (
-                    <span className="actual-score">
-                      {match.actualScore.home}
-                    </span>
-                  )}
                 </div>
 
                 <div className="match-center">
-                  <span className="vs">VS</span>
+                  {match.actualScore ? (
+                    <>
+                      <span className="actual-score">
+                        {match.actualScore.home}
+                      </span>
+                      <span className="vs">-</span>
+                      <span className="actual-score">
+                        {match.actualScore.away}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="vs">VS</span>
+                  )}
                 </div>
 
                 <div className="team away">
-                  {match.actualScore && (
-                    <span className="actual-score">
-                      {match.actualScore.away}
-                    </span>
-                  )}
                   <span className="team-name">{match.awayTeam}</span>
                 </div>
               </div>
 
               {match.userPrediction && (
                 <div className="user-prediction">
-                  <span className="prediction-label">Twój typ:</span>
-                  <span className="prediction-score">
-                    {match.userPrediction.home} - {match.userPrediction.away}
-                  </span>
+                  <div className="prediction-info">
+                    <span className="prediction-label">Twój typ:</span>
+                    <span className="prediction-score">
+                      {match.userPrediction.winner
+                        ? {
+                            home: `Wygrana ${match.homeTeam}`,
+                            draw: "Remis",
+                            away: `Wygrana ${match.awayTeam}`,
+                          }[match.userPrediction.winner]
+                        : `${match.userPrediction.home} - ${match.userPrediction.away}`}
+                    </span>
+                    {match.userPrediction.joker && (
+                      <span className="joker-indicator" title="Użyto Jokera">
+                        <Star size={14} />
+                      </span>
+                    )}
+                  </div>
                   {getPointsBadge(match.points)}
                 </div>
               )}
 
               {match.status === "live" && (
-                <button
-                  className="btn-watch-live"
-                  onClick={() => setSelectedLiveMatch(match)}
-                >
-                  <MessageSquare size={16} />
-                  Oglądaj i komentuj na żywo
-                </button>
+                <div className="live-actions-container">
+                  <button
+                    className="btn-watch-live"
+                    onClick={() => setSelectedLiveMatch(match)}
+                  >
+                    <MessageSquare size={16} />
+                    Komentuj
+                  </button>
+                  <button
+                    className="btn-view-predictions"
+                    onClick={() => setLivePredictionsMatch(match)}
+                  >
+                    <BarChart size={16} />
+                    Zobacz typy
+                  </button>
+                </div>
               )}
 
               {match.status === "upcoming" && isParticipant && (
@@ -202,54 +287,117 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
                       <XCircle size={24} />
                     </button>
                   </div>
-
                   <div className="modal-match-info">
                     <span className="modal-team">{match.homeTeam}</span>
                     <span className="modal-vs">vs</span>
                     <span className="modal-team">{match.awayTeam}</span>
                   </div>
 
-                  <div className="prediction-inputs">
-                    <div className="prediction-input-group">
-                      <label>{match.homeTeam}</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="20"
-                        value={prediction.home}
-                        onChange={(e) =>
-                          setPrediction({
-                            ...prediction,
-                            home: parseInt(e.target.value) || 0,
-                          })
-                        }
-                        className="prediction-input"
-                      />
-                    </div>
+                  <div className="prediction-type-selector">
+                    <button
+                      className={`type-btn ${
+                        predictionType === "winner" ? "active" : ""
+                      }`}
+                      onClick={() => setPredictionType("winner")}
+                    >
+                      Wybierz zwycięzcę
+                    </button>
+                    <button
+                      className={`type-btn ${
+                        predictionType === "score" ? "active" : ""
+                      }`}
+                      onClick={() => setPredictionType("score")}
+                    >
+                      Dokładny wynik
+                    </button>
+                  </div>
 
-                    <span className="prediction-separator">-</span>
+                  <div className="joker-toggle">
+                    <input
+                      type="checkbox"
+                      id="joker-checkbox"
+                      checked={useJoker}
+                      onChange={(e) => setUseJoker(e.target.checked)}
+                    />
+                    <label htmlFor="joker-checkbox">
+                      <Star size={18} />
+                      <span>Użyj Jokera (podwójne punkty)</span>
+                    </label>
+                  </div>
 
-                    <div className="prediction-input-group">
-                      <label>{match.awayTeam}</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="20"
-                        value={prediction.away}
-                        onChange={(e) =>
-                          setPrediction({
-                            ...prediction,
-                            away: parseInt(e.target.value) || 0,
-                          })
-                        }
-                        className="prediction-input"
-                      />
-                    </div>
+                  <div className="prediction-panel">
+                    {predictionType === "winner" ? (
+                      <div className="winner-selection">
+                        <button
+                          className={`winner-btn ${
+                            selectedWinner === "home" ? "active" : ""
+                          }`}
+                          onClick={() => setSelectedWinner("home")}
+                        >
+                          {match.homeTeam}
+                        </button>
+                        <button
+                          className={`winner-btn ${
+                            selectedWinner === "draw" ? "active" : ""
+                          }`}
+                          onClick={() => setSelectedWinner("draw")}
+                        >
+                          Remis
+                        </button>
+                        <button
+                          className={`winner-btn ${
+                            selectedWinner === "away" ? "active" : ""
+                          }`}
+                          onClick={() => setSelectedWinner("away")}
+                        >
+                          {match.awayTeam}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="prediction-inputs">
+                        <div className="prediction-input-group">
+                          <label>{match.homeTeam}</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="20"
+                            value={exactScore.home}
+                            onChange={(e) =>
+                              setExactScore({
+                                ...exactScore,
+                                home: parseInt(e.target.value) || 0,
+                              })
+                            }
+                            className="prediction-input"
+                          />
+                        </div>
+                        <span className="prediction-separator">-</span>
+                        <div className="prediction-input-group">
+                          <label>{match.awayTeam}</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="20"
+                            value={exactScore.away}
+                            onChange={(e) =>
+                              setExactScore({
+                                ...exactScore,
+                                away: parseInt(e.target.value) || 0,
+                              })
+                            }
+                            className="prediction-input"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <button
                     className="btn-submit-prediction"
                     onClick={() => handlePredictionSubmit(match.id)}
+                    disabled={
+                      predictionType === "winner" && selectedWinner === null
+                    }
                   >
                     Zatwierdź typ
                   </button>
@@ -265,6 +413,13 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
           match={selectedLiveMatch}
           currentUserId={currentUserId}
           onClose={() => setSelectedLiveMatch(null)}
+        />
+      )}
+
+      {livePredictionsMatch && (
+        <LivePredictionsModal
+          match={livePredictionsMatch}
+          onClose={() => setLivePredictionsMatch(null)}
         />
       )}
     </>

@@ -3,7 +3,24 @@ export enum RoomStatusDTO {
   InProgress = 1,
   Completed = 2,
 }
-
+export interface Match {
+  id: string;
+  homeTeam: string;
+  awayTeam: string;
+  date: string;
+  status: "upcoming" | "live" | "finished";
+  actualScore?: {
+    home: number;
+    away: number;
+  };
+  userPrediction?: {
+    home?: number;
+    away?: number;
+    winner?: "home" | "draw" | "away";
+    joker?: boolean;
+  };
+  points?: number;
+}
 export interface UserDto {
   id: number;
   username: string;
