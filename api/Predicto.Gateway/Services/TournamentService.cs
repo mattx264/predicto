@@ -1,0 +1,34 @@
+﻿using Predicto.Database.Interfaces;
+using Predicto.Database.Repositories.Sport;
+using Predicto.Gateway.DTO.Sport;
+
+namespace Predicto.Gateway.Services
+{
+    public class TournamentService : ITournamentService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public TournamentService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<IEnumerable<TournamentDto>> GetAllAsync()
+        {
+            return (await _unitOfWork.Tournament.GetAllAsync()).Select(
+               t =>
+               {
+                     return new TournamentDto
+                     {
+                          Id = t.Id,
+                          Name = t.Name,
+                          SportCategoryId = t.SportCategoryId
+                     };
+               });
+        }
+    }
+    public interface ITournamentService
+    {
+        Task<IEnumerable<TournamentDto>> GetAllAsync();
+    }
+}

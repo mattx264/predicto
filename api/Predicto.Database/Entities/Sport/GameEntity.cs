@@ -1,0 +1,15 @@
+﻿using Predicto.Database.Interfaces;
+
+namespace Predicto.Database.Entities.Sport
+{
+    public class GameEntity : IEntity
+    {
+        public int Id { get; set; }
+        public int TournamentId { get; set; }
+        public int TeamIdOne { get; set; }
+        public int TeamIdTwo { get; set; }
+        public required string FinalScore { get; set; }// 1:1 (4:5) //
+        public DateTime StartGame { get; set; }
+        public DateTime? EndGame { get; set; }
+    }
+}

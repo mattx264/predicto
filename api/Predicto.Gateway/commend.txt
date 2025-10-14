@@ -1,0 +1,14 @@
+﻿dotnet ef --startup-project ../Predicto.Gateway/  migrations add InitialCreate
+dotnet ef  --startup-project ../Predicto.Gateway/  database update 
+dotnet ef --startup-project ../Predicto.Gateway/  migrations remove
+dotnet ef --startup-project ../Predicto.Gateway/ database drop
+
+
+drop table __EFMigrationsHistory
+drop table UserEntiry
+drop table SportCategoryEntity
+
+SELECT * FROM INFORMATION_SCHEMA.TABLES 
+
+SELECT * FROM sys.dm_tran_locks;
+kill 91
