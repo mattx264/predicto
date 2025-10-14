@@ -2,7 +2,7 @@ import * as signalR from "@microsoft/signalr";
 import { signalRService } from "./signalr.service";
 import type { RoomDTO } from "../../types/room.types";
 
-const BACKEND_URL = "http://localhost:5116";
+const BACKEND_URL = "https://localhost:7174";
 const ROOMS_HUB_URL = `${BACKEND_URL}/roomsHub`;
 
 export class RoomsHubService {

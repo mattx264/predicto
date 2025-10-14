@@ -2,7 +2,7 @@ import * as signalR from "@microsoft/signalr";
 import { signalRService } from "./signalr.service";
 import type { RoomDTO } from "../../types/room.types";
 
-const BACKEND_URL = "http://localhost:5116";
+const BACKEND_URL = "https://localhost:7174";
 
 export class RoomHubService {
   private connections: Map<string, signalR.HubConnection> = new Map();

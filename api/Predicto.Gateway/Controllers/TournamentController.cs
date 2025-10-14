@@ -16,8 +16,6 @@ namespace Predicto.Gateway.Controllers
         [HttpGet]   
         public async Task<IActionResult> GetTournamentsAsync()
         {
-
-
             return Ok(await _tournamentService.GetAllAsync());
         }
     }
