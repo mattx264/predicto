@@ -347,3 +347,70 @@
 .payment-modal::-webkit-scrollbar-thumb:hover {
   background: rgba(34, 197, 94, 0.5);
 }
+
+.payment-content {
+  padding: 24px;
+}
+
+.payment-method-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.method-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.method-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.method-tab.active {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: #22c55e;
+  color: #22c55e;
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+}
+
+.paypal-logo {
+  height: 22px;
+  width: auto;
+}
+
+.paypal-container {
+  min-height: 150px;
+}
+
+.processing-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  gap: 16px;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.processing-indicator .spinner {
+  color: #22c55e;
+}
+
+.payment-form {
+  padding: 0;
+}

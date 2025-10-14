@@ -1,27 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Trophy } from "lucide-react";
+import { Plus, Trophy, RefreshCw, AlertCircle } from "lucide-react";
 import "./RoomsPage.css";
 import PaymentGateway from "../payment/PaymentGateway";
 import MyRooms from "../my-rooms/MyRooms";
 import AllRoomsCards from "./rooms-cards/AllRoomsCards";
 import RoomsFilters from "./rooms-filter/RoomsFilters";
 import RoomsStats from "./rooms-stats/RoomsStats";
-
-interface Room {
-  id: string;
-  name: string;
-  creator: string;
-  participants: number;
-  maxParticipants: number;
-  entryFee: number;
-  prize: number;
-  league: string;
-  startDate: string;
-  endDate: string;
-  isPrivate: boolean;
-  status: "open" | "active" | "ended";
-}
+import type { Room } from "../types/room.types";
+import { useRooms } from "../hooks/useRooms";
 
 const RoomsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -36,10 +23,12 @@ const RoomsPage: React.FC = () => {
 
   const currentUserId = "user1";
 
+  const { rooms, isLoading, error, connectionStatus, refetch } = useRooms();
+
   const mockRooms: Room[] = [
     {
-      id: "1",
-      name: "Premier League Masters",
+      id: "mock-1",
+      name: "[MOCK] Premier League Masters",
       creator: "JanKowalski",
       participants: 8,
       maxParticipants: 10,
@@ -51,89 +40,16 @@ const RoomsPage: React.FC = () => {
       isPrivate: false,
       status: "open",
     },
-    {
-      id: "2",
-      name: "Liga Mistrzów 2025",
-      creator: "PiotrNowak",
-      participants: 12,
-      maxParticipants: 15,
-      entryFee: 100,
-      prize: 1500,
-      league: "Champions League",
-      startDate: "2025-10-10",
-      endDate: "2025-12-20",
-      isPrivate: false,
-      status: "open",
-    },
-    {
-      id: "3",
-      name: "Prywatna Liga Znajomych",
-      creator: "AnnaWiśniewska",
-      participants: 6,
-      maxParticipants: 8,
-      entryFee: 25,
-      prize: 200,
-      league: "La Liga",
-      startDate: "2025-10-01",
-      endDate: "2025-10-31",
-      isPrivate: true,
-      status: "active",
-    },
-    {
-      id: "4",
-      name: "Bundesliga Pro",
-      creator: "MarcinKowalczyk",
-      participants: 10,
-      maxParticipants: 10,
-      entryFee: 75,
-      prize: 750,
-      league: "Bundesliga",
-      startDate: "2025-09-01",
-      endDate: "2025-09-30",
-      isPrivate: false,
-      status: "ended",
-    },
-    {
-      id: "5",
-      name: "Ekstraklasa Challenge",
-      creator: "TomaszZieliński",
-      participants: 15,
-      maxParticipants: 20,
-      entryFee: 30,
-      prize: 600,
-      league: "Ekstraklasa",
-      startDate: "2025-10-08",
-      endDate: "2025-11-15",
-      isPrivate: false,
-      status: "open",
-    },
-    {
-      id: "6",
-      name: "Serie A Elite",
-      creator: "KarolinaNowacka",
-      participants: 7,
-      maxParticipants: 12,
-      entryFee: 60,
-      prize: 720,
-      league: "Serie A",
-      startDate: "2025-10-12",
-      endDate: "2025-12-01",
-      isPrivate: false,
-      status: "open",
-    },
   ];
+
+  const displayRooms = error ? mockRooms : rooms;
 
   const leagues = [
     "all",
-    "Premier League",
-    "Champions League",
-    "La Liga",
-    "Bundesliga",
-    "Ekstraklasa",
-    "Serie A",
+    ...Array.from(new Set(displayRooms.map((r) => r.league))),
   ];
 
-  const filteredRooms = mockRooms.filter((room) => {
+  const filteredRooms = displayRooms.filter((room) => {
     const matchesSearch =
       room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       room.creator.toLowerCase().includes(searchQuery.toLowerCase());
@@ -145,7 +61,7 @@ const RoomsPage: React.FC = () => {
   });
 
   const handleRoomClick = (roomId: string) => {
-    const room = mockRooms.find((r) => r.id === roomId);
+    const room = displayRooms.find((r) => r.id === roomId);
     if (room && room.status === "open") {
       setSelectedRoom(room);
       setIsPaymentOpen(true);
@@ -161,6 +77,33 @@ const RoomsPage: React.FC = () => {
     }
   };
 
+  const getConnectionStatusBadge = () => {
+    switch (connectionStatus) {
+      case "connected":
+        return (
+          <span className="connection-status connected">
+            🟢 Połączono z serwerem
+          </span>
+        );
+      case "connecting":
+        return (
+          <span className="connection-status connecting">🟡 Łączenie...</span>
+        );
+      case "reconnecting":
+        return (
+          <span className="connection-status reconnecting">
+            🟡 Ponowne łączenie...
+          </span>
+        );
+      case "error":
+        return (
+          <span className="connection-status error">🔴 Błąd połączenia</span>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="rooms-page">
       <div className="rooms-container">
@@ -173,17 +116,47 @@ const RoomsPage: React.FC = () => {
             <p className="page-subtitle">
               Dołącz do istniejących rozgrywek lub stwórz własny pokój
             </p>
+            {/* ✅ Status połączenia */}
+            {getConnectionStatusBadge()}
           </div>
-          <button
-            className="create-room-btn"
-            onClick={() => navigate("/create-room")}
-          >
-            <Plus className="btn-icon" />
-            Stwórz Pokój
-          </button>
+          <div className="header-actions">
+            {/* ✅ Przycisk odświeżania */}
+            <button
+              className="refresh-btn"
+              onClick={refetch}
+              disabled={isLoading}
+              title="Odśwież listę pokoi"
+            >
+              <RefreshCw size={20} className={isLoading ? "spinning" : ""} />
+            </button>
+            <button
+              className="create-room-btn"
+              onClick={() => navigate("/create-room")}
+            >
+              <Plus className="btn-icon" />
+              Stwórz Pokój
+            </button>
+          </div>
         </div>
 
-       
+        {/* ✅ Error state */}
+        {error && (
+          <div className="error-banner">
+            <AlertCircle size={20} />
+            <span>
+              Błąd połączenia z serwerem: {error}. Używam danych testowych.
+            </span>
+          </div>
+        )}
+
+        {/* ✅ Loading state */}
+        {isLoading && (
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Ładowanie pokoi...</p>
+          </div>
+        )}
+
         <RoomsFilters
           searchQuery={searchQuery}
           filterStatus={filterStatus}
@@ -194,13 +167,12 @@ const RoomsPage: React.FC = () => {
           onLeagueChange={setFilterLeague}
         />
 
-     
         <div className="view-toggle">
           <button
             className={`toggle-btn ${viewMode === "all" ? "active" : ""}`}
             onClick={() => setViewMode("all")}
           >
-            Wszystkie pokoje
+            Wszystkie pokoje ({filteredRooms.length})
           </button>
           <button
             className={`toggle-btn ${viewMode === "my" ? "active" : ""}`}
@@ -210,18 +182,16 @@ const RoomsPage: React.FC = () => {
           </button>
         </div>
 
-    
-        <RoomsStats rooms={mockRooms} />
+        <RoomsStats rooms={displayRooms} />
 
-     
-        {viewMode === "all" ? (
+        {/* ✅ Lista pokoi lub loading */}
+        {!isLoading && viewMode === "all" ? (
           <AllRoomsCards rooms={filteredRooms} onRoomClick={handleRoomClick} />
-        ) : (
+        ) : viewMode === "my" ? (
           <MyRooms currentUserId={currentUserId} />
-        )}
+        ) : null}
       </div>
 
-   
       {selectedRoom && (
         <PaymentGateway
           isOpen={isPaymentOpen}

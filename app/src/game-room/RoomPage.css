@@ -424,3 +424,88 @@
     font-size: 0.7rem;
   }
 }
+/* Dodaj na końcu RoomPage.css */
+
+/* Refresh button w headerze */
+.my-action-btn.my-refresh {
+  background: #fff;
+  border: 2px solid #e5e7eb;
+}
+
+.my-action-btn.my-refresh:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.my-action-btn.my-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.my-action-btn .spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* Loading state */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error state */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+  text-align: center;
+  color: #991b1b;
+}
+
+.error-state h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.error-state p {
+  color: #6b7280;
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}

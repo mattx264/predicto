@@ -305,15 +305,6 @@
   font-size: 0.875rem;
 }
 
-/* Chat Input - domyślnie input na dole widoczny, na górze ukryty */
-.chat-input-top {
-  display: none;
-}
-
-.chat-input-bottom {
-  display: flex;
-}
-
 /* Chat messages */
 .chat-messages {
   flex: 1;
@@ -398,7 +389,7 @@
   border-color: rgba(34, 197, 94, 0.3);
 }
 
-/* Chat Input */
+/* Chat Input --- STYLES FOR VISIBILITY --- */
 .chat-input-wrapper {
   display: flex;
   gap: 0.75rem;
@@ -406,6 +397,14 @@
   background: rgba(0, 0, 0, 0.3);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
+}
+
+/* Base styles (Desktop-first) */
+.chat-input-top {
+  display: none; /* Ukryj górny input na dużych ekranach */
+}
+.chat-input-bottom {
+  display: flex; /* Pokaż dolny input na dużych ekranach */
 }
 
 .chat-input {
@@ -473,13 +472,11 @@
 
 /* Responsive - Mobile */
 @media (max-width: 768px) {
-  /* Pełnoekranowy widok - usuń padding z overlay */
   .match-live-overlay {
     padding: 0;
     align-items: stretch;
   }
 
-  /* Modal na cały ekran */
   .match-live-modal {
     max-height: 100vh;
     height: 100vh;
@@ -497,10 +494,20 @@
     font-size: 1.25rem;
   }
 
-  /* Content musi mieć fixed height */
   .match-live-content {
     height: calc(100vh - 70px);
     overflow: hidden;
+  }
+
+  /* --- ZMIANA WIDOCZNOŚCI INPUTÓW NA MOBILE --- */
+  .chat-input-top {
+    display: flex; /* Pokaż górny input na mobile */
+    border-top: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .chat-input-bottom {
+    display: none; /* Ukryj dolny input na mobile */
   }
 
   .match-info-section {
@@ -510,7 +517,6 @@
     flex: 1;
   }
 
-  /* Przycisk rozwijania czatu */
   .chat-toggle-btn {
     display: flex;
     align-items: center;
@@ -533,13 +539,11 @@
     transform: scale(0.98);
   }
 
-  /* Ukryj statystyki gdy czat rozwinięty */
   .match-live-content.chat-expanded .match-details,
   .match-live-content.chat-expanded .match-stats {
     display: none;
   }
 
-  /* Ukryj czat domyślnie, pokaż gdy rozwinięty */
   .match-chat-section {
     display: none;
   }
@@ -550,19 +554,6 @@
     height: 100%;
   }
 
-  /* NA MOBILE: Input na górze widoczny, na dole ukryty */
-  .chat-input-top {
-    display: flex;
-    order: -1; /* Przesuń na górę */
-    border-top: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .chat-input-bottom {
-    display: none;
-  }
-
-  /* Tablica wyników - mniejsza */
   .match-score-board {
     padding: 1.5rem 1rem;
     gap: 1rem;
@@ -587,8 +578,8 @@
     height: 18px;
   }
 
-  /* Kompaktowe detale */
-  .match-details {
+  .match-details,
+  .match-stats {
     padding: 1rem;
     margin-bottom: 1rem;
   }
@@ -599,12 +590,6 @@
 
   .prediction-value {
     font-size: 1rem;
-  }
-
-  /* Statystyki kompaktowe */
-  .match-stats {
-    padding: 1rem;
-    margin-bottom: 0;
   }
 
   .match-stats h3 {
@@ -624,7 +609,6 @@
     font-size: 1rem;
   }
 
-  /* Chat */
   .chat-header {
     padding: 0.875rem 1rem;
     font-size: 0.9rem;
@@ -667,15 +651,6 @@
 
 /* Responsive - Small Mobile */
 @media (max-width: 480px) {
-  .match-live-overlay {
-    padding: 0;
-  }
-
-  .match-live-modal {
-    max-height: 100vh;
-    height: 100vh;
-  }
-
   .match-live-header {
     padding: 0.875rem 1rem;
   }
@@ -694,11 +669,12 @@
     height: 6px;
   }
 
-  .match-info-section {
+  .match-info-section,
+  .match-details,
+  .match-stats {
     padding: 0.875rem;
   }
 
-  /* Tablica wyników - najmniejsza */
   .match-score-board {
     padding: 1rem 0.75rem;
   }
@@ -715,14 +691,9 @@
     font-size: 0.9rem;
   }
 
-  /* Detale */
-  .match-details {
-    padding: 0.875rem;
-    gap: 0.75rem;
-  }
-
   .detail-item {
     font-size: 0.8rem;
+    gap: 0.75rem;
   }
 
   .detail-item svg {
@@ -732,11 +703,6 @@
 
   .prediction-value {
     font-size: 0.95rem;
-  }
-
-  /* Statystyki */
-  .match-stats {
-    padding: 0.875rem;
   }
 
   .match-stats h3 {
@@ -756,7 +722,6 @@
     font-size: 0.9rem;
   }
 
-  /* Przycisk czatu mniejszy */
   .chat-toggle-btn {
     padding: 0.875rem 1.25rem;
     font-size: 0.9rem;
@@ -767,7 +732,6 @@
     font-size: 0.8rem;
   }
 
-  /* Chat */
   .chat-header {
     padding: 0.75rem 0.875rem;
     font-size: 0.85rem;

@@ -1,0 +1,140 @@
+.live-predictions-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.live-predictions-modal {
+  width: 100%;
+  max-width: 550px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: scaleIn 0.3s ease-out;
+  color: #f8fafc;
+}
+
+.live-predictions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+}
+
+.live-predictions-header h3 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.live-predictions-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.live-predictions-close:hover {
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+.live-predictions-match-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.live-predictions-match-info .team-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  flex: 1;
+}
+
+.live-predictions-match-info .live-score {
+  font-weight: 700;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #fca5a5;
+}
+
+.prediction-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.stats-description {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.stat-labels span:last-child {
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.stat-bar-container {
+  width: 100%;
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.stat-bar {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease-in-out;
+}
+
+.stat-bar.home {
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+
+.stat-bar.draw {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}
+
+.stat-bar.away {
+  background: linear-gradient(90deg, #f97316, #fb923c);
+}

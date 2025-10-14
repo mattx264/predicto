@@ -13,6 +13,8 @@ import {
   Target,
   MessageSquare,
   MessageCircle,
+  AlertCircle,
+  BarChart3,
 } from "lucide-react";
 import "./RoomPage.css";
 
@@ -23,54 +25,10 @@ import RoomLeaderboard from "./leaderboard/RoomLeaderboard";
 import RoomMatches from "./room-matches/RoomMatches";
 import RoomInfo from "./room-info/RoomInfo";
 import InviteButton from "./invite-user/InviteButton";
+import LeagueTable from "./league-table/LeagueTable";
 
-interface Match {
-  id: string;
-  homeTeam: string;
-  awayTeam: string;
-  date: string;
-  status: "upcoming" | "live" | "finished";
-  actualScore?: {
-    home: number;
-    away: number;
-  };
-  userPrediction?: {
-    home: number;
-    away: number;
-  };
-  points?: number;
-}
-
-interface Participant {
-  id: string;
-  username: string;
-  totalPoints: number;
-  correctPredictions: number;
-  rank: number;
-  avatar: string;
-  isPaid: boolean;
-  joinedAt?: string;
-}
-
-interface RoomDetails {
-  id: string;
-  name: string;
-  creator: string;
-  creatorId: string;
-  participants: Participant[];
-  maxParticipants: number;
-  entryFee: number;
-  prize: number;
-  league: string;
-  tournamentName: string;
-  startDate: string;
-  endDate: string;
-  isPrivate: boolean;
-  status: "open" | "active" | "ended";
-  description?: string;
-  rules?: string;
-  inviteCode?: string;
-}
+import { useRoom } from "../hooks/useRoom";
+import type { Match, Participant } from "../types/room.types";
 
 const RoomPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -79,86 +37,88 @@ const RoomPage: React.FC = () => {
 
   const currentUserId = "user1";
 
-  const roomDetails: RoomDetails = {
-    id: id || "1",
-    name: "Premier League Masters",
-    creator: "JanKowalski",
-    creatorId: "user1",
-    participants: [
-      {
-        id: "user1",
-        username: "JanKowalski",
-        totalPoints: 145,
-        correctPredictions: 28,
-        rank: 1,
-        avatar: "J",
-        isPaid: true,
-        joinedAt: "2024-10-26",
-      },
-      {
-        id: "user2",
-        username: "AnnaWiśniewska",
-        totalPoints: 138,
-        correctPredictions: 26,
-        rank: 2,
-        avatar: "A",
-        isPaid: true,
-        joinedAt: "2024-10-26",
-      },
-      {
-        id: "user3",
-        username: "PiotrNowak",
-        totalPoints: 132,
-        correctPredictions: 25,
-        rank: 3,
-        avatar: "P",
-        isPaid: true,
-        joinedAt: "2024-10-26",
-      },
-      {
-        id: "user4",
-        username: "MariaKowalczyk",
-        totalPoints: 128,
-        correctPredictions: 24,
-        rank: 4,
-        avatar: "M",
-        isPaid: true,
-        joinedAt: "2024-10-26",
-      },
-      {
-        id: "user5",
-        username: "TomaszZieliński",
-        totalPoints: 125,
-        correctPredictions: 23,
-        rank: 5,
-        avatar: "T",
-        isPaid: false,
-        joinedAt: "2024-10-26",
-      },
-    ],
-    maxParticipants: 10,
-    entryFee: 50,
-    prize: 500,
-    league: "Premier League",
-    tournamentName: "Premier League 2024/25 - Kolejki 10-20",
-    startDate: "2024-10-26",
-    endDate: "2025-01-04",
-    isPrivate: false,
-    status: "active",
-    description:
-      "Typujemy mecze Premier League! Najlepszy typujący wygrywa całą pulę.",
-    rules:
-      "Punkty: Dokładny wynik = 5 pkt, Tylko wynik = 3 pkt, Błędna prognoza = 0 pkt",
-    inviteCode: "PL2024-MASTER",
-  };
+  const { room, isLoading, error, connectionStatus } = useRoom(id || "");
 
-  const matches: Match[] = [
+  const mockParticipants: Participant[] = [
+    {
+      id: "user1",
+      username: "JanKowalski",
+      totalPoints: 145,
+      correctPredictions: 28,
+      rank: 1,
+      avatar: "J",
+      isPaid: true,
+      joinedAt: "2024-10-26",
+    },
+    {
+      id: "user2",
+      username: "JanKowalski",
+      totalPoints: 144,
+      correctPredictions: 28,
+      rank: 2,
+      avatar: "J",
+      isPaid: true,
+      joinedAt: "2024-10-26",
+    },
+    {
+      id: "user3",
+      username: "JanKowalski",
+      totalPoints: 143,
+      correctPredictions: 28,
+      rank: 3,
+      avatar: "J",
+      isPaid: true,
+      joinedAt: "2024-10-26",
+    },
+    {
+      id: "user4",
+      username: "JanKowalski",
+      totalPoints: 142,
+      correctPredictions: 28,
+      rank: 4,
+      avatar: "J",
+      isPaid: true,
+      joinedAt: "2024-10-26",
+    },
+    {
+      id: "user5",
+      username: "JanKowalski",
+      totalPoints: 141,
+      correctPredictions: 28,
+      rank: 5,
+      avatar: "J",
+      isPaid: true,
+      joinedAt: "2024-10-26",
+    },
+    {
+      id: "user6",
+      username: "JanKowalski",
+      totalPoints: 135,
+      correctPredictions: 28,
+      rank: 6,
+      avatar: "J",
+      isPaid: true,
+      joinedAt: "2024-10-26",
+    },
+    {
+      id: "user7",
+      username: "JanKowalski",
+      totalPoints: 125,
+      correctPredictions: 28,
+      rank: 7,
+      avatar: "J",
+      isPaid: true,
+      joinedAt: "2024-10-26",
+    },
+  ];
+
+  const mockMatches: Match[] = [
     {
       id: "1",
       homeTeam: "Manchester City",
       awayTeam: "Liverpool",
       date: "2024-10-27T15:00:00",
-      status: "finished",
+      status: "live",
       actualScore: { home: 2, away: 1 },
       userPrediction: { home: 2, away: 1 },
       points: 5,
@@ -169,48 +129,261 @@ const RoomPage: React.FC = () => {
       awayTeam: "Chelsea",
       date: "2024-10-28T17:30:00",
       status: "finished",
-      actualScore: { home: 1, away: 1 },
-      userPrediction: { home: 2, away: 1 },
-      points: 0,
+      actualScore: { home: 3, away: 2 },
+      userPrediction: { home: 3, away: 2 },
+      points: 5,
     },
     {
       id: "3",
-      homeTeam: "Manchester United",
-      awayTeam: "Tottenham",
-      date: "2024-11-02T14:00:00",
-      status: "live",
-      actualScore: { home: 1, away: 0 },
-      userPrediction: { home: 2, away: 1 },
+      homeTeam: "Tottenham",
+      awayTeam: "Liverpool",
+      date: "2024-10-29T20:00:00",
+      status: "upcoming",
+      userPrediction: { home: 1, away: 1 },
     },
     {
       id: "4",
       homeTeam: "Newcastle",
       awayTeam: "Aston Villa",
-      date: "2024-11-03T16:00:00",
-      status: "upcoming",
-      userPrediction: { home: 1, away: 2 },
-    },
-    {
-      id: "5",
-      homeTeam: "West Ham",
-      awayTeam: "Everton",
-      date: "2024-11-03T14:00:00",
-      status: "upcoming",
-    },
-    {
-      id: "6",
-      homeTeam: "Brighton",
-      awayTeam: "Wolves",
-      date: "2024-11-09T15:00:00",
-      status: "upcoming",
+      date: "2024-10-30T18:00:00",
+      status: "finished",
+      actualScore: { home: 0, away: 0 },
+      userPrediction: { home: 1, away: 0 },
+      points: 2,
     },
   ];
 
-  const isCreator = currentUserId === roomDetails.creatorId;
-  const currentUser = roomDetails.participants.find(
-    (p) => p.id === currentUserId
-  );
-  const isParticipant = !!currentUser;
+  const mockTeams = [
+    {
+      id: "1",
+      position: 1,
+      teamName: "Manchester City",
+      matchesPlayed: 10,
+      wins: 8,
+      draws: 1,
+      losses: 1,
+      goalsFor: 28,
+      goalsAgainst: 10,
+      goalDifference: 18,
+      points: 25,
+      lastFiveMatches: ["W", "W", "W", "D", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "2",
+      position: 2,
+      teamName: "Real Madrid",
+      matchesPlayed: 10,
+      wins: 7,
+      draws: 2,
+      losses: 1,
+      goalsFor: 24,
+      goalsAgainst: 12,
+      goalDifference: 12,
+      points: 23,
+      lastFiveMatches: ["W", "D", "W", "W", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "3",
+      position: 3,
+      teamName: "Bayern Munich",
+      matchesPlayed: 10,
+      wins: 7,
+      draws: 1,
+      losses: 2,
+      goalsFor: 26,
+      goalsAgainst: 14,
+      goalDifference: 12,
+      points: 22,
+      lastFiveMatches: ["W", "W", "L", "W", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "4",
+      position: 4,
+      teamName: "Liverpool",
+      matchesPlayed: 10,
+      wins: 6,
+      draws: 3,
+      losses: 1,
+      goalsFor: 22,
+      goalsAgainst: 11,
+      goalDifference: 11,
+      points: 21,
+      lastFiveMatches: ["D", "W", "W", "D", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "5",
+      position: 5,
+      teamName: "PSG",
+      matchesPlayed: 10,
+      wins: 6,
+      draws: 2,
+      losses: 2,
+      goalsFor: 20,
+      goalsAgainst: 13,
+      goalDifference: 7,
+      points: 20,
+      lastFiveMatches: ["W", "L", "W", "D", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "6",
+      position: 6,
+      teamName: "Barcelona",
+      matchesPlayed: 10,
+      wins: 5,
+      draws: 3,
+      losses: 2,
+      goalsFor: 19,
+      goalsAgainst: 14,
+      goalDifference: 5,
+      points: 18,
+      lastFiveMatches: ["D", "W", "L", "W", "D"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "7",
+      position: 7,
+      teamName: "Inter Milan",
+      matchesPlayed: 10,
+      wins: 5,
+      draws: 2,
+      losses: 3,
+      goalsFor: 17,
+      goalsAgainst: 15,
+      goalDifference: 2,
+      points: 17,
+      lastFiveMatches: ["L", "W", "W", "D", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "8",
+      position: 8,
+      teamName: "Juventus",
+      matchesPlayed: 10,
+      wins: 4,
+      draws: 4,
+      losses: 2,
+      goalsFor: 16,
+      goalsAgainst: 14,
+      goalDifference: 2,
+      points: 16,
+      lastFiveMatches: ["D", "D", "W", "L", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "9",
+      position: 9,
+      teamName: "Arsenal",
+      matchesPlayed: 10,
+      wins: 4,
+      draws: 3,
+      losses: 3,
+      goalsFor: 15,
+      goalsAgainst: 14,
+      goalDifference: 1,
+      points: 15,
+      lastFiveMatches: ["L", "D", "W", "W", "D"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "10",
+      position: 10,
+      teamName: "Atletico Madrid",
+      matchesPlayed: 10,
+      wins: 4,
+      draws: 3,
+      losses: 3,
+      goalsFor: 14,
+      goalsAgainst: 13,
+      goalDifference: 1,
+      points: 15,
+      lastFiveMatches: ["W", "L", "D", "W", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "11",
+      position: 11,
+      teamName: "AC Milan",
+      matchesPlayed: 10,
+      wins: 4,
+      draws: 2,
+      losses: 4,
+      goalsFor: 13,
+      goalsAgainst: 15,
+      goalDifference: -2,
+      points: 14,
+      lastFiveMatches: ["L", "W", "L", "D", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "12",
+      position: 12,
+      teamName: "Borussia Dortmund",
+      matchesPlayed: 10,
+      wins: 3,
+      draws: 4,
+      losses: 3,
+      goalsFor: 14,
+      goalsAgainst: 16,
+      goalDifference: -2,
+      points: 13,
+      lastFiveMatches: ["D", "L", "D", "W", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "13",
+      position: 13,
+      teamName: "Chelsea",
+      matchesPlayed: 10,
+      wins: 3,
+      draws: 3,
+      losses: 4,
+      goalsFor: 12,
+      goalsAgainst: 16,
+      goalDifference: -4,
+      points: 12,
+      lastFiveMatches: ["L", "D", "L", "W", "D"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "14",
+      position: 14,
+      teamName: "Napoli",
+      matchesPlayed: 10,
+      wins: 3,
+      draws: 2,
+      losses: 5,
+      goalsFor: 11,
+      goalsAgainst: 17,
+      goalDifference: -6,
+      points: 11,
+      lastFiveMatches: ["L", "L", "W", "D", "L"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "15",
+      position: 15,
+      teamName: "RB Leipzig",
+      matchesPlayed: 10,
+      wins: 2,
+      draws: 4,
+      losses: 4,
+      goalsFor: 10,
+      goalsAgainst: 16,
+      goalDifference: -6,
+      points: 10,
+      lastFiveMatches: ["D", "L", "D", "L", "W"] as ("W" | "D" | "L")[],
+    },
+    {
+      id: "16",
+      position: 16,
+      teamName: "Benfica",
+      matchesPlayed: 10,
+      wins: 2,
+      draws: 3,
+      losses: 5,
+      goalsFor: 9,
+      goalsAgainst: 18,
+      goalDifference: -9,
+      points: 9,
+      lastFiveMatches: ["L", "D", "L", "W", "L"] as ("W" | "D" | "L")[],
+    },
+  ];
+
+  const displayRoom = error ? null : room;
+
+  const isCreator = currentUserId === displayRoom?.creator;
+  const isParticipant = true;
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -242,6 +415,51 @@ const RoomPage: React.FC = () => {
     alert("Link do pokoju skopiowany do schowka!");
   };
 
+  const getConnectionStatusBadge = () => {
+    switch (connectionStatus) {
+      case "connected":
+        return (
+          <span className="connection-status connected">🟢 Połączono</span>
+        );
+      case "connecting":
+        return (
+          <span className="connection-status connecting">🟡 Łączenie...</span>
+        );
+      case "error":
+        return (
+          <span className="connection-status error">🔴 Błąd połączenia</span>
+        );
+      default:
+        return null;
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="my-room-page">
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Ładowanie pokoju...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !displayRoom) {
+    return (
+      <div className="my-room-page">
+        <div className="error-state">
+          <AlertCircle size={48} />
+          <h2>Nie można załadować pokoju</h2>
+          <p>{error || "Pokój nie został znaleziony"}</p>
+          <button onClick={() => navigate("/rooms")} className="btn-primary">
+            Powrót do listy pokoi
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="my-room-page">
       <div className="my-room-container">
@@ -257,25 +475,26 @@ const RoomPage: React.FC = () => {
           <div className="my-room-header-content">
             <div className="my-room-header-main">
               <div className="my-room-header-left">
-                <h1 className="my-room-title">{roomDetails.name}</h1>
+                <h1 className="my-room-title">{displayRoom.name}</h1>
                 <div className="my-room-meta">
                   <span className="my-room-creator">
                     <Users size={16} />
-                    Organizator: {roomDetails.creator}
+                    Organizator: {displayRoom.creator}
                   </span>
                   <span className="my-room-league">
                     <Trophy size={16} />
-                    {roomDetails.league}
+                    {displayRoom.league}
                   </span>
-                  {getStatusBadge(roomDetails.status)}
+                  {getStatusBadge(displayRoom.status)}
+                  {getConnectionStatusBadge()}
                 </div>
               </div>
 
               <div className="my-room-header-actions">
                 <InviteButton
-                  roomId={roomDetails.id}
-                  inviteCode={roomDetails.inviteCode}
-                  roomName={roomDetails.name}
+                  roomId={displayRoom.id}
+                  inviteCode="MOCK-CODE"
+                  roomName={displayRoom.name}
                 />
                 <button
                   className="my-action-btn my-share"
@@ -311,8 +530,7 @@ const RoomPage: React.FC = () => {
                 <div className="my-stat-content">
                   <span className="my-stat-label">Uczestnicy</span>
                   <span className="my-stat-value">
-                    {roomDetails.participants.length}/
-                    {roomDetails.maxParticipants}
+                    {displayRoom.participants}/{displayRoom.maxParticipants}
                   </span>
                 </div>
               </div>
@@ -321,7 +539,7 @@ const RoomPage: React.FC = () => {
                 <Trophy className="my-stat-icon-room" />
                 <div className="my-stat-content">
                   <span className="my-stat-label">Pula nagród</span>
-                  <span className="my-stat-value">{roomDetails.prize} PLN</span>
+                  <span className="my-stat-value">{displayRoom.prize} PLN</span>
                 </div>
               </div>
 
@@ -330,7 +548,7 @@ const RoomPage: React.FC = () => {
                 <div className="my-stat-content">
                   <span className="my-stat-label">Termin</span>
                   <span className="my-stat-value">
-                    {new Date(roomDetails.startDate).toLocaleDateString(
+                    {new Date(displayRoom.startDate).toLocaleDateString(
                       "pl-PL"
                     )}
                   </span>
@@ -342,34 +560,33 @@ const RoomPage: React.FC = () => {
                 <div className="my-stat-content">
                   <span className="my-stat-label">Wpisowe</span>
                   <span className="my-stat-value">
-                    {roomDetails.entryFee} PLN
+                    {displayRoom.entryFee} PLN
                   </span>
                 </div>
               </div>
-
-              {currentUser && (
-                <div className="my-stat-card-room my-highlight">
-                  <TrendingUp className="my-stat-icon-room" />
-                  <div className="my-stat-content">
-                    <span className="my-stat-label">Twoje punkty</span>
-                    <span className="my-stat-value">
-                      {currentUser.totalPoints}
-                    </span>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
 
+        {/* ✅ ZAKTUALIZOWANE ZAKŁADKI - dodana "Tabela" */}
         <div className="my-room-tabs">
           <button
             className={`my-tab ${activeTab === "matches" ? "my-active" : ""}`}
             onClick={() => setActiveTab("matches")}
           >
             <Target size={20} />
-            <span>Mecze ({matches.length})</span>
+            <span>Mecze ({mockMatches.length})</span>
           </button>
+
+          {/* ✅ NOWA ZAKŁADKA */}
+          <button
+            className={`my-tab ${activeTab === "table" ? "my-active" : ""}`}
+            onClick={() => setActiveTab("table")}
+          >
+            <BarChart3 size={20} />
+            <span>Tabela</span>
+          </button>
+
           <button
             className={`my-tab ${
               activeTab === "leaderboard" ? "my-active" : ""
@@ -412,24 +629,28 @@ const RoomPage: React.FC = () => {
         <div className="my-tab-content">
           {activeTab === "matches" && (
             <RoomMatches
-              matches={matches}
+              matches={mockMatches}
               isParticipant={isParticipant}
               currentUserId={currentUserId}
             />
           )}
 
+          {activeTab === "table" && (
+            <LeagueTable teams={mockTeams} highlightedTeams={[]} />
+          )}
+
           {activeTab === "leaderboard" && (
             <RoomLeaderboard
-              participants={roomDetails.participants}
+              participants={mockParticipants}
               currentUserId={currentUserId}
-              creatorId={roomDetails.creatorId}
+              creatorId={displayRoom.creator}
             />
           )}
 
           {activeTab === "stats" && (
             <RoomStatistics
               currentUserId={currentUserId}
-              participants={roomDetails.participants}
+              participants={mockParticipants}
             />
           )}
 
@@ -437,7 +658,7 @@ const RoomPage: React.FC = () => {
             <RoomChat
               currentUserId={currentUserId}
               isCreator={isCreator}
-              roomId={roomDetails.id}
+              roomId={displayRoom.id}
             />
           )}
 
@@ -445,20 +666,20 @@ const RoomPage: React.FC = () => {
             <RoomComments
               currentUserId={currentUserId}
               isCreator={isCreator}
-              roomId={roomDetails.id}
+              roomId={displayRoom.id}
             />
           )}
 
           {activeTab === "info" && (
             <RoomInfo
-              tournamentName={roomDetails.tournamentName}
-              league={roomDetails.league}
-              startDate={roomDetails.startDate}
-              endDate={roomDetails.endDate}
-              isPrivate={roomDetails.isPrivate}
-              inviteCode={roomDetails.inviteCode}
-              description={roomDetails.description}
-              rules={roomDetails.rules}
+              tournamentName={displayRoom.league}
+              league={displayRoom.league}
+              startDate={displayRoom.startDate}
+              endDate={displayRoom.endDate}
+              isPrivate={displayRoom.isPrivate}
+              inviteCode="MOCK-CODE"
+              description="Mock description"
+              rules="Mock rules"
             />
           )}
         </div>

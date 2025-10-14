@@ -16,9 +16,9 @@ import {
   Camera,
   Wallet,
   History,
-  Award,
 } from "lucide-react";
 import "./UserProfileModal.css";
+import Achievements from "./achievements/Achievements";
 
 interface UserProfileModalProps {
   isOpen: boolean;
@@ -38,7 +38,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
   const [userData, setUserData] = useState({
     username: username,
-    email: "gracz@example.com",
+    email: "http://localhost:5173/",
     phone: "+48 123 456 789",
     location: "Kraków, Polska",
     joinDate: "2024-01-15",
@@ -249,21 +249,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   </div>
                 </div>
               </div>
-
-              <div className="my-profile-section">
-                <h3>Osiągnięcia</h3>
-                <div className="my-profile-achievements-grid">
-                  <div className="my-profile-achievement-card">
-                    <Award className="my-profile-achievement-icon" />
-                    <span className="my-profile-achievement-count">
-                      {userData.achievements}
-                    </span>
-                    <span className="my-profile-achievement-label">
-                      Osiągnięć
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <Achievements />
             </div>
           )}
 

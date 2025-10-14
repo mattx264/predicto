@@ -17,10 +17,15 @@ import RoomPage from "./game-room/RoomPage";
 import RankingPage from "./ranking/RankingPage";
 import DashboardPage from "./dashboard/DashboardPage";
 import HowToPlay from "./how-to-play/HowToPlay";
+import SplashScreen from "./splash-screen/SplashScreen";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
 
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
   const handleLogin = (token: string) => {
     setIsAuthenticated(true);
     localStorage.setItem("authToken", token);

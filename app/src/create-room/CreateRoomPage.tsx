@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -12,8 +12,27 @@ import {
   Check,
   AlertCircle,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  HelpCircle,
 } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Keyboard } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "./CreateRoomPage.css";
+import PrizePoolPreview from "./prize-pool-preview/PrizePoolPreview";
+
+const Tooltip: React.FC<{ text: string; children: React.ReactNode }> = ({
+  text,
+  children,
+}) => (
+  <div className="tooltip-container">
+    {children}
+    <span className="tooltip-text">{text}</span>
+  </div>
+);
 
 interface TournamentTemplate {
   id: string;
@@ -23,72 +42,81 @@ interface TournamentTemplate {
   matchesCount: number;
   startDate: string;
   endDate: string;
-  image: string;
+  logoUrl: string;
 }
 
 const CreateRoomPage: React.FC = () => {
   const navigate = useNavigate();
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const roomNameRef = useRef<HTMLInputElement>(null);
+  const maxParticipantsRef = useRef<HTMLInputElement>(null);
+  const entryFeeRef = useRef<HTMLInputElement>(null);
+  const correctOutcomeRef = useRef<HTMLInputElement>(null);
+  const exactScoreRef = useRef<HTMLInputElement>(null);
+  const jokerCountRef = useRef<HTMLInputElement>(null);
 
   const tournamentTemplates: TournamentTemplate[] = [
     {
       id: "1",
-      name: "Liga Mistrzów UEFA 2024/25 - Faza Grupowa",
+      name: "Liga Mistrzów UEFA 2025/26 - Faza Grupowa",
       league: "Champions League",
-      description: "Wszystkie mecze fazy grupowej Ligi Mistrzów UEFA",
+      description: "Wszystkie mecze fazy grupowej Ligi Mistrzów UEFA.",
       matchesCount: 96,
-      startDate: "2024-09-17",
-      endDate: "2024-12-11",
-      image: "🏆",
+      startDate: "2025-09-16",
+      endDate: "2025-12-10",
+      logoUrl: "/tournament-logos/championsleague.png",
     },
     {
       id: "2",
-      name: "Premier League - Kolejki 10-20",
+      name: "Premier League 2025/26 - Runda Jesienna",
       league: "Premier League",
-      description: "Typuj wyniki 11 kolejek Premier League",
-      matchesCount: 110,
-      startDate: "2024-10-26",
-      endDate: "2025-01-04",
-      image: "⚽",
+      description:
+        "Typuj wyniki pierwszych 19 kolejek angielskiej Premier League.",
+      matchesCount: 190,
+      startDate: "2025-08-16",
+      endDate: "2025-12-28",
+      logoUrl: "/tournament-logos/premier-league.png",
     },
     {
       id: "3",
-      name: "La Liga - Sezon 2024/25 Część 1",
+      name: "La Liga 2025/26 - Początek Sezonu",
       league: "La Liga",
-      description: "Pierwsza połowa sezonu hiszpańskiej ekstraklasy",
+      description: "Pierwsza połowa sezonu hiszpańskiej ekstraklasy.",
       matchesCount: 190,
-      startDate: "2024-08-15",
-      endDate: "2024-12-22",
-      image: "🇪🇸",
+      startDate: "2025-08-15",
+      endDate: "2025-12-21",
+      logoUrl: "/tournament-logos/laliga.png",
     },
     {
       id: "4",
-      name: "Bundesliga - Runda Jesienna",
+      name: "Bundesliga 2025/26 - Runda Jesienna",
       league: "Bundesliga",
-      description: "Wszystkie mecze rundy jesiennej Bundesligi",
+      description: "Wszystkie mecze rundy jesiennej Bundesligi.",
       matchesCount: 153,
-      startDate: "2024-08-23",
-      endDate: "2024-12-15",
-      image: "🇩🇪",
+      startDate: "2025-08-22",
+      endDate: "2025-12-21",
+      logoUrl: "/tournament-logos/bundesliga.png",
     },
     {
       id: "5",
-      name: "Serie A - Początek Sezonu",
+      name: "Serie A 2025/26 - Pierwsze 15 kolejek",
       league: "Serie A",
-      description: "Pierwsze 15 kolejek włoskiej Serie A",
+      description: "Początek zmagań we włoskiej Serie A, pierwsze 15 kolejek.",
       matchesCount: 150,
-      startDate: "2024-08-17",
-      endDate: "2024-12-08",
-      image: "🇮🇹",
+      startDate: "2025-08-23",
+      endDate: "2025-12-14",
+      logoUrl: "/tournament-logos/serie-a.png",
     },
     {
       id: "6",
-      name: "Ekstraklasa - Runda Jesienna 2024",
+      name: "Ekstraklasa 2025/26 - Runda Jesienna",
       league: "Ekstraklasa",
-      description: "Wszystkie mecze rundy jesiennej polskiej ekstraklasy",
-      matchesCount: 90,
-      startDate: "2024-07-19",
-      endDate: "2024-12-07",
-      image: "🇵🇱",
+      description: "Wszystkie mecze rundy jesiennej polskiej ekstraklasy.",
+      matchesCount: 153,
+      startDate: "2025-07-18",
+      endDate: "2025-12-15",
+      logoUrl: "/tournament-logos/ekstraklasa.png",
     },
   ];
 
@@ -100,10 +128,26 @@ const CreateRoomPage: React.FC = () => {
     entryFee: 50,
     isPrivate: false,
     description: "",
-    rules: "",
+    rules: {
+      scoring: {
+        exactScore: 5,
+        correctOutcome: 2,
+      },
+      deadline: "matchStart",
+      joker: {
+        enabled: true,
+        count: 1,
+      },
+    },
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [step]);
 
   const selectedTemplate = tournamentTemplates.find(
     (t) => t.id === formData.tournamentTemplateId
@@ -117,49 +161,106 @@ const CreateRoomPage: React.FC = () => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
+    let valueToSet: string | number | boolean = value;
+    if (type === "checkbox") {
+      valueToSet = checked;
+    } else if (type === "number") {
+      valueToSet = value === "" ? "" : parseInt(value, 10);
+    }
+
+    setFormData((prev) => {
+      const newFormData = JSON.parse(JSON.stringify(prev));
+      const keys = name.split(".");
+
+      let currentLevel: any = newFormData;
+      for (let i = 0; i < keys.length - 1; i++) {
+        currentLevel = currentLevel[keys[i]];
+      }
+      currentLevel[keys[keys.length - 1]] = valueToSet;
+
+      return newFormData;
     });
 
     if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
     }
   };
 
   const validateStep1 = () => {
     const newErrors: Record<string, string> = {};
-
     if (!formData.tournamentTemplateId) {
       newErrors.tournamentTemplateId = "Musisz wybrać szablon turnieju";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const validateStep2 = () => {
     const newErrors: Record<string, string> = {};
-
+    let firstErrorField: React.RefObject<HTMLInputElement | null> | null = null;
     if (!formData.roomName.trim()) {
       newErrors.roomName = "Nazwa pokoju jest wymagana";
+      if (!firstErrorField) firstErrorField = roomNameRef;
     } else if (formData.roomName.length < 3) {
       newErrors.roomName = "Nazwa pokoju musi mieć co najmniej 3 znaki";
+      if (!firstErrorField) firstErrorField = roomNameRef;
     }
 
     if (formData.maxParticipants < 2) {
       newErrors.maxParticipants = "Minimalna liczba uczestników to 2";
+      if (!firstErrorField) firstErrorField = maxParticipantsRef;
     } else if (formData.maxParticipants > 50) {
       newErrors.maxParticipants = "Maksymalna liczba uczestników to 50";
+      if (!firstErrorField) firstErrorField = maxParticipantsRef;
     }
 
     if (formData.entryFee < 0) {
       newErrors.entryFee = "Wpisowe nie może być ujemne";
+      if (!firstErrorField) firstErrorField = entryFeeRef;
     } else if (formData.entryFee > 10000) {
       newErrors.entryFee = "Maksymalne wpisowe to 10000 PLN";
+      if (!firstErrorField) firstErrorField = entryFeeRef;
+    }
+
+    const { rules } = formData;
+    if (rules.scoring.correctOutcome < 1) {
+      newErrors["rules.scoring.correctOutcome"] =
+        "Punkty muszą być większe od 0";
+      if (!firstErrorField) firstErrorField = correctOutcomeRef;
+    }
+    if (rules.scoring.exactScore <= rules.scoring.correctOutcome) {
+      newErrors["rules.scoring.exactScore"] =
+        "Musi być więcej punktów niż za trafiony rezultat";
+      if (!firstErrorField) firstErrorField = exactScoreRef;
+    }
+
+    if (rules.joker.enabled) {
+      if (rules.joker.count < 1) {
+        newErrors["rules.joker.count"] =
+          "Liczba jokerów musi wynosić co najmniej 1";
+        if (!firstErrorField) firstErrorField = jokerCountRef;
+      } else if (rules.joker.count > 10) {
+        newErrors["rules.joker.count"] = "Maksymalna liczba jokerów to 10";
+        if (!firstErrorField) firstErrorField = jokerCountRef;
+      }
     }
 
     setErrors(newErrors);
+
+    if (firstErrorField?.current && Object.keys(newErrors).length > 0) {
+      setTimeout(() => {
+        firstErrorField.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        firstErrorField.current?.focus();
+      }, 100);
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -172,34 +273,27 @@ const CreateRoomPage: React.FC = () => {
   };
 
   const handleBack = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    }
+    if (step > 1) setStep(step - 1);
   };
 
   const handleSubmit = async () => {
     if (!validateStep2()) return;
-
     console.log("Tworzenie pokoju:", formData);
-
     await new Promise((resolve) => setTimeout(resolve, 1000));
-
     navigate("/rooms");
   };
 
-  const calculatePrizePool = () => {
-    return formData.entryFee * formData.maxParticipants;
-  };
+  const calculatePrizePool = () =>
+    Number(formData.entryFee) * Number(formData.maxParticipants);
 
   return (
     <div className="create-room-page">
-      <div className="create-room-container">
+      <div className="create-room-container" ref={contentRef}>
         <div className="create-room-header">
           <button className="back-btn" onClick={() => navigate("/rooms")}>
             <ArrowLeft className="back-icon" />
             <span>Powrót do pokoi</span>
           </button>
-
           <div className="header-content">
             <h1 className="page-title">
               <Sparkles className="title-icon" />
@@ -249,74 +343,93 @@ const CreateRoomPage: React.FC = () => {
                 administratorów
               </p>
             </div>
-
             {errors.tournamentTemplateId && (
               <div className="error-message">
                 <AlertCircle size={18} />
                 <span>{errors.tournamentTemplateId}</span>
               </div>
             )}
-
-            <div className="templates-grid">
-              {tournamentTemplates.map((template) => (
-                <div
-                  key={template.id}
-                  className={`template-card ${
-                    formData.tournamentTemplateId === template.id
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      tournamentTemplateId: template.id,
-                    })
-                  }
-                >
-                  {formData.tournamentTemplateId === template.id && (
-                    <div className="selected-badge">
-                      <Check size={16} />
+            <div className="templates-swiper-container">
+              <Swiper
+                modules={[Navigation, Pagination, Keyboard]}
+                spaceBetween={20}
+                slidesPerView={1}
+                navigation={{
+                  prevEl: ".swiper-button-prev-custom",
+                  nextEl: ".swiper-button-next-custom",
+                }}
+                pagination={{ clickable: true, dynamicBullets: true }}
+                keyboard={{ enabled: true, onlyInViewport: true }}
+                className="templates-swiper"
+              >
+                {tournamentTemplates.map((template) => (
+                  <SwiperSlide key={template.id}>
+                    <div
+                      className={`template-card ${
+                        formData.tournamentTemplateId === template.id
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          tournamentTemplateId: template.id,
+                        })
+                      }
+                    >
+                      {formData.tournamentTemplateId === template.id && (
+                        <div className="selected-badge">
+                          <Check size={16} />
+                        </div>
+                      )}
+                      <div className="template-logo-container">
+                        <img
+                          src={template.logoUrl}
+                          alt={template.league}
+                          className="template-logo"
+                        />
+                      </div>
+                      <h3 className="template-name">{template.name}</h3>
+                      <div className="template-league">
+                        <Trophy size={14} />
+                        <span>{template.league}</span>
+                      </div>
+                      <p className="template-description">
+                        {template.description}
+                      </p>
+                      <div className="template-info">
+                        <div className="info-item">
+                          <Calendar size={14} />
+                          <span>
+                            {new Date(template.startDate).toLocaleDateString(
+                              "pl-PL"
+                            )}
+                          </span>
+                        </div>
+                        <div className="info-item">
+                          <span className="matches-count">
+                            {template.matchesCount} meczów
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  )}
-
-                  <div className="template-icon">{template.image}</div>
-
-                  <h3 className="template-name">{template.name}</h3>
-
-                  <div className="template-league">
-                    <Trophy size={14} />
-                    <span>{template.league}</span>
-                  </div>
-
-                  <p className="template-description">{template.description}</p>
-
-                  <div className="template-info">
-                    <div className="info-item">
-                      <Calendar size={14} />
-                      <span>
-                        {new Date(template.startDate).toLocaleDateString(
-                          "pl-PL"
-                        )}
-                      </span>
-                    </div>
-                    <div className="info-item">
-                      <span className="matches-count">
-                        {template.matchesCount} meczów
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              <button className="swiper-button-prev-custom">
+                <ChevronLeft size={24} />
+              </button>
+              <button className="swiper-button-next-custom">
+                <ChevronRight size={24} />
+              </button>
             </div>
-
             <div className="step-actions">
               <button
                 className="btn-next"
                 onClick={handleNext}
                 disabled={!formData.tournamentTemplateId}
               >
-                Dalej
-                <ArrowLeft className="arrow-icon rotated" />
+                Dalej <ArrowLeft className="arrow-icon rotated" />
               </button>
             </div>
           </div>
@@ -330,14 +443,13 @@ const CreateRoomPage: React.FC = () => {
                 Ustaw parametry swojego pokoju typowania
               </p>
             </div>
-
             <div className="settings-form">
               <div className="form-group">
                 <label className="form-label">
-                  <Trophy size={18} />
-                  Nazwa pokoju *
+                  <Trophy size={18} /> Nazwa pokoju *
                 </label>
                 <input
+                  ref={roomNameRef}
                   type="text"
                   name="roomName"
                   value={formData.roomName}
@@ -349,13 +461,12 @@ const CreateRoomPage: React.FC = () => {
                   <span className="field-error">{errors.roomName}</span>
                 )}
               </div>
-
               <div className="form-group">
                 <label className="form-label">
-                  <Users size={18} />
-                  Maksymalna liczba uczestników *
+                  <Users size={18} /> Maksymalna liczba uczestników *
                 </label>
                 <input
+                  ref={maxParticipantsRef}
                   type="number"
                   name="maxParticipants"
                   value={formData.maxParticipants}
@@ -373,13 +484,12 @@ const CreateRoomPage: React.FC = () => {
                   Minimalna liczba: 2, Maksymalna: 50
                 </span>
               </div>
-
               <div className="form-group">
                 <label className="form-label">
-                  <DollarSign size={18} />
-                  Wpisowe (PLN) *
+                  <DollarSign size={18} /> Wpisowe (PLN) *
                 </label>
                 <input
+                  ref={entryFeeRef}
                   type="number"
                   name="entryFee"
                   value={formData.entryFee}
@@ -392,15 +502,15 @@ const CreateRoomPage: React.FC = () => {
                 {errors.entryFee && (
                   <span className="field-error">{errors.entryFee}</span>
                 )}
-                <span className="field-hint">
-                  Maksymalne wpisowe: 10,000 PLN
-                </span>
+                <span className="field-hint">Wpisz 0, aby grać za darmo.</span>
+                <PrizePoolPreview
+                  entryFee={Number(formData.entryFee)}
+                  maxParticipants={Number(formData.maxParticipants)}
+                />
               </div>
-
               <div className="form-group">
                 <label className="form-label">
-                  <Lock size={18} />
-                  Widoczność pokoju
+                  <Lock size={18} /> Widoczność pokoju
                 </label>
                 <div className="privacy-toggle">
                   <button
@@ -435,11 +545,9 @@ const CreateRoomPage: React.FC = () => {
                   </button>
                 </div>
               </div>
-
               <div className="form-group">
                 <label className="form-label">
-                  <Info size={18} />
-                  Opis pokoju (opcjonalnie)
+                  <Info size={18} /> Opis pokoju (opcjonalnie)
                 </label>
                 <textarea
                   name="description"
@@ -451,32 +559,158 @@ const CreateRoomPage: React.FC = () => {
                 />
               </div>
 
+              <div className="form-section-divider">
+                <h3 className="form-section-title">Zasady Gry</h3>
+              </div>
               <div className="form-group">
                 <label className="form-label">
-                  <Info size={18} />
-                  Dodatkowe zasady (opcjonalnie)
+                  <Check size={18} /> System Punktacji
+                  <Tooltip text="Ustaw ile punktów przyznawane jest za trafienie wyniku lub rezultatu meczu.">
+                    <HelpCircle size={16} className="tooltip-icon" />
+                  </Tooltip>
                 </label>
-                <textarea
-                  name="rules"
-                  value={formData.rules}
-                  onChange={handleInputChange}
-                  placeholder="Opisz specjalne zasady pokoju..."
-                  className="form-textarea"
-                  rows={4}
-                />
+                <div className="scoring-inputs">
+                  <div className="scoring-input-group">
+                    <label htmlFor="correctOutcome">
+                      Za trafiony rezultat (1X2):
+                    </label>
+                    <input
+                      ref={correctOutcomeRef}
+                      type="number"
+                      name="rules.scoring.correctOutcome"
+                      value={formData.rules.scoring.correctOutcome}
+                      onChange={handleInputChange}
+                      className={`form-input ${
+                        errors["rules.scoring.correctOutcome"] ? "error" : ""
+                      }`}
+                      min="1"
+                    />
+                    {errors["rules.scoring.correctOutcome"] && (
+                      <span className="field-error">
+                        {errors["rules.scoring.correctOutcome"]}
+                      </span>
+                    )}
+                  </div>
+                  <div className="scoring-input-group">
+                    <label htmlFor="exactScore">Za dokładny wynik:</label>
+                    <input
+                      ref={exactScoreRef}
+                      type="number"
+                      name="rules.scoring.exactScore"
+                      value={formData.rules.scoring.exactScore}
+                      onChange={handleInputChange}
+                      className={`form-input ${
+                        errors["rules.scoring.exactScore"] ? "error" : ""
+                      }`}
+                      min="0"
+                    />
+                    {errors["rules.scoring.exactScore"] && (
+                      <span className="field-error">
+                        {errors["rules.scoring.exactScore"]}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
-
-              <div className="prize-preview">
-                <Trophy className="prize-icon" />
-                <div className="prize-content">
-                  <span className="prize-label">Przewidywana pula nagród</span>
-                  <span className="prize-value">
-                    {calculatePrizePool()} PLN
-                  </span>
+              <div className="form-group">
+                <label className="form-label">
+                  <Calendar size={18} /> Termin Typowania
+                  <Tooltip text="Zdecyduj, do kiedy gracze mogą wysyłać lub edytować swoje typy.">
+                    <HelpCircle size={16} className="tooltip-icon" />
+                  </Tooltip>
+                </label>
+                <select
+                  name="rules.deadline"
+                  value={formData.rules.deadline}
+                  onChange={handleInputChange}
+                  className="form-input"
+                >
+                  <option value="matchStart">Do startu każdego meczu</option>
+                  <option value="15minBefore">
+                    15 minut przed startem każdego meczu
+                  </option>
+                  <option value="roundStart">
+                    Do startu pierwszego meczu w kolejce
+                  </option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">
+                  <Sparkles size={18} /> Bonus "Joker" (Mnożnik x2)
+                  <Tooltip text="Pozwól graczom na użycie mnożnika x2 na jeden wybrany mecz w kolejce, aby zdobyć podwójne punkty.">
+                    <HelpCircle size={16} className="tooltip-icon" />
+                  </Tooltip>
+                </label>
+                <div className="joker-settings">
+                  <div className="privacy-toggle">
+                    <button
+                      type="button"
+                      className={`privacy-option ${
+                        formData.rules.joker.enabled ? "active" : ""
+                      }`}
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          rules: {
+                            ...prev.rules,
+                            joker: { ...prev.rules.joker, enabled: true },
+                          },
+                        }))
+                      }
+                    >
+                      <Check size={18} />
+                      <div className="option-text">
+                        <span className="option-title">Włączony</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      className={`privacy-option ${
+                        !formData.rules.joker.enabled ? "active" : ""
+                      }`}
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          rules: {
+                            ...prev.rules,
+                            joker: { ...prev.rules.joker, enabled: false },
+                          },
+                        }))
+                      }
+                    >
+                      <AlertCircle size={18} />
+                      <div className="option-text">
+                        <span className="option-title">Wyłączony</span>
+                      </div>
+                    </button>
+                  </div>
+                  {formData.rules.joker.enabled && (
+                    <div className="joker-count-input">
+                      <label htmlFor="jokerCount">
+                        Liczba jokerów na sezon:
+                      </label>
+                      <input
+                        ref={jokerCountRef}
+                        type="number"
+                        name="rules.joker.count"
+                        value={formData.rules.joker.count}
+                        onChange={handleInputChange}
+                        className={`form-input ${
+                          errors["rules.joker.count"] ? "error" : ""
+                        }`}
+                        min="1"
+                        max="10"
+                      />
+                      {errors["rules.joker.count"] && (
+                        <span className="field-error">
+                          {errors["rules.joker.count"]}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-
             <div className="step-actions">
               <button className="btn-back" onClick={handleBack}>
                 <ArrowLeft className="arrow-icon" />
@@ -498,14 +732,16 @@ const CreateRoomPage: React.FC = () => {
                 Sprawdź wszystkie dane przed utworzeniem pokoju
               </p>
             </div>
-
             <div className="summary-card">
               <h3 className="summary-title">Szczegóły pokoju</h3>
-
               <div className="summary-section">
                 <h4 className="section-title">Turniej</h4>
                 <div className="summary-item">
-                  <span className="item-icon">{selectedTemplate?.image}</span>
+                  <img
+                    src={selectedTemplate?.logoUrl}
+                    alt={selectedTemplate?.league}
+                    className="summary-logo"
+                  />
                   <div className="item-content">
                     <span className="item-label">Nazwa turnieju</span>
                     <span className="item-value">{selectedTemplate?.name}</span>
@@ -535,9 +771,7 @@ const CreateRoomPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-
               <div className="summary-divider"></div>
-
               <div className="summary-section">
                 <h4 className="section-title">Ustawienia</h4>
                 <div className="summary-item">
@@ -582,15 +816,60 @@ const CreateRoomPage: React.FC = () => {
 
               <div className="summary-divider"></div>
 
-              <div className="summary-highlight">
-                <Trophy className="highlight-icon" />
-                <div className="highlight-content">
-                  <span className="highlight-label">Całkowita pula nagród</span>
-                  <span className="highlight-value">
-                    {calculatePrizePool()} PLN
-                  </span>
+              <div className="summary-section">
+                <h4 className="section-title">Zasady Gry</h4>
+                <div className="summary-item">
+                  <Check className="item-icon-svg" size={20} />
+                  <div className="item-content">
+                    <span className="item-label">Punkty za dokładny wynik</span>
+                    <span className="item-value">
+                      {formData.rules.scoring.exactScore} pkt
+                    </span>
+                  </div>
+                </div>
+                <div className="summary-item">
+                  <Check className="item-icon-svg" size={20} />
+                  <div className="item-content">
+                    <span className="item-label">Punkty za rezultat 1X2</span>
+                    <span className="item-value">
+                      {formData.rules.scoring.correctOutcome} pkt
+                    </span>
+                  </div>
+                </div>
+                <div className="summary-item">
+                  <Calendar className="item-icon-svg" size={20} />
+                  <div className="item-content">
+                    <span className="item-label">Termin typowania</span>
+                    <span className="item-value">
+                      {
+                        {
+                          matchStart: "Do startu każdego meczu",
+                          "15minBefore": "15 minut przed startem meczu",
+                          roundStart: "Do startu pierwszego meczu w kolejce",
+                        }[formData.rules.deadline]
+                      }
+                    </span>
+                  </div>
+                </div>
+                <div className="summary-item">
+                  <Sparkles className="item-icon-svg" size={20} />
+                  <div className="item-content">
+                    <span className="item-label">Bonus "Joker"</span>
+                    <span className="item-value">
+                      {formData.rules.joker.enabled
+                        ? `Włączony (${formData.rules.joker.count} na sezon)`
+                        : "Wyłączony"}
+                    </span>
+                  </div>
                 </div>
               </div>
+
+              <div className="summary-divider"></div>
+
+              <PrizePoolPreview
+                entryFee={Number(formData.entryFee)}
+                maxParticipants={Number(formData.maxParticipants)}
+              />
 
               {formData.description && (
                 <>
@@ -601,18 +880,7 @@ const CreateRoomPage: React.FC = () => {
                   </div>
                 </>
               )}
-
-              {formData.rules && (
-                <>
-                  <div className="summary-divider"></div>
-                  <div className="summary-section">
-                    <h4 className="section-title">Dodatkowe zasady</h4>
-                    <p className="summary-text">{formData.rules}</p>
-                  </div>
-                </>
-              )}
             </div>
-
             <div className="step-actions">
               <button className="btn-back" onClick={handleBack}>
                 <ArrowLeft className="arrow-icon" />
