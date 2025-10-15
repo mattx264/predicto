@@ -1,7 +1,6 @@
 import { Calendar } from "lucide-react";
 import "./page.css";
 import { getMatches, Match } from "../lib/schedule";
-import Image from "next/image";
 
 const MatchCard = ({ match }: { match: Match }) => {
   const getStatusClass = (status: Match["status"]) => {
@@ -19,7 +18,7 @@ const MatchCard = ({ match }: { match: Match }) => {
     <div className="match-card">
       <div className="team-info team-a">
         <span className="team-name">{match.teamA}</span>
-        <Image
+        <img
           src={match.teamALogo}
           alt={`${match.teamA} logo`}
           className="team-logo"
@@ -36,7 +35,7 @@ const MatchCard = ({ match }: { match: Match }) => {
         </div>
       </div>
       <div className="team-info team-b">
-        <Image
+        <img
           src={match.teamBLogo}
           alt={`${match.teamB} logo`}
           className="team-logo"
