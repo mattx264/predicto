@@ -102,10 +102,12 @@ const PostCard = ({ post }: { post: Post }) => (
 export default async function LeaguePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const posts = await getPostsByLeague(params.slug);
-  const leagueName = LEAGUE_NAMES[params.slug] || params.slug.toUpperCase();
+  const { slug } = await params;
+
+  const posts = await getPostsByLeague(slug);
+  const leagueName = LEAGUE_NAMES[slug] || slug.toUpperCase();
 
   return (
     <div className="min-h-screen bg-gray-900 text-white py-12">
