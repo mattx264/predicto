@@ -15,6 +15,8 @@ namespace Predicto.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            //options.UseSqlServer("Data Source=MATYSACER;Initial Catalog=Predicto;Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+
             options.UseSqlServer("Data Source=DESKTOP-IF3RN33\\MSSQLSERVER01;Initial Catalog=Predicto;Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
             //"Data Source=SQL5106.site4now.net;Initial Catalog=db_9b0204_predicto;User Id=db_9b0204_predicto_admin;Password=xRu{TZw~0304
             options.UseSeeding(seed: new SeedData().Data());
