@@ -1,163 +1,316 @@
-import Link from "next/link";
-import { Search } from "lucide-react";
+import React from "react";
+import { TrendingUp, Minus } from "lucide-react";
+import "./page.css";
 
-interface Post {
-  slug: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  league: string;
-  image: string;
+interface Team {
+  name: string;
+  position: number;
+  matches: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  points: number;
+  lastFive: ("W" | "D" | "L")[];
+  status?: "Q" | "P";
 }
 
-const LEAGUE_NAMES: { [key: string]: string } = {
-  ekstraklasa: "Ekstraklasa 🇵🇱",
-  "liga-mistrzow": "Liga Mistrzów ⭐",
-  "premier-league": "Premier League 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-  transfery: "Transfery 🔄",
-};
+interface Group {
+  name: string;
+  teams: Team[];
+}
 
-async function getPostsByLeague(leagueSlug: string): Promise<Post[]> {
-  const posts: Post[] = [
+async function getQualifierGroups(): Promise<Group[]> {
+  const groups: Group[] = [
     {
-      slug: "lech-vs-legia",
-      title: "Decydująca Runda: Kto zdominuje Poznań?",
-      excerpt:
-        "Przegląd taktyczny przed najważniejszym meczem sezonu w Polsce.",
-      date: "2025-10-12",
-      league: "Ekstraklasa",
-      image: "/images/lech-legia.jpg",
+      name: "Grupa A",
+      teams: [
+        {
+          position: 1,
+          name: "Hiszpania",
+          matches: 6,
+          wins: 6,
+          draws: 0,
+          losses: 0,
+          goalsFor: 20,
+          goalsAgainst: 2,
+          goalDifference: 18,
+          points: 18,
+          lastFive: ["W", "W", "W", "W", "W"],
+          status: "Q",
+        },
+        {
+          position: 2,
+          name: "Szkocja",
+          matches: 7,
+          wins: 4,
+          draws: 1,
+          losses: 2,
+          goalsFor: 12,
+          goalsAgainst: 7,
+          goalDifference: 5,
+          points: 13,
+          lastFive: ["L", "W", "L", "W", "D"],
+          status: "P",
+        },
+        {
+          position: 3,
+          name: "Norwegia",
+          matches: 6,
+          wins: 3,
+          draws: 1,
+          losses: 2,
+          goalsFor: 11,
+          goalsAgainst: 9,
+          goalDifference: 2,
+          points: 10,
+          lastFive: ["W", "D", "L", "W", "W"],
+        },
+        {
+          position: 4,
+          name: "Gruzja",
+          matches: 6,
+          wins: 1,
+          draws: 1,
+          losses: 4,
+          goalsFor: 6,
+          goalsAgainst: 15,
+          goalDifference: -9,
+          points: 4,
+          lastFive: ["L", "L", "W", "D", "L"],
+        },
+        {
+          position: 5,
+          name: "Cypr",
+          matches: 7,
+          wins: 0,
+          draws: 0,
+          losses: 7,
+          goalsFor: 2,
+          goalsAgainst: 18,
+          goalDifference: -16,
+          points: 0,
+          lastFive: ["L", "L", "L", "L", "L"],
+        },
+      ],
     },
     {
-      slug: "wyniki-weekend",
-      title: "Wyniki 9. kolejki: Lider bezbłędny",
-      excerpt:
-        "Szybkie podsumowanie wszystkich spotkań weekendu w Ekstraklasie.",
-      date: "2025-10-09",
-      league: "Ekstraklasa",
-      image: "/images/wyniki.jpg",
-    },
-    {
-      slug: "sensacja-pucharu",
-      title: "Zaskakujące odpadnięcie faworyta Pucharu Polski",
-      excerpt:
-        "Analiza przyczyn wczesnej eliminacji potentata z niżej notowanym rywalem.",
-      date: "2025-10-05",
-      league: "Ekstraklasa",
-      image: "/images/puchar.jpg",
-    },
-    {
-      slug: "liga-mistrzow-faza-grupowa",
-      title: "Sensacje Ligi Mistrzów: Kto Zawiódł, Kto Zaskoczył?",
-      excerpt: "Podsumowanie pierwszej połowy fazy grupowej Ligi Mistrzów.",
-      date: "2025-10-10",
-      league: "Liga Mistrzów",
-      image: "/images/ucl.jpg",
-    },
-    {
-      slug: "analiza-el-clasico",
-      title: "Giganci w Kryzysie: Czy El Clásico ma jeszcze magię?",
-      excerpt:
-        "Dogłębna analiza formy Realu i Barcelony przed kolejnym starciem tytanów.",
-      date: "2025-10-14",
-      league: "LaLiga",
-      image: "/images/clasico.jpg",
+      name: "Grupa G",
+      teams: [
+        {
+          position: 1,
+          name: "Holandia",
+          matches: 6,
+          wins: 5,
+          draws: 1,
+          losses: 0,
+          goalsFor: 22,
+          goalsAgainst: 3,
+          goalDifference: 19,
+          points: 16,
+          lastFive: ["W", "W", "D", "W", "W"],
+        },
+        {
+          position: 2,
+          name: "Polska",
+          matches: 6,
+          wins: 4,
+          draws: 1,
+          losses: 1,
+          goalsFor: 10,
+          goalsAgainst: 4,
+          goalDifference: 6,
+          points: 13,
+          lastFive: ["W", "W", "D", "L", "W"],
+          status: "P",
+        },
+        {
+          position: 3,
+          name: "Finlandia",
+          matches: 7,
+          wins: 3,
+          draws: 1,
+          losses: 3,
+          goalsFor: 8,
+          goalsAgainst: 13,
+          goalDifference: -5,
+          points: 10,
+          lastFive: ["L", "W", "L", "D", "W"],
+        },
+        {
+          position: 4,
+          name: "Litwa",
+          matches: 7,
+          wins: 0,
+          draws: 3,
+          losses: 4,
+          goalsFor: 6,
+          goalsAgainst: 11,
+          goalDifference: -5,
+          points: 3,
+          lastFive: ["D", "L", "D", "L", "D"],
+        },
+        {
+          position: 5,
+          name: "Malta",
+          matches: 6,
+          wins: 0,
+          draws: 2,
+          losses: 4,
+          goalsFor: 1,
+          goalsAgainst: 16,
+          goalDifference: -15,
+          points: 2,
+          lastFive: ["D", "L", "L", "D", "L"],
+        },
+      ],
     },
   ];
-
-  const targetLeague = LEAGUE_NAMES[leagueSlug]
-    ? LEAGUE_NAMES[leagueSlug].split(" ")[0]
-    : leagueSlug;
-
-  return posts.filter((post) => post.league === targetLeague);
+  return groups;
 }
 
-const PostCard = ({ post }: { post: Post }) => (
-  <article className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-lg transition duration-500 hover:shadow-2xl hover:border-red-600/50">
-    <div className="p-6">
-      <p className="text-xs font-bold text-red-600 uppercase mb-2">
-        {post.league}
-      </p>
-      <Link href={`/blog/${post.slug}`} className="block">
-        <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-3 hover:text-red-600 transition duration-300">
-          {post.title}
-        </h3>
-      </Link>
-      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">
-        {post.excerpt}
-      </p>
-      <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 border-t pt-3 mt-3">
-        <span>{post.date}</span>
-        <Link
-          href={`/blog/${post.slug}`}
-          className="text-red-600 font-semibold hover:text-red-700 transition"
-        >
-          Czytaj więcej →
-        </Link>
-      </div>
-    </div>
-  </article>
-);
+const GroupTable = ({ group }: { group: Group }) => {
+  const getMatchResultBadge = (result: "W" | "D" | "L") => {
+    switch (result) {
+      case "W":
+        return (
+          <span className="result-badge win" title="Wygrana">
+            W
+          </span>
+        );
+      case "D":
+        return (
+          <span className="result-badge draw" title="Remis">
+            D
+          </span>
+        );
+      case "L":
+        return (
+          <span className="result-badge loss" title="Porażka">
+            L
+          </span>
+        );
+    }
+  };
 
-export default async function LeaguePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-
-  const posts = await getPostsByLeague(slug);
-  const leagueName = LEAGUE_NAMES[slug] || slug.toUpperCase();
+  const getRowClassName = (team: Team) => {
+    const classNames = ["table-row"];
+    if (team.status === "Q") {
+      classNames.push("promotion-zone");
+    } else if (team.status === "P") {
+      classNames.push("playoff-zone");
+    }
+    return classNames.join(" ");
+  };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white py-12">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <section className="mb-10 text-center bg-gray-800 p-8 rounded-xl shadow-2xl">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-2">
-            Sekcja: {leagueName}
-          </h1>
-          <p className="text-xl text-gray-400">
-            Wszystko, co musisz wiedzieć o najnowszych wydarzeniach.
-          </p>
-        </section>
+    <article className="league-table-section">
+      <h2 className="section-title">{group.name}</h2>
+      <div className="league-table-container">
+        <table className="league-table">
+          <thead>
+            <tr>
+              <th className="col-position">#</th>
+              <th className="col-team">Drużyna</th>
+              <th className="col-stat">M</th>
+              <th className="col-stat">W</th>
+              <th className="col-stat">R</th>
+              <th className="col-stat">P</th>
+              <th className="col-stat">Bramki</th>
+              <th className="col-stat">+/-</th>
+              <th className="col-points">Pkt</th>
+              <th className="col-form">Forma</th>
+            </tr>
+          </thead>
+          <tbody>
+            {group.teams.map((team) => (
+              <tr key={team.name} className={getRowClassName(team)}>
+                <td className="col-position">
+                  <div className="position-cell">
+                    {team.status === "Q" ? (
+                      <TrendingUp size={16} className="trend-up" />
+                    ) : (
+                      <Minus size={16} className="trend-neutral" />
+                    )}
+                    <span className="position-number">{team.position}</span>
+                  </div>
+                </td>
+                <td className="col-team">
+                  <div className="team-cell">
+                    <div className="team-logo-placeholder">
+                      {team.name.charAt(0)}
+                    </div>
+                    <span className="team-name">{team.name}</span>
+                  </div>
+                </td>
+                <td className="col-stat">{team.matches}</td>
+                <td className="col-stat">{team.wins}</td>
+                <td className="col-stat">{team.draws}</td>
+                <td className="col-stat">{team.losses}</td>
+                <td className="col-stat">
+                  {team.goalsFor}:{team.goalsAgainst}
+                </td>
+                <td className="col-stat">
+                  <span
+                    className={`goal-diff ${
+                      team.goalDifference > 0
+                        ? "positive"
+                        : team.goalDifference < 0
+                        ? "negative"
+                        : ""
+                    }`}
+                  >
+                    {team.goalDifference > 0 ? "+" : ""}
+                    {team.goalDifference}
+                  </span>
+                </td>
+                <td className="col-points">
+                  <span className="points-value">{team.points}</span>
+                </td>
+                <td className="col-form">
+                  <div className="form-badges">
+                    {team.lastFive.map((result, index) => (
+                      <React.Fragment key={index}>
+                        {getMatchResultBadge(result)}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="table-legend">
+        <div className="legend-item">
+          <span className="legend-indicator promotion-indicator"></span>
+          <span>Bezpośredni awans</span>
+        </div>
+        <div className="legend-item">
+          <span className="legend-indicator playoff-indicator"></span>
+          <span>Baraże</span>
+        </div>
+      </div>
+    </article>
+  );
+};
 
-        <section className="mb-12 flex flex-col md:flex-row gap-4 justify-between items-center">
-          <div className="relative w-full md:w-1/3">
-            <input
-              type="text"
-              placeholder={`Szukaj w ${leagueName}...`}
-              className="w-full py-2 pl-10 pr-4 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-600 transition"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
-          </div>
+export default async function QualifiersPage() {
+  const groups = await getQualifierGroups();
 
-          <div className="flex gap-4">
-            <select className="py-2 px-4 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 transition">
-              <option>Sortuj: Najnowsze</option>
-              <option>Sortuj: Popularność</option>
-            </select>
-          </div>
-        </section>
+  return (
+    <div className="qualifiers-page">
+      <header className="page-header">
+        <h1>Eliminacje MŚ 2026 - Strefa UEFA</h1>
+        <p>Aktualna sytuacja w grupach eliminacyjnych.</p>
+      </header>
 
-        {posts.length > 0 ? (
-          <section className="mb-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-              {posts.map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
-            </div>
-          </section>
-        ) : (
-          <div className="text-center py-20 bg-gray-800 rounded-xl">
-            <h2 className="text-3xl font-bold text-gray-300 mb-4">
-              Brak postów
-            </h2>
-            <p className="text-lg text-gray-500">
-              Nie ma jeszcze artykułów w tej kategorii. Sprawdź ponownie
-              później!
-            </p>
-          </div>
-        )}
+      <main className="groups-grid">
+        {groups.map((group) => (
+          <GroupTable key={group.name} group={group} />
+        ))}
       </main>
     </div>
   );

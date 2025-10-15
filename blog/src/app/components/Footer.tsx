@@ -93,7 +93,7 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row justify-between items-center pt-4">
           <div className="text-center md:text-left text-sm text-gray-500 order-2 md:order-1 mt-4 md:mt-0">
-            &copy; {currentYear} Piłkarski Magazyn. Wszystkie prawa zastrzeżone.
+            &copy; {currentYear} StrefaFutbolu. Wszystkie prawa zastrzeżone.
           </div>
 
           <div className="flex space-x-4 order-1 md:order-2">

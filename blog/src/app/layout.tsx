@@ -1,14 +1,9 @@
-// src/app/layout.tsx
-
 import type { Metadata } from "next";
-// Importujemy używane fonty (zakładam, że są zainstalowane)
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/nav/Navbar";
 import Footer from "./components/Footer";
-// Importujemy stworzony wcześniej komponent nawigacji
 
-// Konfiguracja fontów
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -20,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Piłkarski Magazyn  | Newsy, Analizy i Wyniki",
+  title: "StrefaFutbolu",
   description:
     "Najświeższe wiadomości, dogłębne analizy i statystyki z najważniejszych lig i turniejów piłkarskich na świecie.",
 };

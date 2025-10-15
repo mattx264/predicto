@@ -10,16 +10,19 @@ interface Post {
   image: string;
 }
 
-// Lista nazw turniejów do wyświetlania w nagłówku
+interface PageProps {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
 const TOURNAMENT_NAMES: { [key: string]: string } = {
   "mistrzostwa-swiata": "Mistrzostwa Świata 🌍",
-  "liga-mistrzow": "Liga Mistrzów ⭐", // Może być traktowana jako turniej
+  "liga-mistrzow": "Liga Mistrzów ⭐",
   "euro-2028": "EURO 2028 🏆",
   "copa-america": "Copa América 🏆",
 };
 
 async function getPostsByTournament(tournamentSlug: string): Promise<Post[]> {
-  // Posty są filtrowane przez slug. W rzeczywistości to API zwróciłoby gotowe, przefiltrowane dane.
   const posts: Post[] = [
     {
       slug: "messi-copa",
@@ -48,11 +51,15 @@ async function getPostsByTournament(tournamentSlug: string): Promise<Post[]> {
     },
   ];
 
-  const targetTournament = TOURNAMENT_NAMES[tournamentSlug]
-    ? TOURNAMENT_NAMES[tournamentSlug].split(" ")[0]
+  const tournamentDetails = Object.entries(TOURNAMENT_NAMES).find(
+    ([slug]) => slug === tournamentSlug
+  );
+
+  const targetLeague = tournamentDetails
+    ? tournamentDetails[1].split(" ")[0]
     : tournamentSlug;
 
-  return posts.filter((post) => post.league === targetTournament);
+  return posts.filter((post) => post.league.startsWith(targetLeague));
 }
 
 const PostCard = ({ post }: { post: Post }) => (
@@ -82,14 +89,11 @@ const PostCard = ({ post }: { post: Post }) => (
   </article>
 );
 
-export default async function TournamentPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const posts = await getPostsByTournament(params.slug);
+export default async function TournamentPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const posts = await getPostsByTournament(resolvedParams.slug);
   const tournamentName =
-    TOURNAMENT_NAMES[params.slug] || params.slug.toUpperCase();
+    TOURNAMENT_NAMES[resolvedParams.slug] || resolvedParams.slug.toUpperCase();
 
   return (
     <div className="min-h-screen bg-gray-900 text-white py-12">
