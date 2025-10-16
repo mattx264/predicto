@@ -1,24 +1,33 @@
 import Link from "next/link";
 import "./page.css";
 import { getTeams } from "../lib/teams";
+import * as flags from "country-flag-icons/react/3x2";
 
 const TeamCard = async () => {
   const teams = await getTeams();
 
   return (
     <div className="teams-grid">
-      {teams.map((team) => (
-        <Link
-          href={`/reprezentacje/${team.slug}`}
-          key={team.slug}
-          className="team-card"
-        >
-          <div className="flag-container">
-            <span className="flag-emoji">{team.flagEmoji}</span>
-          </div>
-          <h3 className="team-name">{team.name}</h3>
-        </Link>
-      ))}
+      {teams.map((team) => {
+        const FlagComponent = flags[team.flag as keyof typeof flags];
+
+        return (
+          <Link
+            href={`/reprezentacje/${team.slug}`}
+            key={team.slug}
+            className="team-card"
+          >
+            <div className="flag-container">
+              {FlagComponent ? (
+                <FlagComponent title={team.name} className="flag-svg" />
+              ) : (
+                <span className="flag-emoji">{team.flag}</span>
+              )}
+            </div>
+            <h3 className="team-name">{team.name}</h3>
+          </Link>
+        );
+      })}
     </div>
   );
 };

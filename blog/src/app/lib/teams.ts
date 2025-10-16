@@ -1,142 +1,177 @@
 export interface Player {
+  id: string;
+  slug: string;
   name: string;
   position: "Bramkarz" | "Obrońca" | "Pomocnik" | "Napastnik";
-  club: string;
   number: number;
+  club: string;
+  image: string;
+  clubLogo: string;
+  dateOfBirth: string;
+  height: string;
+  marketValue: string;
+  bio: string;
 }
 
 export interface Team {
+  id: string;
   slug: string;
   name: string;
-  flagEmoji: string;
+  flag: string;
   description: string;
+  coach: string;
+  keyPlayer: string;
+  recentForm: ("W" | "D" | "L")[];
   squad: Player[];
 }
 
 const teamsData: Team[] = [
   {
+    id: "pol",
     slug: "polska",
     name: "Polska",
-    flagEmoji: "🇵🇱",
-    description: `
-      <p>Reprezentacja Polski w piłce nożnej mężczyzn to drużyna, która od lat dostarcza kibicom niezapomnianych emocji. Biało-czerwoni dwukrotnie zajmowali trzecie miejsce na Mistrzostwach Świata w 1974 i 1982 roku, co uznawane jest za największe sukcesy w historii polskiej piłki.</p>
-      <p>Obecnie drużyna przechodzi przez okres przebudowy, stawiając na mieszankę doświadczonych liderów, takich jak Robert Lewandowski, z młodymi, utalentowanymi zawodnikami wchodzącymi do kadry. Celem na najbliższe lata jest regularny udział w wielkich turniejach i nawiązanie do najlepszych tradycji polskiego futbolu.</p>
-    `,
+    flag: "PL",
+    description:
+      "Reprezentacja Polski w piłce nożnej, członek FIFA od 1923 roku. Biało-czerwoni to dwukrotni medaliści Mistrzostw Świata, którzy w 1974 i 1982 roku zajmowali trzecie miejsce. Obecnie drużyna przechodzi przez okres przebudowy, stawiając na młodych, utalentowanych zawodników grających w czołowych ligach europejskich.",
+    coach: "Jan Urban",
+    keyPlayer: "Robert Lewandowski",
+    recentForm: ["W", "D", "L", "W", "W"],
     squad: [
       {
+        id: "pl1",
+        slug: "wojciech-szczesny",
         name: "Wojciech Szczęsny",
         position: "Bramkarz",
-        club: "Juventus F.C.",
         number: 1,
+        club: "FC Barcelona",
+        clubLogo:
+          "https://b.fssta.com/uploads/application/soccer/team-logos/barcelona.vresize.350.350.medium.0.png",
+
+        image:
+          "https://b.fssta.com/uploads/application/soccer/headshots/132.vresize.350.350.medium.1.png",
+        dateOfBirth: "18 kwietnia 1990",
+        height: "196 cm",
+        marketValue: "15 mln €",
+        bio: "Jeden z najlepszych polskich bramkarzy w historii. Znany z niesamowitego refleksu na linii i umiejętności bronienia rzutów karnych. W swojej karierze reprezentował takie kluby jak Arsenal, AS Roma, a obecnie jest filarem Juventusu.",
       },
       {
-        name: "Łukasz Skorupski",
-        position: "Bramkarz",
-        club: "Bologna FC",
-        number: 12,
-      },
-      {
-        name: "Jan Bednarek",
-        position: "Obrońca",
-        club: "Southampton F.C.",
-        number: 5,
-      },
-      {
-        name: "Jakub Kiwior",
-        position: "Obrońca",
-        club: "Arsenal F.C.",
-        number: 14,
-      },
-      {
-        name: "Matty Cash",
-        position: "Obrońca",
-        club: "Aston Villa F.C.",
-        number: 2,
-      },
-      {
-        name: "Przemysław Frankowski",
-        position: "Pomocnik",
-        club: "RC Lens",
-        number: 24,
-      },
-      {
-        name: "Piotr Zieliński",
-        position: "Pomocnik",
-        club: "S.S.C. Napoli",
-        number: 20,
-      },
-      {
-        name: "Sebastian Szymański",
-        position: "Pomocnik",
-        club: "Fenerbahçe S.K.",
-        number: 19,
-      },
-      {
-        name: "Jakub Moder",
-        position: "Pomocnik",
-        club: "Brighton & Hove Albion F.C.",
-        number: 8,
-      },
-      {
-        name: "Nicola Zalewski",
-        position: "Pomocnik",
-        club: "AS Roma",
-        number: 21,
-      },
-      {
+        id: "pl2",
+        slug: "robert-lewandowski",
         name: "Robert Lewandowski",
         position: "Napastnik",
-        club: "FC Barcelona",
         number: 9,
+        clubLogo:
+          "https://b.fssta.com/uploads/application/soccer/team-logos/barcelona.vresize.350.350.medium.0.png",
+
+        club: "FC Barcelona",
+        image:
+          "https://b.fssta.com/uploads/application/soccer/headshots/2100.vresize.350.350.medium.1.png",
+        dateOfBirth: "21 sierpnia 1988",
+        height: "185 cm",
+        marketValue: "40 mln €",
+        bio: "Kapitan i absolutna legenda reprezentacji Polski, najlepszy strzelec w jej historii. Uważany za jednego z najwybitniejszych napastników swojego pokolenia. Zdobywca Złotego Buta, wielokrotny król strzelców Bundesligi.",
       },
       {
-        name: "Arkadiusz Milik",
-        position: "Napastnik",
-        club: "Juventus F.C.",
-        number: 7,
+        id: "pl3",
+        slug: "piotr-zielinski",
+        name: "Piotr Zieliński",
+        position: "Pomocnik",
+        number: 20,
+        clubLogo:
+          "https://b.fssta.com/uploads/application/soccer/team-logos/inter-milan.vresize.350.350.medium.1.png",
+
+        club: "Inter Mediolan",
+        image:
+          "https://b.fssta.com/uploads/application/soccer/headshots/1610.vresize.350.350.medium.1.png",
+        dateOfBirth: "20 maja 1994",
+        height: "180 cm",
+        marketValue: "35 mln €",
+        bio: "Kreatywny i technicznie uzdolniony pomocnik, serce drugiej linii zarówno w klubie, jak i w reprezentacji. Słynie z doskonałego dryblingu, precyzyjnych podań i potężnego uderzenia z dystansu.",
       },
       {
-        name: "Krzysztof Piątek",
-        position: "Napastnik",
-        club: "İstanbul Başakşehir",
-        number: 23,
+        id: "pl4",
+        slug: "jakub-kiwior",
+        name: "Jakub Kiwior",
+        position: "Obrońca",
+        number: 14,
+        clubLogo:
+          "https://b.fssta.com/uploads/application/soccer/team-logos/fc-porto.vresize.350.350.medium.0.png",
+
+        club: "FC Porto",
+        image:
+          "https://b.fssta.com/uploads/application/soccer/headshots/80826.vresize.350.350.medium.1.png",
+        dateOfBirth: "15 lutego 2000",
+        height: "189 cm",
+        marketValue: "25 mln €",
+        bio: "Wszechstronny, lewonożny obrońca, który może grać zarówno na środku, jak i na lewej stronie defensywy. Ceniony za spokój w rozegraniu piłki i umiejętność czytania gry.",
+      },
+      {
+        id: "pl5",
+        slug: "jan-bednarek",
+        name: "Jan Bednarek",
+        position: "Obrońca",
+        number: 5,
+        clubLogo:
+          "https://b.fssta.com/uploads/application/soccer/team-logos/fc-porto.vresize.350.350.medium.0.png",
+
+        club: "FC Porto",
+        image:
+          "https://b.fssta.com/uploads/application/soccer/headshots/34909.vresize.350.350.medium.1.png",
+        dateOfBirth: "12 kwietnia 1996",
+        height: "189 cm",
+        marketValue: "12 mln €",
+        bio: "Doświadczony środkowy obrońca, znany z dobrej gry w powietrzu i nieustępliwości w pojedynkach. Od lat stanowi ważny punkt defensywy zarówno w klubie, jak i w kadrze narodowej.",
+      },
+      {
+        id: "pl6",
+        slug: "sebastian-szymanski",
+        name: "Sebastian Szymański",
+        position: "Pomocnik",
+        number: 19,
+        clubLogo:
+          "https://b.fssta.com/uploads/application/soccer/team-logos/fenerbahce.vresize.350.350.medium.0.png",
+
+        club: "Fenerbahçe S.K.",
+        image:
+          "https://b.fssta.com/uploads/application/soccer/headshots/44616.vresize.350.350.medium.1.png",
+        dateOfBirth: "10 maja 1999",
+        height: "174 cm",
+        marketValue: "20 mln €",
+        bio: "Dynamiczny i kreatywny ofensywny pomocnik, który potrafi zarówno strzelić gola, jak i wypracować sytuację kolegom. Jego wszechstronność i wizja gry czynią go kluczową postacią w ataku.",
       },
     ],
   },
   {
+    id: "ger",
     slug: "niemcy",
     name: "Niemcy",
-    flagEmoji: "🇩🇪",
-    description: "<p>Informacje o reprezentacji Niemiec pojawią się tutaj.</p>",
+    flag: "DE",
+    description: "...",
+    coach: "...",
+    keyPlayer: "...",
+    recentForm: ["W", "L", "D", "W", "L"],
     squad: [],
   },
   {
+    id: "eng",
     slug: "anglia",
     name: "Anglia",
-    flagEmoji: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    description: "<p>Informacje o reprezentacji Anglii pojawią się tutaj.</p>",
+    flag: "GB",
+    description: "...",
+    coach: "...",
+    keyPlayer: "...",
+    recentForm: ["W", "W", "D", "W", "W"],
     squad: [],
   },
   {
+    id: "fra",
     slug: "francja",
     name: "Francja",
-    flagEmoji: "🇫🇷",
-    description: "<p>Informacje o reprezentacji Francji pojawią się tutaj.</p>",
-    squad: [],
-  },
-  {
-    slug: "hiszpania",
-    name: "Hiszpania",
-    flagEmoji: "🇪🇸",
-    description:
-      "<p>Informacje o reprezentacji Hiszpanii pojawią się tutaj.</p>",
-    squad: [],
-  },
-  {
-    slug: "wlochy",
-    name: "Włochy",
-    flagEmoji: "🇮🇹",
-    description: "<p>Informacje o reprezentacji Włoch pojawią się tutaj.</p>",
+    flag: "FR",
+    description: "...",
+    coach: "...",
+    keyPlayer: "...",
+    recentForm: ["W", "W", "W", "L", "D"],
     squad: [],
   },
 ];
@@ -146,6 +181,14 @@ export async function getTeams(): Promise<Team[]> {
 }
 
 export async function getTeamBySlug(slug: string): Promise<Team | undefined> {
-  const teams = await getTeams();
-  return teams.find((team) => team.slug === slug);
+  return teamsData.find((team) => team.slug === slug);
+}
+
+export async function getPlayerBySlug(
+  teamSlug: string,
+  playerSlug: string
+): Promise<Player | undefined> {
+  const team = await getTeamBySlug(teamSlug);
+  if (!team) return undefined;
+  return team.squad.find((player) => player.slug === playerSlug);
 }

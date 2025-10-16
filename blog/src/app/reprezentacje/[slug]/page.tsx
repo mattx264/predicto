@@ -1,7 +1,16 @@
 import Link from "next/link";
-import { ArrowLeft, Shirt, Shield, Swords, Target } from "lucide-react";
+import Image from "next/image";
+import {
+  ArrowLeft,
+  User,
+  Shield,
+  Target,
+  TrendingUp,
+  Swords,
+} from "lucide-react";
 import "./page.css";
 import { getTeamBySlug, Player } from "@/app/lib/teams";
+import * as flags from "country-flag-icons/react/3x2";
 
 interface TeamProfilePageProps {
   params: Promise<{ slug: string }>;
@@ -18,6 +27,11 @@ const getPositionIcon = (position: Player["position"]) => {
     case "Napastnik":
       return <Target size={20} className="position-icon forward" />;
   }
+};
+
+const ResultBadge = ({ result }: { result: "W" | "D" | "L" }) => {
+  const resultClass = `result-${result.toLowerCase()}`;
+  return <span className={`result-badge ${resultClass}`}>{result}</span>;
 };
 
 export default async function TeamProfilePage({
@@ -37,11 +51,17 @@ export default async function TeamProfilePage({
     );
   }
 
+  const FlagComponent = flags[team.flag as keyof typeof flags];
+
   return (
     <div className="team-profile-page">
       <header className="team-profile-header">
         <div className="header-content">
-          <span className="header-flag">{team.flagEmoji}</span>
+          {FlagComponent ? (
+            <FlagComponent title={team.name} className="header-flag-svg" />
+          ) : (
+            <span className="header-flag">{team.flag}</span>
+          )}
           <h1 className="header-team-name">{team.name}</h1>
         </div>
         <Link
@@ -53,39 +73,76 @@ export default async function TeamProfilePage({
       </header>
 
       <main className="team-profile-main">
-        <section className="team-description-section">
-          <h2>Opis Reprezentacji</h2>
-          <div
-            className="description-content"
-            dangerouslySetInnerHTML={{ __html: team.description }}
-          />
-        </section>
+        <div className="main-grid">
+          <div className="main-content">
+            <section className="team-description-section">
+              <h2>Opis Reprezentacji</h2>
+              <p className="description-content">{team.description}</p>
+            </section>
 
-        <section className="team-squad-section">
-          <h2>Aktualny Skład</h2>
-          {team.squad.length > 0 ? (
-            <div className="squad-grid">
-              {team.squad.map((player) => (
-                <div key={player.name} className="player-card">
-                  <div className="player-number">
-                    <Shirt size={16} />
-                    <span>{player.number}</span>
-                  </div>
-                  <div className="player-info">
-                    <p className="player-name">{player.name}</p>
-                    <p className="player-club">{player.club}</p>
-                  </div>
-                  <div className="player-position">
-                    {getPositionIcon(player.position)}
-                    <span>{player.position}</span>
-                  </div>
+            <section className="team-squad-section">
+              <h2>Aktualny Skład</h2>
+              {team.squad.length > 0 ? (
+                <div className="squad-grid">
+                  {team.squad.map((player) => (
+                    <Link
+                      key={player.id}
+                      href={`/reprezentacje/${team.slug}/${player.slug}`}
+                      className="player-card-link"
+                    >
+                      <div className="player-card">
+                        <div className="player-avatar">
+                          <img
+                            src={player.image}
+                            alt={player.name}
+                            className="player-image"
+                          />
+                          <div className="player-number-badge">
+                            {player.number}
+                          </div>
+                        </div>
+                        <div className="player-info">
+                          <p className="player-name">{player.name}</p>
+                          <p className="player-club">{player.club}</p>
+                        </div>
+                        <div className="player-position">
+                          {getPositionIcon(player.position)}
+                          <span>{player.position}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
-              ))}
+              ) : (
+                <p className="no-squad-info">Brak informacji o składzie.</p>
+              )}
+            </section>
+          </div>
+          <aside className="sidebar">
+            <div className="sidebar-widget">
+              <h3>
+                <User size={18} /> Trener
+              </h3>
+              <p>{team.coach}</p>
             </div>
-          ) : (
-            <p className="no-squad-info">Brak informacji o składzie.</p>
-          )}
-        </section>
+            <div className="sidebar-widget">
+              <h3>
+                <Target size={18} /> Kluczowy zawodnik
+              </h3>
+              <p>{team.keyPlayer}</p>
+            </div>
+            <div className="sidebar-widget">
+              <h3>
+                <TrendingUp size={18} /> Ostatnia forma
+              </h3>
+              <div className="form-container">
+                {team.recentForm.map((result, index) => (
+                  <ResultBadge key={index} result={result} />
+                ))}
+              </div>
+            </div>
+          </aside>
+        </div>
       </main>
     </div>
   );
