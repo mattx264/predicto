@@ -13,5 +13,6 @@ namespace Predicto.Database.Interfaces.Repositories
         Task AddAsync(T entity);
         void Update(T entity);
         void Remove(T entity);
+        Task<T?> FindAsync(Func<T, bool> value);
     }
 }

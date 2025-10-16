@@ -43,5 +43,10 @@ namespace Predicto.Database.Repositories
         {
             _dbSet.Remove(entity);
         }
+
+        public Task<T?> FindAsync(Func<T, bool> value)
+        {
+            return Task.FromResult(_dbSet.FirstOrDefault(value));
+        }
     }
 }

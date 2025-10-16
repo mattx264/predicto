@@ -14,6 +14,8 @@ namespace Predicto.Database.Entities
         public string Description { get; set; }
         public int TournamentId { get; set; }
         public virtual TournamentEntity Tournament { get; set; }
+        public bool IsActive { get; set; } = true;
+
 
     }
 }
