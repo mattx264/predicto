@@ -9,8 +9,7 @@ namespace Predicto.Database.Entities.Sport
         public int SportCategoryId { get; set; }
         public virtual SportCategoryEntity SportCategory { get; set; }
         public string Name { get; set; }
-
-
+        public bool IsActive { get; set; } = true;
     }
 }
 

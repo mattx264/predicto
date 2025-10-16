@@ -1,4 +1,5 @@
 ﻿using Predicto.Database.Interfaces;
+using Predicto.Gateway.DTO.Sport;
 
 namespace Predicto.Database.Entities.Sport
 {
@@ -11,5 +12,9 @@ namespace Predicto.Database.Entities.Sport
         public required string FinalScore { get; set; }// 1:1 (4:5) //
         public DateTime StartGame { get; set; }
         public DateTime? EndGame { get; set; }
+        public virtual TournamentEntity Tournament { get; set; }
+        public virtual TeamEntity TeamOne { get; set; }
+        public virtual TeamEntity TeamTwo { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }
