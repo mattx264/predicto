@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, Sparkles, ArrowLeft } from "lucide-react";
+
 import "./LoginPage.css";
+import authService from "../services/signalr/auth.service";
+import { getErrorMessageWithFallback } from "../utils/erroUtils";
 
 interface LoginPageProps {
   onLogin?: (token: string) => void;
@@ -14,23 +17,37 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await authService.login(
+        formData.email,
+        formData.password
+      );
 
-    const mockToken = "mock-jwt-token-" + Date.now();
+      console.log("Zalogowano pomyślnie!");
 
-    setIsLoading(false);
-    console.log("Logowanie...", formData);
+      if (onLogin) {
+        onLogin(response.token);
+      }
 
-    if (onLogin) {
-      onLogin(mockToken);
+      await authService.getCurrentUser();
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Błąd logowania:", err);
+      setError(
+        getErrorMessageWithFallback(err, "Wystąpił błąd podczas logowania")
+      );
+    } finally {
+      setIsLoading(false);
     }
-    navigate("/dashboard");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +55,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    if (error) setError("");
   };
 
   return (
@@ -87,6 +105,24 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
           <div className="auth-form-container">
             <form onSubmit={handleSubmit} className="auth-form">
+              {error && (
+                <div
+                  className="error-message"
+                  style={{
+                    padding: "12px",
+                    marginBottom: "16px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(239, 68, 68, 0.1)",
+                    border: "1px solid rgba(239, 68, 68, 0.3)",
+                    color: "#ef4444",
+                    fontSize: "14px",
+                    textAlign: "center",
+                  }}
+                >
+                  {error}
+                </div>
+              )}
+
               <div className="input-group">
                 <Mail className="input-icon" size={18} />
                 <input
@@ -97,6 +133,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   placeholder="Email"
                   className="auth-input"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -110,11 +147,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   placeholder="Hasło"
                   className="auth-input"
                   required
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="password-toggle"
+                  disabled={isLoading}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -135,7 +174,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   {isLoading ? (
                     <>
                       <div className="spinner" />
-                      <span>Ładowanie...</span>
+                      <span>Logowanie...</span>
                     </>
                   ) : (
                     <>

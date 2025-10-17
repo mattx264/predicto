@@ -9,6 +9,8 @@ import {
   Sparkles,
   ArrowLeft,
 } from "lucide-react";
+import authService from "../services/signalr/auth.service";
+import { getErrorMessage } from "../utils/erroUtils";
 
 interface RegisterPageProps {
   onRegister?: (token: string) => void;
@@ -24,29 +26,54 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Hasła nie są identyczne!");
+      setError("Hasła nie są identyczne!");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Hasło musi mieć minimum 6 znaków");
+      return;
+    }
+
+    if (formData.username.length < 3) {
+      setError("Nazwa użytkownika musi mieć minimum 3 znaki");
       return;
     }
 
     setIsLoading(true);
+    try {
+      await authService.register(
+        formData.username,
+        formData.email,
+        formData.password,
+        "pl"
+      );
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+      const token = authService.getToken();
 
-    const mockToken = "mock-jwt-token-" + Date.now();
+      console.log("Zarejestrowano i zalogowano pomyślnie!");
 
-    setIsLoading(false);
-    console.log("Rejestracja...", formData);
+      if (onRegister && token) {
+        onRegister(token);
+      }
 
-    if (onRegister) {
-      onRegister(mockToken);
+      await authService.getCurrentUser();
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Błąd rejestracji:", err);
+      setError(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
     }
-    navigate("/dashboard");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +81,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    // Wyczyść błąd przy zmianie inputu
+    if (error) setError("");
   };
 
   return (
@@ -103,6 +132,24 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
 
           <div className="auth-form-container">
             <form onSubmit={handleSubmit} className="auth-form">
+              {error && (
+                <div
+                  className="error-message"
+                  style={{
+                    padding: "12px",
+                    marginBottom: "16px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(239, 68, 68, 0.1)",
+                    border: "1px solid rgba(239, 68, 68, 0.3)",
+                    color: "#ef4444",
+                    fontSize: "14px",
+                    textAlign: "center",
+                  }}
+                >
+                  {error}
+                </div>
+              )}
+
               <div className="input-group">
                 <User className="input-icon" size={18} />
                 <input
@@ -114,6 +161,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                   className="auth-input"
                   required
                   minLength={3}
+                  disabled={isLoading}
                 />
               </div>
 
@@ -127,6 +175,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                   placeholder="Email"
                   className="auth-input"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -141,11 +190,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                   className="auth-input"
                   required
                   minLength={6}
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="password-toggle"
+                  disabled={isLoading}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -162,11 +213,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                   className="auth-input"
                   required
                   minLength={6}
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="password-toggle"
+                  disabled={isLoading}
                 >
                   {showConfirmPassword ? (
                     <EyeOff size={18} />

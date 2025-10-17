@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./i18n/i18n";
 import Navigation from "./nav/Navigation";
 import LoginPage from "./login/LoginPage";
@@ -18,22 +18,69 @@ import RankingPage from "./ranking/RankingPage";
 import DashboardPage from "./dashboard/DashboardPage";
 import HowToPlay from "./how-to-play/HowToPlay";
 import SplashScreen from "./splash-screen/SplashScreen";
+import authService from "./services/signalr/auth.service";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [username, setUsername] = useState("Gracz");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = authService.getToken();
+
+      if (token && !authService.isTokenExpired(token)) {
+        setIsAuthenticated(true);
+
+        const user = await authService.getCurrentUser();
+        if (user) {
+          setUsername(user.name);
+        }
+      } else {
+        authService.logout();
+        setIsAuthenticated(false);
+      }
+
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, []);
 
   if (showSplash) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;
   }
-  const handleLogin = (token: string) => {
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
+      >
+        <div className="spinner" />
+      </div>
+    );
+  }
+
+  const handleLogin = async (token: string) => {
     setIsAuthenticated(true);
-    localStorage.setItem("authToken", token);
+
+    const user = await authService.getCurrentUser();
+    if (user) {
+      setUsername(user.name);
+    }
   };
 
   const handleLogout = () => {
+    authService.logout();
     setIsAuthenticated(false);
-    localStorage.removeItem("authToken");
+    setUsername("Gracz");
   };
 
   return (
@@ -41,7 +88,7 @@ function App() {
       <Navigation
         isAuthenticated={isAuthenticated}
         onLogout={handleLogout}
-        username="Gracz"
+        username={username}
       />
 
       <Routes>
