@@ -9,11 +9,19 @@ import {
   Swords,
 } from "lucide-react";
 import "./page.css";
-import { getTeamBySlug, Player } from "@/app/lib/teams";
+import { getTeamBySlug, getTeams, Player } from "@/app/lib/teams";
 import * as flags from "country-flag-icons/react/3x2";
 
 interface TeamProfilePageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  const teams = await getTeams();
+
+  return teams.map((team) => ({
+    slug: team.slug,
+  }));
 }
 
 const getPositionIcon = (position: Player["position"]) => {

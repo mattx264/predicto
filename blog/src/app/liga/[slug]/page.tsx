@@ -22,7 +22,15 @@ interface Group {
   teams: Team[];
 }
 
-async function getQualifierGroups(): Promise<Group[]> {
+interface LeaguePageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  return [{ liga: "liga", slug: "liga" }];
+}
+
+async function getQualifierGroups(slug: string): Promise<Group[]> {
   const groups: Group[] = [
     {
       name: "Grupa A",
@@ -111,6 +119,7 @@ async function getQualifierGroups(): Promise<Group[]> {
           goalDifference: 19,
           points: 16,
           lastFive: ["W", "W", "D", "W", "W"],
+          status: "Q",
         },
         {
           position: 2,
@@ -297,8 +306,9 @@ const GroupTable = ({ group }: { group: Group }) => {
   );
 };
 
-export default async function QualifiersPage() {
-  const groups = await getQualifierGroups();
+export default async function LeaguePage({ params }: LeaguePageProps) {
+  const { slug } = await params;
+  const groups = await getQualifierGroups(slug);
 
   return (
     <div className="qualifiers-page">

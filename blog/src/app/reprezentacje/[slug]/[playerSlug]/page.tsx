@@ -1,7 +1,26 @@
 import Link from "next/link";
 import { ArrowLeft, Cake, Ruler, BarChart2, Shield } from "lucide-react";
 import "./page.css";
-import { getPlayerBySlug } from "@/app/lib/teams";
+import { getPlayerBySlug, getTeams, getTeamBySlug } from "@/app/lib/teams";
+
+export async function generateStaticParams() {
+  const teams = await getTeams();
+  const params = [];
+
+  for (const team of teams) {
+    const fullTeam = await getTeamBySlug(team.slug);
+    if (fullTeam && fullTeam.squad.length > 0) {
+      for (const player of fullTeam.squad) {
+        params.push({
+          slug: team.slug,
+          playerSlug: player.slug,
+        });
+      }
+    }
+  }
+
+  return params;
+}
 
 export default async function PlayerProfilePage({
   params,
