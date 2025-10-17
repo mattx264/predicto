@@ -9,12 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@next/third-parties": "^15.5.6",
     "country-flag-icons": "^1.5.21",
+    "express": "5.1.0",
     "lucide-react": "^0.545.0",
     "next": "15.5.5",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "express": "5.1.0"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
