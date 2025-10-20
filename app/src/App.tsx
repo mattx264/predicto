@@ -68,7 +68,7 @@ function App() {
     );
   }
 
-  const handleLogin = async (token: string) => {
+  const handleLogin = async () => {
     setIsAuthenticated(true);
 
     const user = await authService.getCurrentUser();

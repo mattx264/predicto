@@ -1,8 +1,10 @@
-export enum RoomStatusDTO {
-  Waiting = 0,
-  InProgress = 1,
-  Completed = 2,
-}
+export const RoomStatusDTO = {
+  Waiting: 0,
+  InProgress: 1,
+  Completed: 2,
+} as const;
+
+export type RoomStatusDTO = (typeof RoomStatusDTO)[keyof typeof RoomStatusDTO];
 
 export interface RoomFormData {
   tournamentTemplateId: string;
