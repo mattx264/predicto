@@ -58,7 +58,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
     onClose();
   };
 
-  const createOrder = (data: CreateOrderData, actions: CreateOrderActions) => {
+  const createOrder = (_data: CreateOrderData, actions: CreateOrderActions) => {
     setIsProcessing(true);
     return actions.order.create({
       intent: "CAPTURE",
@@ -74,7 +74,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
     });
   };
 
-  const onApprove = (data: OnApproveData, actions: OnApproveActions) => {
+  const onApprove = (_data: OnApproveData, actions: OnApproveActions) => {
     return actions.order!.capture().then((details) => {
       console.log("Płatność pomyślna:", details);
       setPaymentStatus("success");
@@ -86,7 +86,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
     });
   };
 
-  const onError = (err: any) => {
+  const onError = (err: unknown) => {
     console.error("Błąd płatności PayPal:", err);
     setErrorMessage("Wystąpił błąd podczas płatności. Spróbuj ponownie.");
     setPaymentStatus("error");

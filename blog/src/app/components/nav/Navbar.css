@@ -21,7 +21,6 @@
   height: 80px;
 }
 
-/* Logo */
 .navbar-logo {
   flex-shrink: 0;
 }
@@ -45,7 +44,6 @@
   transform: scale(1.05);
 }
 
-/* Desktop Navigation */
 .navbar-desktop {
   display: none;
   align-items: center;
@@ -127,6 +125,60 @@
   50% {
     opacity: 1;
   }
+}
+
+.tournament-selector {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+.tournament-select-dropdown {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background: transparent;
+  color: #e5e7eb;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.tournament-select-dropdown:hover {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.tournament-select-dropdown option {
+  background: #1b263b;
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+.tournament-select-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #9ca3af;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.tournament-selector:hover .tournament-select-icon {
+  color: #3b82f6;
 }
 
 .cta-button {
@@ -273,7 +325,7 @@
 }
 
 .mobile-menu.open {
-  max-height: 500px;
+  max-height: 550px;
   opacity: 1;
   padding: 1rem 0;
   border-top: 1px solid rgba(59, 130, 246, 0.3);
@@ -285,6 +337,40 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.mobile-tournament-selector {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  animation: slideDown 0.4s ease forwards;
+}
+
+.mobile-tournament-selector .tournament-select-dropdown {
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  text-align-last: center;
+  padding: 0.875rem 2.5rem 0.875rem 1rem;
+  background: rgba(59, 130, 246, 0.1);
+  color: #e5e7eb;
+  transform: none;
+}
+
+.mobile-tournament-selector .tournament-select-dropdown:hover {
+  background: rgba(59, 130, 246, 0.2);
+  color: #ffffff;
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: none;
+}
+
+.mobile-tournament-selector .tournament-select-icon {
+  color: #e5e7eb;
+}
+
+.mobile-tournament-selector:hover .tournament-select-icon {
+  color: #3b82f6;
 }
 
 .mobile-nav-link {
@@ -367,26 +453,33 @@
   }
 }
 
-.mobile-menu.open .mobile-nav-link,
-.mobile-menu.open .mobile-cta-button {
+.mobile-menu.open .mobile-menu-content > * {
   animation: slideDown 0.4s ease forwards;
+  opacity: 0;
 }
 
-.mobile-menu.open .mobile-nav-link:nth-child(1) {
+.mobile-menu.open .mobile-menu-content > *:nth-child(1) {
   animation-delay: 0.1s;
 }
-.mobile-menu.open .mobile-nav-link:nth-child(2) {
+.mobile-menu.open .mobile-menu-content > *:nth-child(2) {
   animation-delay: 0.15s;
 }
-.mobile-menu.open .mobile-nav-link:nth-child(3) {
+.mobile-menu.open .mobile-menu-content > *:nth-child(3) {
   animation-delay: 0.2s;
 }
-.mobile-menu.open .mobile-nav-link:nth-child(4) {
+.mobile-menu.open .mobile-menu-content > *:nth-child(4) {
   animation-delay: 0.25s;
 }
-.mobile-menu.open .mobile-nav-link:nth-child(5) {
+.mobile-menu.open .mobile-menu-content > *:nth-child(5) {
   animation-delay: 0.3s;
 }
-.mobile-menu.open .mobile-cta-button {
+.mobile-menu.open .mobile-menu-content > *:nth-child(6) {
   animation-delay: 0.35s;
+}
+.mobile-menu.open .mobile-menu-content > *:nth-child(7) {
+  animation-delay: 0.4s;
+}
+
+.mobile-menu.open .mobile-menu-content > *:nth-child(8) {
+  animation-delay: 0.45s;
 }

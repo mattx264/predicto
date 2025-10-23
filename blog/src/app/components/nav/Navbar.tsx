@@ -1,34 +1,119 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { Menu, X, Trophy } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { Menu, X, Trophy, ChevronDown } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import "./Navbar.css";
+import { DEFAULT_TOURNAMENT, TOURNAMENTS } from "@/app/lib/tournaments";
 
-interface NavLink {
-  href: string;
-  label: string;
-}
-
-const navLinks: NavLink[] = [
+const globalNavLinks = [
   { href: "/", label: "Główna" },
   { href: "/blog", label: "Wszystkie Posty" },
-  { href: "/terminarz", label: "Terminarz" },
-  { href: "/liga/eliminacje", label: "El. MŚ 2026" },
-  { href: "/reprezentacje", label: "Reprezentacje" },
   { href: "/o-nas", label: "O Blogu" },
 ];
 
-export default function Navbar() {
+const contextualNavLinks = [
+  { href: "/terminarz", label: "Terminarz" },
+  { href: "/reprezentacje", label: "Reprezentacje" },
+];
+
+function NavbarContent() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const blogName = "StrefaFutbolu";
+
+  const [activeTournamentSlug, setActiveTournamentSlug] = useState(
+    DEFAULT_TOURNAMENT.slug
+  );
+
+  useEffect(() => {
+    let newSlug = DEFAULT_TOURNAMENT.slug;
+
+    const pathSegments = pathname.split("/").filter(Boolean);
+    const slugFromPath = pathSegments[0];
+    const tournamentFromPath = TOURNAMENTS.find((t) => t.slug === slugFromPath);
+
+    if (tournamentFromPath) {
+      newSlug = tournamentFromPath.slug;
+    } else if (pathname.startsWith("/blog")) {
+      const slugFromQuery = searchParams.get("tournament");
+      const tournamentFromQuery = TOURNAMENTS.find(
+        (t) => t.slug === slugFromQuery
+      );
+      if (tournamentFromQuery) {
+        newSlug = tournamentFromQuery.slug;
+      }
+    }
+
+    setActiveTournamentSlug(newSlug);
+  }, [pathname, searchParams]);
+
+  const currentTournament =
+    TOURNAMENTS.find((t) => t.slug === activeTournamentSlug) ||
+    DEFAULT_TOURNAMENT;
+
+  const handleTournamentChange = (newTournamentSlug: string) => {
+    if (newTournamentSlug === currentTournament.slug) return;
+
+    if (pathname.startsWith("/blog")) {
+      router.push(`/blog?tournament=${newTournamentSlug}`);
+      setIsOpen(false);
+      return;
+    }
+
+    const pathSegments = pathname.split("/").filter(Boolean);
+    const isContextualPage = contextualNavLinks.some((link) =>
+      pathname.includes(link.href)
+    );
+
+    let newPath = "";
+    if (isContextualPage && pathSegments.length > 1) {
+      const newSegments = [newTournamentSlug, ...pathSegments.slice(1)];
+      newPath = `/${newSegments.join("/")}`;
+    } else {
+      newPath = `/${newTournamentSlug}`;
+    }
+
+    router.push(newPath);
+    setIsOpen(false);
+  };
+
+  const dynamicNavLinks = contextualNavLinks.map((link) => ({
+    ...link,
+    href: `/${activeTournamentSlug}${link.href}`,
+  }));
+
+  const allNavLinks = [...globalNavLinks, ...dynamicNavLinks];
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === href;
+    if (href === "/blog") return pathname.startsWith("/blog");
     return pathname.startsWith(href);
   };
+
+  const TournamentSelector = ({ inMobileMenu = false }) => (
+    <div
+      className={
+        inMobileMenu ? "mobile-tournament-selector" : "tournament-selector"
+      }
+    >
+      <select
+        value={currentTournament.slug}
+        onChange={(e) => handleTournamentChange(e.target.value)}
+        className="tournament-select-dropdown"
+      >
+        {TOURNAMENTS.map((tournament) => (
+          <option key={tournament.slug} value={tournament.slug}>
+            {tournament.name}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="tournament-select-icon" />
+    </div>
+  );
 
   return (
     <nav className="navbar">
@@ -41,7 +126,9 @@ export default function Navbar() {
           </div>
 
           <div className="navbar-desktop">
-            {navLinks.map((link) => (
+            <TournamentSelector />
+
+            {allNavLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -93,7 +180,9 @@ export default function Navbar() {
 
       <div className={`mobile-menu ${isOpen ? "open" : ""}`} id="mobile-menu">
         <div className="mobile-menu-content">
-          {navLinks.map((link) => (
+          <TournamentSelector inMobileMenu={true} />
+
+          {allNavLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -119,5 +208,32 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+  );
+}
+
+function NavbarFallback() {
+  return (
+    <nav className="navbar">
+      <div className="navbar-container">
+        <div className="navbar-content">
+          <div className="navbar-logo">
+            <Link href="/" className="logo-link">
+              StrefaFutbolu
+            </Link>
+          </div>
+          <div className="navbar-desktop">
+            <div>Ładowanie...</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+export default function Navbar() {
+  return (
+    <Suspense fallback={<NavbarFallback />}>
+      <NavbarContent />
+    </Suspense>
   );
 }

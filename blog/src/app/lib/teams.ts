@@ -25,7 +25,7 @@ export interface Team {
   squad: Player[];
 }
 
-const teamsData: Team[] = [
+const elMs2026Teams: Team[] = [
   {
     id: "pol",
     slug: "polska",
@@ -146,9 +146,9 @@ const teamsData: Team[] = [
     slug: "niemcy",
     name: "Niemcy",
     flag: "DE",
-    description: "...",
-    coach: "...",
-    keyPlayer: "...",
+    description: "Czterokrotni mistrzowie świata.",
+    coach: "Julian Nagelsmann",
+    keyPlayer: "Jamal Musiala",
     recentForm: ["W", "L", "D", "W", "L"],
     squad: [],
   },
@@ -157,9 +157,9 @@ const teamsData: Team[] = [
     slug: "anglia",
     name: "Anglia",
     flag: "GB",
-    description: "...",
-    coach: "...",
-    keyPlayer: "...",
+    description: "Kolebka futbolu.",
+    coach: "Gareth Southgate",
+    keyPlayer: "Jude Bellingham",
     recentForm: ["W", "W", "D", "W", "W"],
     squad: [],
   },
@@ -168,27 +168,105 @@ const teamsData: Team[] = [
     slug: "francja",
     name: "Francja",
     flag: "FR",
-    description: "...",
-    coach: "...",
-    keyPlayer: "...",
+    description: "Mistrzowie Świata 2018.",
+    coach: "Didier Deschamps",
+    keyPlayer: "Kylian Mbappé",
     recentForm: ["W", "W", "W", "L", "D"],
     squad: [],
   },
 ];
 
-export async function getTeams(): Promise<Team[]> {
-  return teamsData;
+const euro2024Teams: Team[] = [
+  {
+    id: "esp",
+    slug: "hiszpania",
+    name: "Hiszpania",
+    flag: "ES",
+    description: "Mistrzowie Europy 2024.",
+    coach: "Luis de la Fuente",
+    keyPlayer: "Lamine Yamal",
+    recentForm: ["W", "W", "W", "W", "W"],
+    squad: [],
+  },
+  {
+    id: "ita",
+    slug: "wlochy",
+    name: "Włochy",
+    flag: "IT",
+    description: "Obrońcy tytułu Mistrza Europy (z 2020).",
+    coach: "Luciano Spalletti",
+    keyPlayer: "Nicolo Barella",
+    recentForm: ["W", "D", "W", "L", "W"],
+    squad: [],
+  },
+];
+
+const mundial2022Teams: Team[] = [
+  {
+    id: "arg",
+    slug: "argentyna",
+    name: "Argentyna",
+    flag: "AR",
+    description: "Mistrzowie Świata 2022.",
+    coach: "Lionel Scaloni",
+    keyPlayer: "Lionel Messi",
+    recentForm: ["W", "W", "W", "W", "W"],
+    squad: [],
+  },
+  {
+    id: "mar",
+    slug: "maroko",
+    name: "Maroko",
+    flag: "MA",
+    description: "Rewelacja Mundialu 2022, półfinalista.",
+    coach: "Walid Regragui",
+    keyPlayer: "Achraf Hakimi",
+    recentForm: ["W", "D", "W", "L", "W"],
+    squad: [],
+  },
+  {
+    id: "fra",
+    slug: "francja",
+    name: "Francja",
+    flag: "FR",
+    description: "Finaliści Mundialu 2022.",
+    coach: "Didier Deschamps",
+    keyPlayer: "Kylian Mbappé",
+    recentForm: ["W", "W", "W", "L", "D"],
+    squad: [],
+  },
+];
+
+const allTeamsDatabase: Record<string, Team[]> = {
+  "el-ms-2026": elMs2026Teams,
+  "euro-2024": euro2024Teams,
+  "mundial-2022": mundial2022Teams,
+};
+
+export async function getTeams(tournamentSlug: string): Promise<Team[]> {
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  return allTeamsDatabase[tournamentSlug] || [];
 }
 
-export async function getTeamBySlug(slug: string): Promise<Team | undefined> {
-  return teamsData.find((team) => team.slug === slug);
+export async function getTeamBySlug(
+  tournamentSlug: string,
+  slug: string
+): Promise<Team | undefined> {
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  const teams = await getTeams(tournamentSlug);
+  return teams.find((team) => team.slug === slug);
 }
 
 export async function getPlayerBySlug(
+  tournamentSlug: string,
   teamSlug: string,
   playerSlug: string
 ): Promise<Player | undefined> {
-  const team = await getTeamBySlug(teamSlug);
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  const team = await getTeamBySlug(tournamentSlug, teamSlug);
   if (!team) return undefined;
+
   return team.squad.find((player) => player.slug === playerSlug);
 }

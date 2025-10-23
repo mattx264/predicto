@@ -3,12 +3,9 @@ import type { Room } from "../types/types";
 
 export const roomsSignal = signal<Room[]>([]);
 
-export const roomsConnectionStatusSignal = signal;
-"disconnected" |
-  "connecting" |
-  "connected" |
-  "reconnecting" |
-  ("error" > "disconnected");
+export const roomsConnectionStatusSignal = signal<
+  "disconnected" | "connecting" | "connected" | "reconnecting" | "error"
+>("disconnected");
 
 export const roomsLoadingSignal = signal<boolean>(false);
 

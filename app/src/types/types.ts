@@ -1,8 +1,11 @@
-export enum RoomStatusDTO {
-  Waiting = 0,
-  InProgress = 1,
-  Completed = 2,
-}
+export const RoomStatusDTO = {
+  Waiting: 0,
+  InProgress: 1,
+  Completed: 2,
+} as const;
+
+export type RoomStatusDTO = (typeof RoomStatusDTO)[keyof typeof RoomStatusDTO];
+
 export interface RoomFormData {
   tournamentTemplateId: string;
   roomName: string;
@@ -22,6 +25,7 @@ export interface RoomFormData {
     };
   };
 }
+
 export interface Match {
   id: string;
   homeTeam: string;
@@ -40,10 +44,29 @@ export interface Match {
   };
   points?: number;
 }
+
+// ===== auth types =====
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  username: string;
+  email: string;
+  password: string;
+  lang: string;
+}
+
+export interface AuthResponse {
+  token: string;
+}
+
 export interface UserDto {
   id: number;
-  username: string;
-  email?: string;
+  name: string;
+  email: string;
 }
 
 export interface RoomDTO {
@@ -85,42 +108,18 @@ export const mapRoomDtoToRoom = (dto: RoomDTO): Room => {
   return {
     id: dto.id.toString(),
     name: dto.name,
-
     creator: `User${dto.createdByUserId}`,
-
     participants: dto.users?.length || 0,
     maxParticipants: dto.maxUsers ?? 10,
     entryFee: dto.entryFee,
-
     prize: dto.entryFee * (dto.users?.length || 0),
-
     league: `Tournament ${dto.tournamentId}`,
-
     startDate: dto.createdAt,
-
     endDate: "Unknown",
-
     isPrivate: !dto.isPublic,
     status: statusMap[dto.roomStatus],
   };
 };
-
-export interface Match {
-  id: string;
-  homeTeam: string;
-  awayTeam: string;
-  date: string;
-  status: "upcoming" | "live" | "finished";
-  actualScore?: {
-    home: number;
-    away: number;
-  };
-  userPrediction?: {
-    home: number;
-    away: number;
-  };
-  points?: number;
-}
 
 export interface Participant {
   id: string;

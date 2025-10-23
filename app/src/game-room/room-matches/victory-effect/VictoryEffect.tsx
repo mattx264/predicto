@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
+import type { Engine, ISourceOptions } from "tsparticles-engine";
 
 interface VictoryParticlesProps {
   show: boolean;
@@ -13,7 +14,7 @@ const VictoryParticles: React.FC<VictoryParticlesProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  const particlesInit = useCallback(async (engine: any) => {
+  const particlesInit = useCallback(async (engine: Engine) => {
     await loadFull(engine);
   }, []);
 
@@ -210,11 +211,6 @@ const VictoryParticles: React.FC<VictoryParticlesProps> = ({
           default: "destroy",
           bottom: "destroy",
         },
-        wobble: {
-          enable: true,
-          distance: 20,
-          speed: 10,
-        },
       },
     },
     emitters: {
@@ -351,16 +347,16 @@ const VictoryParticles: React.FC<VictoryParticlesProps> = ({
     ],
   };
 
-  const getConfig = () => {
+  const getConfig = (): ISourceOptions => {
     switch (type) {
       case "confetti":
-        return confettiConfig;
+        return confettiConfig as ISourceOptions;
       case "trophy":
-        return trophyRainConfig;
+        return trophyRainConfig as ISourceOptions;
       case "fireworks":
-        return fireworksConfig;
+        return fireworksConfig as ISourceOptions;
       default:
-        return confettiConfig;
+        return confettiConfig as ISourceOptions;
     }
   };
 
@@ -378,7 +374,7 @@ const VictoryParticles: React.FC<VictoryParticlesProps> = ({
       <Particles
         id={`particles-${Math.random()}`}
         init={particlesInit}
-        options={getConfig()}
+        options={getConfig() as unknown as ISourceOptions}
         style={{
           position: "absolute",
           width: "100%",

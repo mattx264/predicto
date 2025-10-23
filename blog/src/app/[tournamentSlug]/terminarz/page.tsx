@@ -1,8 +1,11 @@
 "use client";
 
 import { Calendar, Trophy, Clock } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import "./page.css";
+import { useEffect, useState } from "react";
+import { TOURNAMENTS } from "@/app/lib/tournaments";
+import Image from "next/image";
 
 type Match = {
   id: string;
@@ -17,7 +20,13 @@ type Match = {
   date: string;
 };
 
-const MatchCard = ({ match }: { match: Match }) => {
+const MatchCard = ({
+  match,
+  tournamentSlug,
+}: {
+  match: Match;
+  tournamentSlug: string;
+}) => {
   const router = useRouter();
 
   const getStatusClass = (status: Match["status"]) => {
@@ -32,7 +41,7 @@ const MatchCard = ({ match }: { match: Match }) => {
   };
 
   const handleMatchClick = () => {
-    router.push(`/terminarz/${match.id}`);
+    router.push(`/${tournamentSlug}/terminarz/${match.id}`);
   };
 
   return (
@@ -47,10 +56,12 @@ const MatchCard = ({ match }: { match: Match }) => {
           <div className="team-content">
             <span className="team-name">{match.teamA}</span>
             <div className="team-logo-wrapper">
-              <img
+              <Image
                 src={match.teamALogo}
                 alt={`${match.teamA} logo`}
                 className="team-logo"
+                width={64}
+                height={64}
               />
             </div>
           </div>
@@ -87,10 +98,12 @@ const MatchCard = ({ match }: { match: Match }) => {
         >
           <div className="team-content">
             <div className="team-logo-wrapper">
-              <img
+              <Image
                 src={match.teamBLogo}
                 alt={`${match.teamB} logo`}
                 className="team-logo"
+                width={64}
+                height={64}
               />
             </div>
             <span className="team-name">{match.teamB}</span>
@@ -100,13 +113,14 @@ const MatchCard = ({ match }: { match: Match }) => {
 
       <div className="league-badge">
         <Trophy size={12} />
+
         <span>{match.league}</span>
       </div>
     </div>
   );
 };
 
-const demoMatches: Match[] = [
+const allDemoMatches: Match[] = [
   {
     id: "1",
     teamA: "Polska",
@@ -115,17 +129,17 @@ const demoMatches: Match[] = [
     teamBLogo: "https://flagcdn.com/w320/de.png",
     score: "2 - 1",
     status: "Zakończony",
-    league: "Eliminacje ME",
+    league: "el-ms-2026",
     date: "2025-10-16",
   },
   {
     id: "2",
-    teamA: "Hiszpania",
-    teamB: "Francja",
-    teamALogo: "https://flagcdn.com/w320/es.png",
-    teamBLogo: "https://flagcdn.com/w320/fr.png",
+    teamA: "Szkocja",
+    teamB: "Węgry",
+    teamALogo: "https://flagcdn.com/w320/gb-sct.png",
+    teamBLogo: "https://flagcdn.com/w320/hu.png",
     status: "LIVE",
-    league: "Liga Narodów",
+    league: "euro-2024",
     date: "2025-10-16",
   },
   {
@@ -136,33 +150,100 @@ const demoMatches: Match[] = [
     teamBLogo: "https://flagcdn.com/w320/gb-eng.png",
     time: "20:45",
     status: "Zaplanowany",
-    league: "Towarzyski",
+    league: "el-ms-2026",
     date: "2025-10-16",
+  },
+  {
+    id: "4",
+    teamA: "Argentyna",
+    teamB: "Francja",
+    teamALogo: "https://flagcdn.com/w320/ar.png",
+    teamBLogo: "https://flagcdn.com/w320/fr.png",
+    score: "3 - 3 (4-2 p.)",
+    status: "Zakończony",
+    league: "mundial-2022",
+    date: "2022-12-18",
+  },
+  {
+    id: "5",
+    teamA: "Hiszpania",
+    teamB: "Chorwacja",
+    teamALogo: "https://flagcdn.com/w320/es.png",
+    teamBLogo: "https://flagcdn.com/w320/hr.png",
+    time: "18:00",
+    status: "Zaplanowany",
+    league: "euro-2024",
+    date: "2025-10-17",
   },
 ];
 
+async function getMatchesForTournament(slug: string): Promise<Match[]> {
+  console.log("Pobieranie meczy dla turnieju:", slug);
+
+  const matches = allDemoMatches.filter((match) => match.league === slug);
+
+  return new Promise((resolve) => setTimeout(() => resolve(matches), 300));
+}
+
 export default function SchedulePage() {
+  const params = useParams();
+  const tournamentSlug = params.tournamentSlug as string;
+
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const tournament = TOURNAMENTS.find((t) => t.slug === tournamentSlug);
+  const tournamentName = tournament ? tournament.name : "Turniej";
+
+  useEffect(() => {
+    if (tournamentSlug) {
+      setLoading(true);
+      getMatchesForTournament(tournamentSlug).then((data) => {
+        setMatches(data);
+        setLoading(false);
+      });
+    }
+  }, [tournamentSlug]);
+
   return (
     <div className="schedule-page-container">
       <header className="schedule-page-header">
         <div className="header-icon">
           <Calendar size={48} />
         </div>
-        <h1>Terminarz Meczów</h1>
-        <p>Nadchodzące i zakończone spotkania z najważniejszych lig</p>
+        <h1>Terminarz: {tournamentName}</h1>
+        <p>Nadchodzące i zakończone spotkania dla wybranego turnieju.</p>
       </header>
 
       <main className="schedule-main">
         <section className="date-group">
           <div className="date-header">
             <Calendar size={20} />
-            <span>czwartek, 16 października 2025</span>
+            <span>Wszystkie mecze</span>
             <div className="date-line"></div>
           </div>
           <div className="matches-list">
-            {demoMatches.map((match) => (
-              <MatchCard key={match.id} match={match} />
-            ))}
+            {loading ? (
+              <p
+                style={{ textAlign: "center", color: "white", padding: "2rem" }}
+              >
+                Ładowanie meczy...
+              </p>
+            ) : matches.length > 0 ? (
+              matches.map((match) => (
+                <MatchCard
+                  key={match.id}
+                  match={match}
+                  tournamentSlug={tournamentSlug}
+                />
+              ))
+            ) : (
+              <p
+                style={{ textAlign: "center", color: "white", padding: "2rem" }}
+              >
+                Brak zaplanowanych meczy dla tego turnieju.
+              </p>
+            )}
           </div>
         </section>
       </main>

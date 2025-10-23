@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Trophy, RefreshCw, AlertCircle } from "lucide-react";
+import { Plus, Trophy, AlertCircle } from "lucide-react";
 import "./RoomsPage.css";
 import PaymentGateway from "../payment/PaymentGateway";
 import MyRooms from "../my-rooms/MyRooms";
@@ -23,7 +23,7 @@ const RoomsPage: React.FC = () => {
 
   const currentUserId = "user1";
 
-  const { rooms, isLoading, error, refetch } = useRooms();
+  const { rooms, isLoading, error } = useRooms();
 
   const mockRooms: Room[] = [
     {
