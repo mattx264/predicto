@@ -118,47 +118,6 @@ export default async function Home() {
             </Link>
           </div>
         </section>
-
-        {/* <section className="categories-section">
-          <h2 className="section-title">
-            Przeglądaj Według Ligi lub Turnieju 🏟️
-          </h2>
-          <div className="categories-grid">
-            <Link
-              href="/liga/ekstraklasa"
-              className="category-link ekstraklasa"
-            >
-              Ekstraklasa 🇵🇱
-            </Link>
-            <Link
-              href="/tournament/liga-mistrzow"
-              className="category-link champions"
-            >
-              Liga Mistrzów ⭐
-            </Link>
-            <Link href="/liga/premier-league" className="category-link premier">
-              Premier League 🏴󠁧󠁢󠁥󠁮󠁧󠁿
-            </Link>
-            <Link href="/liga/laliga" className="category-link laliga">
-              LaLiga 🇪🇸
-            </Link>
-            <Link
-              href="/tournament/mistrzostwa-europy"
-              className="category-link euro"
-            >
-              EURO 🏆
-            </Link>
-          </div>
-        </section>
-
-        <section className="newsletter-section">
-          <h2 className="newsletter-title">Bądź Pierwszy z Analizami</h2>
-          <p className="newsletter-description">
-            Subskrybuj newsletter, aby otrzymywać najświeższe analizy i porady
-            prosto na skrzynkę, które pomogą Ci wygrywać w turniejach!
-          </p>
-          <button className="newsletter-button">Zapisz się Teraz</button>
-        </section> */}
       </main>
     </div>
   );

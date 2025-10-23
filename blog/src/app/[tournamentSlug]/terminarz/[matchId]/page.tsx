@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import {
   ArrowLeft,
   Users,
@@ -12,6 +12,7 @@ import {
   Trophy,
 } from "lucide-react";
 import "./page.css";
+import Image from "next/image";
 
 interface Player {
   id: string;
@@ -343,12 +344,20 @@ export default function MatchDetailsPage() {
   );
   const router = useRouter();
 
+  const params = useParams();
+  const tournamentSlug = params.tournamentSlug as string;
+  const matchId = params.matchId as string;
+
   const match = mockMatch;
   const teamA = polskaTeam;
   const teamB = holandiaTeam;
 
   const handleBack = () => {
-    router.push("/terminarz");
+    if (tournamentSlug) {
+      router.push(`/${tournamentSlug}/terminarz`);
+    } else {
+      router.push("/terminarz");
+    }
   };
 
   const formatDate = (date: string) => {
@@ -370,10 +379,12 @@ export default function MatchDetailsPage() {
     <div className="lineups-container">
       <div className="team-lineup">
         <div className="lineup-header">
-          <img
+          <Image
             src={match.teamALogo}
             alt={match.teamA}
             className="lineup-team-flag"
+            width={64}
+            height={64}
           />
           <div>
             <h3>{match.teamA}</h3>
@@ -387,19 +398,23 @@ export default function MatchDetailsPage() {
           {teamA.squad.map((player) => (
             <div key={player.id} className="match-player-card">
               <div className="match-player-number">{player.number}</div>
-              <img
+              <Image
                 src={player.image}
                 alt={player.name}
                 className="match-player-avatar"
+                width={64}
+                height={64}
               />
               <div className="match-player-info">
                 <div className="match-player-name">{player.name}</div>
                 <div className="match-player-position">{player.position}</div>
                 <div className="match-player-club">
-                  <img
+                  <Image
                     src={player.clubLogo}
                     alt={player.club}
                     className="match-club-mini-logo"
+                    width={64}
+                    height={64}
                   />
                   {player.club}
                 </div>
@@ -413,10 +428,12 @@ export default function MatchDetailsPage() {
 
       <div className="team-lineup">
         <div className="lineup-header">
-          <img
+          <Image
             src={match.teamBLogo}
             alt={match.teamB}
             className="lineup-team-flag"
+            width={64}
+            height={64}
           />
           <div>
             <h3>{match.teamB}</h3>
@@ -430,19 +447,23 @@ export default function MatchDetailsPage() {
           {teamB.squad.map((player) => (
             <div key={player.id} className="match-player-card">
               <div className="match-player-number">{player.number}</div>
-              <img
+              <Image
                 src={player.image}
                 alt={player.name}
                 className="match-player-avatar"
+                width={64}
+                height={64}
               />
               <div className="match-player-info">
                 <div className="match-player-name">{player.name}</div>
                 <div className="match-player-position">{player.position}</div>
                 <div className="match-player-club">
-                  <img
+                  <Image
                     src={player.clubLogo}
                     alt={player.club}
                     className="match-club-mini-logo"
+                    width={64}
+                    height={64}
                   />
                   {player.club}
                 </div>
@@ -504,10 +525,12 @@ export default function MatchDetailsPage() {
         <div className="form-comparison">
           <div className="team-form">
             <div className="form-team-header">
-              <img
+              <Image
                 src={match.teamALogo}
                 alt={match.teamA}
                 className="form-flag"
+                width={64}
+                height={64}
               />
               <span>{match.teamA}</span>
             </div>
@@ -520,10 +543,12 @@ export default function MatchDetailsPage() {
 
           <div className="team-form">
             <div className="form-team-header">
-              <img
+              <Image
                 src={match.teamBLogo}
                 alt={match.teamB}
                 className="form-flag"
+                width={64}
+                height={64}
               />
               <span>{match.teamB}</span>
             </div>
@@ -541,20 +566,24 @@ export default function MatchDetailsPage() {
 
         <div className="key-players">
           <div className="key-player-card">
-            <img
+            <Image
               src={match.teamALogo}
               alt={match.teamA}
               className="key-player-flag"
+              width={64}
+              height={64}
             />
             <div className="key-player-name">{teamA.keyPlayer}</div>
             <div className="key-player-team">{match.teamA}</div>
           </div>
 
           <div className="key-player-card">
-            <img
+            <Image
               src={match.teamBLogo}
               alt={match.teamB}
               className="key-player-flag"
+              width={64}
+              height={64}
             />
             <div className="key-player-name">{teamB.keyPlayer}</div>
             <div className="key-player-team">{match.teamB}</div>
@@ -568,7 +597,7 @@ export default function MatchDetailsPage() {
     <div className="match-details-page">
       <button className="back-button" onClick={handleBack}>
         <ArrowLeft size={20} />
-        Powrót do terminarz
+        Powrót do terminarza
       </button>
 
       <div className="match-header">
@@ -586,10 +615,12 @@ export default function MatchDetailsPage() {
 
           <div className="match-teams">
             <div className="team-side">
-              <img
+              <Image
                 src={match.teamALogo}
                 alt={match.teamA}
                 className="team-flag-large"
+                width={64}
+                height={64}
               />
               <h2>{match.teamA}</h2>
             </div>
@@ -619,10 +650,12 @@ export default function MatchDetailsPage() {
             </div>
 
             <div className="team-side">
-              <img
+              <Image
                 src={match.teamBLogo}
                 alt={match.teamB}
                 className="team-flag-large"
+                width={64}
+                height={64}
               />
               <h2>{match.teamB}</h2>
             </div>

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Search,
@@ -8,6 +10,9 @@ import {
 } from "lucide-react";
 import "./page.css";
 import { getPosts, Post } from "../lib/posts";
+import { TOURNAMENTS } from "../lib/tournaments";
+import { useState, useEffect, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 const PostCard = ({ post }: { post: Post }) => (
   <article className="post-card">
@@ -30,8 +35,54 @@ const PostCard = ({ post }: { post: Post }) => (
   </article>
 );
 
-export default async function BlogPage() {
-  const posts = await getPosts();
+function BlogContent() {
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const searchParams = useSearchParams();
+  const initialTournament = searchParams.get("tournament") || "all";
+  const [selectedTournament, setSelectedTournament] =
+    useState(initialTournament);
+
+  useEffect(() => {
+    setLoading(true);
+    getPosts().then((posts) => {
+      setAllPosts(posts);
+      setLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    const tournamentFromUrl = searchParams.get("tournament") || "all";
+    setSelectedTournament(tournamentFromUrl);
+  }, [searchParams]);
+
+  const filteredPosts = useMemo(() => {
+    let postsToFilter = allPosts;
+
+    if (selectedTournament !== "all") {
+      postsToFilter = postsToFilter.filter(
+        (post) => post.tournamentSlug === selectedTournament
+      );
+    }
+
+    if (searchQuery) {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      postsToFilter = postsToFilter.filter(
+        (post) =>
+          post.title.toLowerCase().includes(lowerCaseQuery) ||
+          post.excerpt.toLowerCase().includes(lowerCaseQuery)
+      );
+    }
+
+    return postsToFilter;
+  }, [allPosts, selectedTournament, searchQuery]);
+
+  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newTournamentSlug = event.target.value;
+    setSelectedTournament(newTournamentSlug);
+  };
 
   return (
     <div className="blog-page">
@@ -56,6 +107,8 @@ export default async function BlogPage() {
                 type="text"
                 placeholder="Szukaj postów..."
                 className="search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <Search className="search-icon" />
             </div>
@@ -66,10 +119,18 @@ export default async function BlogPage() {
                 <option>Sortuj: Najnowsze</option>
                 <option>Sortuj: Najpopularniejsze</option>
               </select>
-              <select className="filter-select">
-                <option>Kategoria: Wszystkie</option>
-                <option>Eliminacje MŚ 2026</option>
-                <option>Mistrzostwa świata 2026</option>
+
+              <select
+                className="filter-select"
+                value={selectedTournament}
+                onChange={handleFilterChange}
+              >
+                <option value="all">Kategoria: Wszystkie</option>
+                {TOURNAMENTS.map((tournament) => (
+                  <option key={tournament.slug} value={tournament.slug}>
+                    {tournament.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -99,11 +160,21 @@ export default async function BlogPage() {
         </section>
 
         <section className="posts-section">
-          <div className="posts-grid">
-            {posts.map((post) => (
-              <PostCard key={post.slug} post={post} />
-            ))}
-          </div>
+          {loading ? (
+            <p style={{ color: "white", textAlign: "center", padding: "2rem" }}>
+              Ładowanie postów...
+            </p>
+          ) : filteredPosts.length > 0 ? (
+            <div className="posts-grid">
+              {filteredPosts.map((post) => (
+                <PostCard key={post.slug} post={post} />
+              ))}
+            </div>
+          ) : (
+            <p style={{ color: "white", textAlign: "center", padding: "2rem" }}>
+              Brak postów spełniających wybrane kryteria.
+            </p>
+          )}
         </section>
 
         <section className="pagination-section">
@@ -125,5 +196,26 @@ export default async function BlogPage() {
         </section>
       </main>
     </div>
+  );
+}
+
+function BlogPageFallback() {
+  return (
+    <div className="blog-page">
+      <div className="blog-page-background"></div>
+      <main className="blog-page-container">
+        <p style={{ color: "white", textAlign: "center", padding: "2rem" }}>
+          Ładowanie...
+        </p>
+      </main>
+    </div>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense fallback={<BlogPageFallback />}>
+      <BlogContent />
+    </Suspense>
   );
 }
