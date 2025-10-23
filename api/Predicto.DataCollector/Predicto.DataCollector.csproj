@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Players\**" />
+    <EmbeddedResource Remove="Data\Players\**" />
+    <None Remove="Data\Players\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Countries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Predicto.Database\Predicto.Database.csproj" />
+  </ItemGroup>
+
+</Project>

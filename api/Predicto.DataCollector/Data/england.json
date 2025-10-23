@@ -1,0 +1,25 @@
+﻿{
+  "get": "teams",
+  "parameters": {
+    "country": "england"
+  },
+  "errors": [],
+  "results": 1648,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response": [
+    {
+      "team": {
+        "id": 10,
+        "name": "England",
+        "code": "ENG",
+        "country": "England",
+        "founded": 1863,
+        "national": true,
+        "logo": "https:\/\/media.api-sports.io\/football\/teams\/10.png"
+      }
+
+    }
+}

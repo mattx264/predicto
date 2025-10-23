@@ -1,4 +1,5 @@
 ﻿using Predicto.Database.Interfaces;
+using Predicto.Gateway.DTO.Sport;
 
 namespace Predicto.Database.Entities.Sport
 {
@@ -8,7 +9,8 @@ namespace Predicto.Database.Entities.Sport
         public int Id { get; set; }
         public int SportCategoryId { get; set; }
         public virtual SportCategoryEntity SportCategory { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
+        //public virtual IList<TeamEntity> Teams { get; set; } = new List<TeamEntity>();
         public bool IsActive { get; set; } = true;
     }
 }

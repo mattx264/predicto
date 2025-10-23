@@ -5,7 +5,7 @@ namespace Predicto.Database
 {
     public class SeedData
     {
-        public  Action<DbContext, bool> Data()
+        public Action<DbContext, bool> Data()
         {
             return (context, someFlag) =>
             {
@@ -16,7 +16,7 @@ namespace Predicto.Database
                 }
                 if (!context.Set<TournamentEntity>().Any())
                 {
-                    context.Add(new TournamentEntity { Name = "FIFA World Cup", SportCategory = context.Set<SportCategoryEntity>().Find(1) });
+                    context.Add(new TournamentEntity { Name = "FIFA World Cup", SportCategoryId = 1 });
                 }
                 context.SaveChanges();
             };
