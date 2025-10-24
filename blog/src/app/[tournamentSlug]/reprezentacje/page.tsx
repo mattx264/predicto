@@ -1,15 +1,57 @@
+"use client";
+
 import Link from "next/link";
 import "./page.css";
 import * as flags from "country-flag-icons/react/3x2";
-import { getTeams } from "@/app/lib/teams";
+import { getTeams, Team } from "@/app/lib/teams";
 import { TOURNAMENTS } from "@/app/lib/tournaments";
+import { useEffect, useState } from "react";
 
 interface TeamCardProps {
   tournamentSlug: string;
 }
 
-const TeamCard = async ({ tournamentSlug }: TeamCardProps) => {
-  const teams = await getTeams(tournamentSlug);
+const TeamCard = ({ tournamentSlug }: TeamCardProps) => {
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchTeams() {
+      try {
+        setLoading(true);
+        const data = await getTeams(tournamentSlug);
+        setTeams(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching teams:", err);
+        setError("Nie udało się pobrać drużyn. Spróbuj ponownie później.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTeams();
+  }, [tournamentSlug]);
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Ładowanie reprezentacji...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <p style={{ color: "#ef4444", textAlign: "center", padding: "2rem" }}>
+          {error}
+        </p>
+      </div>
+    );
+  }
 
   if (teams.length === 0) {
     return (
@@ -51,8 +93,29 @@ interface TeamsPageProps {
   }>;
 }
 
-export default async function TeamsPage({ params }: TeamsPageProps) {
-  const { tournamentSlug } = await params;
+export default function TeamsPage({ params }: TeamsPageProps) {
+  const [tournamentSlug, setTournamentSlug] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadParams() {
+      const resolvedParams = await params;
+      setTournamentSlug(resolvedParams.tournamentSlug);
+      setLoading(false);
+    }
+    loadParams();
+  }, [params]);
+
+  if (loading) {
+    return (
+      <div className="teams-page-container">
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <p>Ładowanie...</p>
+        </div>
+      </div>
+    );
+  }
 
   const tournament = TOURNAMENTS.find((t) => t.slug === tournamentSlug);
   const tournamentName = tournament ? tournament.name : "Turniej";
