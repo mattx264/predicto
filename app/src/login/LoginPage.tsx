@@ -1,75 +1,137 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, Sparkles, ArrowLeft } from "lucide-react";
-
 import "./LoginPage.css";
-import authService from "../services/signalr/auth.service";
 import { getErrorMessageWithFallback } from "../utils/erroUtils";
+import { useAuth } from "../context/AuthContext";
 
-interface LoginPageProps {
-  onLogin?: (token: string) => void;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    general: "",
+  });
+  const [touched, setTouched] = useState({
+    email: false,
+    password: false,
+  });
   const navigate = useNavigate();
+  const { login, isLoading } = useAuth();
+
+  const [stars] = useState(() =>
+    Array.from({ length: 20 }, () => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+    }))
+  );
+
+  const [headerStars] = useState(() =>
+    Array.from({ length: 15 }, () => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+    }))
+  );
+
+  const validateField = (name: string, value: string) => {
+    switch (name) {
+      case "email":
+        if (!value) return "Email jest wymagany";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          return "Nieprawidłowy format email";
+        return "";
+      case "password":
+        if (!value) return "Hasło jest wymagane";
+        if (value.length < 6) return "Hasło musi mieć minimum 6 znaków";
+        return "";
+      default:
+        return "";
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
+
+    const emailError = validateField("email", formData.email);
+    const passwordError = validateField("password", formData.password);
+
+    if (emailError || passwordError) {
+      setErrors({
+        email: emailError,
+        password: passwordError,
+        general: "",
+      });
+      setTouched({
+        email: true,
+        password: true,
+      });
+      return;
+    }
+
+    setErrors({ email: "", password: "", general: "" });
 
     try {
-      const response = await authService.login(
-        formData.email,
-        formData.password
-      );
-
+      await login(formData.email, formData.password);
       console.log("Zalogowano pomyślnie!");
-
-      if (onLogin) {
-        onLogin(response.token);
-      }
-
-      await authService.getCurrentUser();
-
       navigate("/dashboard");
     } catch (err) {
       console.error("Błąd logowania:", err);
-      setError(
-        getErrorMessageWithFallback(err, "Wystąpił błąd podczas logowania")
-      );
-    } finally {
-      setIsLoading(false);
+      setErrors({
+        email: "",
+        password: "",
+        general: getErrorMessageWithFallback(
+          err,
+          "Wystąpił błąd podczas logowania"
+        ),
+      });
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
-    if (error) setError("");
+
+    if (touched[name as keyof typeof touched]) {
+      setErrors({
+        ...errors,
+        [name]: validateField(name, value),
+      });
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTouched({
+      ...touched,
+      [name]: true,
+    });
+    setErrors({
+      ...errors,
+      [name]: validateField(name, value),
+    });
   };
 
   return (
     <div className="auth-page">
       <div className="auth-bg-gradient" />
       <div className="auth-stars">
-        {[...Array(20)].map((_, i) => (
+        {stars.map((star, i) => (
           <div
             key={i}
             className="star"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
+              left: `${star.left}%`,
+              top: `${star.top}%`,
+              animationDelay: `${star.delay}s`,
             }}
           />
         ))}
@@ -89,14 +151,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             </div>
 
             <div className="header-stars">
-              {[...Array(15)].map((_, i) => (
+              {headerStars.map((star, i) => (
                 <div
                   key={i}
                   className="header-star"
                   style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 3}s`,
+                    left: `${star.left}%`,
+                    top: `${star.top}%`,
+                    animationDelay: `${star.delay}s`,
                   }}
                 />
               ))}
@@ -104,8 +166,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           </div>
 
           <div className="auth-form-container">
-            <form onSubmit={handleSubmit} className="auth-form">
-              {error && (
+            <form onSubmit={handleSubmit} className="auth-form" noValidate>
+              {errors.general && (
                 <div
                   className="error-message"
                   style={{
@@ -119,7 +181,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                     textAlign: "center",
                   }}
                 >
-                  {error}
+                  {errors.general}
                 </div>
               )}
 
@@ -130,11 +192,23 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Email"
-                  className="auth-input"
-                  required
+                  className={`auth-input ${errors.email && touched.email ? "error" : ""}`}
                   disabled={isLoading}
                 />
+                {errors.email && touched.email && (
+                  <div
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                      marginLeft: "4px",
+                    }}
+                  >
+                    {errors.email}
+                  </div>
+                )}
               </div>
 
               <div className="input-group">
@@ -144,9 +218,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Hasło"
-                  className="auth-input"
-                  required
+                  className={`auth-input ${errors.password && touched.password ? "error" : ""}`}
                   disabled={isLoading}
                 />
                 <button
@@ -157,6 +231,18 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
+                {errors.password && touched.password && (
+                  <div
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                      marginLeft: "4px",
+                    }}
+                  >
+                    {errors.password}
+                  </div>
+                )}
               </div>
 
               <div className="forgot-password">

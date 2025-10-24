@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./i18n/i18n";
 import Navigation from "./nav/Navigation";
 import LoginPage from "./login/LoginPage";
@@ -18,107 +18,40 @@ import RankingPage from "./ranking/RankingPage";
 import DashboardPage from "./dashboard/DashboardPage";
 import HowToPlay from "./how-to-play/HowToPlay";
 import SplashScreen from "./splash-screen/SplashScreen";
-import authService from "./services/signalr/auth.service";
+import { AuthProvider } from "./context/AuthContext";
+import PackOpening from "./pack-opening/PackOpening";
+import DemoPage from "./how-to-play/demo-page/DemoPage";
+import CardShop from "./card-shop/CardShop";
+import Inventory from "./inventory/Inventory";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
-  const [username, setUsername] = useState("Gracz");
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = authService.getToken();
-
-      if (token && !authService.isTokenExpired(token)) {
-        setIsAuthenticated(true);
-
-        const user = await authService.getCurrentUser();
-        if (user) {
-          setUsername(user.name);
-        }
-      } else {
-        authService.logout();
-        setIsAuthenticated(false);
-      }
-
-      setIsLoading(false);
-    };
-
-    checkAuth();
-  }, []);
 
   if (showSplash) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;
   }
 
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        }}
-      >
-        <div className="spinner" />
-      </div>
-    );
-  }
-
-  const handleLogin = async () => {
-    setIsAuthenticated(true);
-
-    const user = await authService.getCurrentUser();
-    if (user) {
-      setUsername(user.name);
-    }
-  };
-
-  const handleLogout = () => {
-    authService.logout();
-    setIsAuthenticated(false);
-    setUsername("Gracz");
-  };
-
   return (
     <Router>
-      <Navigation
-        isAuthenticated={isAuthenticated}
-        onLogout={handleLogout}
-        username={username}
-      />
-
-      <Routes>
-        <Route
-          path="/"
-          element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <HomePage />
-          }
-        />
-
-        <Route
-          path="/dashboard"
-          element={
-            isAuthenticated ? <DashboardPage /> : <Navigate to="/login" />
-          }
-        />
-
-        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-        <Route
-          path="/register"
-          element={<RegisterPage onRegister={handleLogin} />}
-        />
-        <Route path="/rooms" element={<RoomsPage />} />
-        <Route path="/create-room" element={<CreateRoomPage />} />
-        <Route path="/room/:id" element={<RoomPage />} />
-        <Route path="/ranking" element={<RankingPage />} />
-        <Route path="/jak-grac" element={<HowToPlay />} />
-
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      <AuthProvider>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/rooms" element={<RoomsPage />} />
+          <Route path="/create-room" element={<CreateRoomPage />} />
+          <Route path="/room/:id" element={<RoomPage />} />
+          <Route path="/ranking" element={<RankingPage />} />
+          <Route path="/jak-grac" element={<HowToPlay />} />
+          <Route path="/pack-opening" element={<PackOpening />} />
+          <Route path="/demo" element={<DemoPage />} />
+          <Route path="/shop" element={<CardShop />} />
+          <Route path="/inventory" element={<Inventory />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 }

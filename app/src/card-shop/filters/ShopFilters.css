@@ -1,0 +1,275 @@
+/* Desktop Filters - Hidden, using mobile style instead */
+.shop-filters-container .desktop-filters {
+  display: none;
+}
+
+.shop-filters-container .mobile-filters-wrapper {
+  display: block;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+  animation: fade-in 1s ease-out 0.9s backwards;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.shop-filters-container .shop-filters {
+  position: relative;
+  z-index: 2;
+}
+
+.shop-filters-container .filter-group {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.6) 0%,
+    rgba(26, 35, 50, 0.4) 100%
+  );
+  padding: 2rem;
+  border-radius: 20px;
+  border: 2px solid rgba(34, 197, 94, 0.2);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  text-align: center;
+}
+
+.shop-filters-container .filter-title {
+  font-size: 1.2rem;
+  color: #f8fafc;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.shop-filters-container .filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.shop-filters-container .filter-btn {
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.8) 0%,
+    rgba(26, 35, 50, 0.6) 100%
+  );
+  border: 2px solid rgba(94, 103, 118, 0.3);
+  border-radius: 12px;
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.shop-filters-container .filter-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent,
+    rgba(34, 197, 94, 0.2),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.shop-filters-container .filter-btn:hover::before {
+  transform: translateX(100%);
+}
+
+.shop-filters-container .filter-btn:hover {
+  border-color: #22c55e;
+  color: #22c55e;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2);
+}
+
+.shop-filters-container .filter-btn.active {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border-color: #22c55e;
+  color: white;
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+}
+
+.shop-filters-container .filter-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* Mobile Filters Styles - Now used on all screen sizes */
+.shop-filters-container .mobile-filters-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.8) 0%,
+    rgba(26, 35, 50, 0.6) 100%
+  );
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 16px;
+  color: #f8fafc;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  gap: 0.75rem;
+  backdrop-filter: blur(10px);
+}
+
+.shop-filters-container .mobile-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.4s ease,
+    margin-top 0.4s ease,
+    padding 0.4s ease;
+  opacity: 0;
+  padding: 0;
+}
+
+.shop-filters-container .mobile-filters-toggle:hover {
+  border-color: #22c55e;
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2);
+}
+
+.shop-filters-container .mobile-filters-toggle .chevron {
+  transition: transform 0.3s ease;
+}
+
+.shop-filters-container .mobile-filters-toggle .chevron.open {
+  transform: rotate(180deg);
+}
+
+.shop-filters-container .mobile-filters.open {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 1rem;
+  padding: 0.5rem 0;
+}
+
+.shop-filters-container .mobile-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.shop-filters-container .mobile-filter-label {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-left: 0.25rem;
+}
+
+.shop-filters-container .mobile-filter-select {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.8) 0%,
+    rgba(26, 35, 50, 0.6) 100%
+  );
+  border: 2px solid rgba(94, 103, 118, 0.3);
+  border-radius: 12px;
+  color: #f8fafc;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 20px;
+  padding-right: 3rem;
+  backdrop-filter: blur(10px);
+}
+
+.shop-filters-container .mobile-filter-select:hover,
+.shop-filters-container .mobile-filter-select:focus {
+  border-color: #22c55e;
+  outline: none;
+  box-shadow: 0 5px 20px rgba(34, 197, 94, 0.2);
+}
+
+.shop-filters-container .mobile-filter-select option {
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 0.75rem;
+}
+
+/* Keyframe animation for fade-in */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+  .shop-filters-container .mobile-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-filters-container .mobile-filters.open {
+    max-height: 300px;
+  }
+
+  .shop-filters-container .mobile-filters-toggle {
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .shop-filters-container .mobile-filter-select {
+    font-size: 0.95rem;
+    padding: 0.875rem 1rem;
+    padding-right: 2.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  @media (max-width: 480px) {
+    .shop-filters-container .mobile-filters-toggle {
+      font-size: 1rem;
+      padding: 1rem 1.25rem;
+    }
+
+    .shop-filters-container .mobile-filter-select {
+      font-size: 0.95rem;
+      padding: 0.875rem 1rem;
+      padding-right: 2.75rem;
+    }
+  }
+}

@@ -9,14 +9,10 @@ import {
   Sparkles,
   ArrowLeft,
 } from "lucide-react";
-import authService from "../services/signalr/auth.service";
 import { getErrorMessage } from "../utils/erroUtils";
+import { useAuth } from "../context/AuthContext";
 
-interface RegisterPageProps {
-  onRegister?: (token: string) => void;
-}
-
-const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
+const RegisterPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -25,78 +21,174 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
     password: "",
     confirmPassword: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [errors, setErrors] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    general: "",
+  });
+  const [touched, setTouched] = useState({
+    username: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+  });
   const navigate = useNavigate();
+  const { register, isLoading } = useAuth();
+
+  const [stars] = useState(() =>
+    Array.from({ length: 20 }, () => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+    }))
+  );
+
+  const [headerStars] = useState(() =>
+    Array.from({ length: 15 }, () => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 3,
+    }))
+  );
+
+  const validateField = (name: string, value: string) => {
+    switch (name) {
+      case "username":
+        if (!value) return "Nazwa użytkownika jest wymagana";
+        if (value.length < 3)
+          return "Nazwa użytkownika musi mieć minimum 3 znaki";
+        if (value.length > 20)
+          return "Nazwa użytkownika może mieć maksymalnie 20 znaków";
+        if (!/^[a-zA-Z0-9_]+$/.test(value))
+          return "Nazwa użytkownika może zawierać tylko litery, cyfry i podkreślenia";
+        return "";
+      case "email":
+        if (!value) return "Email jest wymagany";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          return "Nieprawidłowy format email";
+        return "";
+      case "password":
+        if (!value) return "Hasło jest wymagane";
+        if (value.length < 6) return "Hasło musi mieć minimum 6 znaków";
+        return "";
+      case "confirmPassword":
+        if (!value) return "Potwierdzenie hasła jest wymagane";
+        if (value !== formData.password) return "Hasła nie są identyczne";
+        return "";
+      default:
+        return "";
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Hasła nie są identyczne!");
+    const usernameError = validateField("username", formData.username);
+    const emailError = validateField("email", formData.email);
+    const passwordError = validateField("password", formData.password);
+    const confirmPasswordError = validateField(
+      "confirmPassword",
+      formData.confirmPassword
+    );
+
+    if (usernameError || emailError || passwordError || confirmPasswordError) {
+      setErrors({
+        username: usernameError,
+        email: emailError,
+        password: passwordError,
+        confirmPassword: confirmPasswordError,
+        general: "",
+      });
+      setTouched({
+        username: true,
+        email: true,
+        password: true,
+        confirmPassword: true,
+      });
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError("Hasło musi mieć minimum 6 znaków");
-      return;
-    }
+    setErrors({
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      general: "",
+    });
 
-    if (formData.username.length < 3) {
-      setError("Nazwa użytkownika musi mieć minimum 3 znaki");
-      return;
-    }
-
-    setIsLoading(true);
     try {
-      await authService.register(
+      await register(
         formData.username,
         formData.email,
         formData.password,
         "pl"
       );
 
-      const token = authService.getToken();
-
       console.log("Zarejestrowano i zalogowano pomyślnie!");
-
-      if (onRegister && token) {
-        onRegister(token);
-      }
-
-      await authService.getCurrentUser();
-
       navigate("/dashboard");
     } catch (err) {
       console.error("Błąd rejestracji:", err);
-      setError(getErrorMessage(err));
-    } finally {
-      setIsLoading(false);
+      setErrors({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        general: getErrorMessage(err),
+      });
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
-    // Wyczyść błąd przy zmianie inputu
-    if (error) setError("");
+
+    if (touched[name as keyof typeof touched]) {
+      setErrors({
+        ...errors,
+        [name]: validateField(name, value),
+      });
+    }
+
+    if (name === "password" && touched.confirmPassword) {
+      setErrors((prev) => ({
+        ...prev,
+        confirmPassword:
+          formData.confirmPassword !== value && formData.confirmPassword
+            ? "Hasła nie są identyczne"
+            : "",
+      }));
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTouched({
+      ...touched,
+      [name]: true,
+    });
+    setErrors({
+      ...errors,
+      [name]: validateField(name, value),
+    });
   };
 
   return (
     <div className="auth-page">
       <div className="auth-bg-gradient" />
       <div className="auth-stars">
-        {[...Array(20)].map((_, i) => (
+        {stars.map((star, i) => (
           <div
             key={i}
             className="star"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
+              left: `${star.left}%`,
+              top: `${star.top}%`,
+              animationDelay: `${star.delay}s`,
             }}
           />
         ))}
@@ -116,14 +208,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
             </div>
 
             <div className="header-stars">
-              {[...Array(15)].map((_, i) => (
+              {headerStars.map((star, i) => (
                 <div
                   key={i}
                   className="header-star"
                   style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 3}s`,
+                    left: `${star.left}%`,
+                    top: `${star.top}%`,
+                    animationDelay: `${star.delay}s`,
                   }}
                 />
               ))}
@@ -131,8 +223,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
           </div>
 
           <div className="auth-form-container">
-            <form onSubmit={handleSubmit} className="auth-form">
-              {error && (
+            <form onSubmit={handleSubmit} className="auth-form" noValidate>
+              {errors.general && (
                 <div
                   className="error-message"
                   style={{
@@ -146,7 +238,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                     textAlign: "center",
                   }}
                 >
-                  {error}
+                  {errors.general}
                 </div>
               )}
 
@@ -157,12 +249,23 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                   name="username"
                   value={formData.username}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Nazwa użytkownika"
-                  className="auth-input"
-                  required
-                  minLength={3}
+                  className={`auth-input ${errors.username && touched.username ? "error" : ""}`}
                   disabled={isLoading}
                 />
+                {errors.username && touched.username && (
+                  <div
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                      marginLeft: "4px",
+                    }}
+                  >
+                    {errors.username}
+                  </div>
+                )}
               </div>
 
               <div className="input-group">
@@ -172,11 +275,23 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Email"
-                  className="auth-input"
-                  required
+                  className={`auth-input ${errors.email && touched.email ? "error" : ""}`}
                   disabled={isLoading}
                 />
+                {errors.email && touched.email && (
+                  <div
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                      marginLeft: "4px",
+                    }}
+                  >
+                    {errors.email}
+                  </div>
+                )}
               </div>
 
               <div className="input-group">
@@ -186,10 +301,9 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Hasło"
-                  className="auth-input"
-                  required
-                  minLength={6}
+                  className={`auth-input ${errors.password && touched.password ? "error" : ""}`}
                   disabled={isLoading}
                 />
                 <button
@@ -200,6 +314,18 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
+                {errors.password && touched.password && (
+                  <div
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                      marginLeft: "4px",
+                    }}
+                  >
+                    {errors.password}
+                  </div>
+                )}
               </div>
 
               <div className="input-group">
@@ -209,10 +335,9 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Potwierdź hasło"
-                  className="auth-input"
-                  required
-                  minLength={6}
+                  className={`auth-input ${errors.confirmPassword && touched.confirmPassword ? "error" : ""}`}
                   disabled={isLoading}
                 />
                 <button
@@ -227,6 +352,18 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onRegister }) => {
                     <Eye size={18} />
                   )}
                 </button>
+                {errors.confirmPassword && touched.confirmPassword && (
+                  <div
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                      marginLeft: "4px",
+                    }}
+                  >
+                    {errors.confirmPassword}
+                  </div>
+                )}
               </div>
 
               <button

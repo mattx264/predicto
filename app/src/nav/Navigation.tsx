@@ -11,24 +11,18 @@ import {
   User,
   Sparkles,
   ChartNoAxesCombined,
+  Store,
+  Package,
 } from "lucide-react";
 import "./Navigation.css";
 import UserProfileModal from "../user-profile-modal/UserProfileModal";
 import NotificationBell from "../notifications/NotificationsBell";
 import LanguageSwitcher from "../i18n/language-switcher/LanguageSwitcher";
+import { useAuth } from "../context/AuthContext";
 
-interface NavigationProps {
-  isAuthenticated?: boolean;
-  onLogout?: () => void;
-  username?: string;
-}
-
-const Navigation: React.FC<NavigationProps> = ({
-  isAuthenticated = false,
-  onLogout,
-  username = "Gracz",
-}) => {
+const Navigation: React.FC = () => {
   const { t } = useTranslation();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeNav, setActiveNav] = useState("home");
@@ -37,32 +31,57 @@ const Navigation: React.FC<NavigationProps> = ({
   const location = useLocation();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const navItems = [
+  const allNavItems = [
     {
       id: "home",
       label: isAuthenticated ? t("nav.dashboard") : t("nav.home"),
       icon: <ChartNoAxesCombined className="nav-icon" />,
       path: isAuthenticated ? "/dashboard" : "/",
+      authRequired: false,
     },
     {
       id: "rooms",
       label: t("nav.rooms"),
       icon: <Users className="nav-icon" />,
       path: "/rooms",
+      authRequired: true,
+    },
+    {
+      id: "shop",
+      label: t("nav.shop"),
+      icon: <Store className="nav-icon" />,
+      path: "/shop",
+      authRequired: true,
+    },
+    {
+      id: "inventory",
+      label: t("nav.inventory"),
+      icon: <Package className="nav-icon" />,
+      path: "/inventory",
+      authRequired: true,
     },
     {
       id: "ranking",
       label: t("nav.ranking"),
       icon: <Trophy className="nav-icon" />,
       path: "/ranking",
+      authRequired: true,
     },
     {
       id: "jak-grac",
       label: t("nav.howToPlay"),
       icon: <BookOpen className="nav-icon" />,
       path: "/jak-grac",
+      authRequired: false,
+      hideWhenAuthenticated: true,
     },
   ];
+
+  const navItems = allNavItems.filter(
+    (item) =>
+      (!item.authRequired || isAuthenticated) &&
+      (!item.hideWhenAuthenticated || !isAuthenticated)
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -112,10 +131,11 @@ const Navigation: React.FC<NavigationProps> = ({
 
   const handleLogout = () => {
     setIsMenuOpen(false);
-    if (onLogout) {
-      onLogout();
-    }
+    logout();
+    navigate("/");
   };
+
+  const username = user?.name || "Gracz";
 
   return (
     <nav className={`navigation ${isScrolled ? "scrolled" : ""}`}>
@@ -139,6 +159,8 @@ const Navigation: React.FC<NavigationProps> = ({
                   className={`
                   nav-icon-circle
                   ${activeNav === item.id ? "active" : ""}
+                  ${item.id === "shop" ? "shop-icon" : ""}
+                  ${item.id === "inventory" ? "inventory-icon" : ""}
                 `}
                 >
                   {item.icon}
@@ -227,6 +249,8 @@ const Navigation: React.FC<NavigationProps> = ({
                 onClick={() => handleNavClick(item.id, item.path)}
                 className={`mobile-link ${
                   activeNav === item.id ? "active" : ""
+                } ${item.id === "shop" ? "shop-mobile" : ""} ${
+                  item.id === "inventory" ? "inventory-mobile" : ""
                 }`}
               >
                 <div className="mobile-link-icon">{item.icon}</div>

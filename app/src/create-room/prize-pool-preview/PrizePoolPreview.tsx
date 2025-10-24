@@ -1,19 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Trophy } from "lucide-react";
-import { effect } from "@preact/signals-react";
 import "./PrizePoolPreview.css";
 import { prizePoolTargetSignal } from "../../signals/create-room-form.signals";
 
 const PrizePoolPreview: React.FC = () => {
   const targetValue = prizePoolTargetSignal.value;
-
   const [displayValue, setDisplayValue] = useState(targetValue);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  effect(() => {
-    const newTargetValue = prizePoolTargetSignal.value;
-
-    if (newTargetValue !== displayValue) {
+  useEffect(() => {
+    if (targetValue !== displayValue) {
       setIsAnimating(true);
       const duration = 300;
       const steps = 25;
@@ -27,19 +23,19 @@ const PrizePoolPreview: React.FC = () => {
         const easeProgress = 1 - Math.pow(1 - progress, 2);
 
         if (currentStep >= steps) {
-          setDisplayValue(newTargetValue);
+          setDisplayValue(targetValue);
           setIsAnimating(false);
           clearInterval(timer);
         } else {
           setDisplayValue(
-            startValue + (newTargetValue - startValue) * easeProgress
+            startValue + (targetValue - startValue) * easeProgress
           );
         }
       }, stepDuration);
 
       return () => clearInterval(timer);
     }
-  });
+  }, [targetValue]);
 
   const getWowLevel = (value: number) => {
     if (value >= 10000) return "mega";

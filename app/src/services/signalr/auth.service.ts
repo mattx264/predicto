@@ -6,18 +6,7 @@ import type {
 } from "../../types/types";
 import apiService from "./api.service";
 
-const AUTH_TOKEN_KEY = "authToken";
-const USER_DATA_KEY = "userData";
-
 class AuthService {
-  private getAuthHeaders(): HeadersInit {
-    const token = this.getToken();
-    return {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    };
-  }
-
   async login(email: string, password: string): Promise<AuthResponse> {
     const loginData: LoginRequest = { email, password };
 
@@ -40,8 +29,6 @@ class AuthService {
     }
 
     const data: AuthResponse = await response.json();
-    this.saveToken(data.token);
-
     return data;
   }
 
@@ -71,67 +58,28 @@ class AuthService {
 
     if (!response.ok) {
       if (response.status === 400) {
-        throw new Error("Nieprawidłowe dane rejestracji");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Nieprawidłowe dane rejestracji");
       }
       throw new Error("Błąd rejestracji. Spróbuj ponownie.");
     }
-
-    await this.login(email, password);
   }
 
-  async getCurrentUser(): Promise<UserDto | null> {
-    const token = this.getToken();
-    if (!token) {
+  async getCurrentUser(token: string): Promise<UserDto | null> {
+    if (!token || this.isTokenExpired(token)) {
       return null;
     }
 
-    try {
-      const response = await fetch(`${apiService.getBackendUrl()}/api/user`, {
-        method: "GET",
-        headers: this.getAuthHeaders(),
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          this.logout();
-          return null;
-        }
-        throw new Error("Błąd pobierania danych użytkownika");
-      }
-
-      const user: UserDto = await response.json();
-      this.saveUserData(user);
-      return user;
-    } catch (error) {
-      console.error("Error fetching user:", error);
+    const decoded = this.decodeToken(token);
+    if (!decoded) {
       return null;
     }
-  }
 
-  saveToken(token: string): void {
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem(AUTH_TOKEN_KEY);
-  }
-
-  saveUserData(user: UserDto): void {
-    localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
-  }
-
-  getUserData(): UserDto | null {
-    const data = localStorage.getItem(USER_DATA_KEY);
-    return data ? JSON.parse(data) : null;
-  }
-
-  logout(): void {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    localStorage.removeItem(USER_DATA_KEY);
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.getToken();
+    return {
+      id: parseInt(decoded.sub || "0"),
+      name: decoded.email?.split("@")[0] || "User",
+      email: decoded.email || "",
+    };
   }
 
   decodeToken(

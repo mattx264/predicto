@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Trophy,
   Users,
@@ -11,6 +12,7 @@ import {
   Lock,
   Medal,
   Lightbulb,
+  Play,
 } from "lucide-react";
 import "./HowToPlay.css";
 
@@ -232,10 +234,12 @@ const HowToPlay: React.FC = () => {
         </div>
 
         <div className="cta-section">
-          <Trophy className="cta-icon" />
-          <h2>Gotowy na wyzwanie?</h2>
-          <p>Dołącz do pokoju i zacznij typować już teraz!</p>
-          <button className="cta-button">Przeglądaj pokoje</button>
+          <Play className="cta-icon" />
+          <h2>Zobacz aplikację w akcji</h2>
+          <p>Obejrzyj demo i przekonaj się jak działa platforma!</p>
+          <Link to="/demo">
+            <button className="cta-button">Zobacz demo</button>
+          </Link>
         </div>
       </div>
     </div>

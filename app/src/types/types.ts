@@ -1,3 +1,26 @@
+export interface CreateRoomRequest {
+  name: string;
+  description: string;
+  tournamentId: number;
+}
+
+export interface TournamentDto {
+  id: number;
+  name: string;
+  sportCategoryId: number;
+}
+
+export interface ApiError {
+  error: string;
+  message?: string;
+  statusCode?: number;
+}
+
+export interface CreateRoomResponse {
+  message: string;
+  roomId?: number;
+}
+
 export const RoomStatusDTO = {
   Waiting: 0,
   InProgress: 1,
