@@ -14,8 +14,16 @@ namespace Predicto.Database.Entities
         public string Description { get; set; }
         public int TournamentId { get; set; }
         public virtual TournamentEntity Tournament { get; set; }
+        public int? EntryFee { get; set; }
+        public bool IsPrivate { get; set; } = false;
         public bool IsActive { get; set; } = true;
-
-
+        public int MaxUsers { get; set; }
+        public RoomStatus RoomStatus { get; set; }
+    }
+    public enum RoomStatus
+    {
+        Waiting,
+        InProgress,
+        Completed
     }
 }

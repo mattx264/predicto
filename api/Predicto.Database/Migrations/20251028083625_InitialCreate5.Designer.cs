@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Predicto.Database;
 
@@ -11,9 +12,11 @@ using Predicto.Database;
 namespace Predicto.Database.Migrations
 {
     [DbContext(typeof(PredictoDbContext))]
-    partial class PredictoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251028083625_InitialCreate5")]
+    partial class InitialCreate5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

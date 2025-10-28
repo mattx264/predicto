@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Predicto.Database.Entities;
 using Predicto.Gateway.DTO.Rooms;
 
 namespace Predicto.Gateway.Hubs.Room

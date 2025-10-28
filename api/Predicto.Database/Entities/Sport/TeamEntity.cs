@@ -13,6 +13,9 @@ namespace Predicto.Gateway.DTO.Sport
         public string ImageUrl { get; set; } = string.Empty;
         public string? Code { get; set; }//PL, GER
         public bool IsActive { get; set; } = true;
+        public string Coach { get; set; } = string.Empty;
+        public string FormLastGames { get; set; } = string.Empty;// WWDLD
+
 
     }
 }

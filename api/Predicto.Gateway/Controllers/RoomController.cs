@@ -18,27 +18,7 @@ namespace Predicto.Gateway.Controllers
         public async Task<IActionResult> CreateRoom([FromBody] NewRoomDto newRoomDto)
         {
             await _roomService.CreateRoomAsync(newRoomDto);
-            /*
-             * {
-    "tournamentTemplateId": "1",
-    "roomName": "sfd",
-    "maxParticipants": 3,
-    "entryFee": 50,
-    "isPrivate": false,
-    "description": "",
-    "rules": {
-        "scoring": {
-            "exactScore": 5,
-            "correctOutcome": 2
-        },
-        "deadline": "matchStart",
-        "joker": {
-            "enabled": false,
-            "count": 1
-        }
-    }
-}
-              */
+         
             return Ok();
         }
     }

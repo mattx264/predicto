@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Predicto.Database.Entities;
 using Predicto.Database.Interfaces;
 using Predicto.Gateway.DTO.Room;
 using Predicto.Gateway.DTO.Rooms;
@@ -22,7 +23,18 @@ namespace Predicto.Gateway.Services.Room
 
         public async Task CreateRoomAsync(NewRoomDto newRoomDto)
         {
-            var roomEntity = new Database.Entities.RoomEntity { Name = newRoomDto.Name, Description = newRoomDto.Description, TournamentId = newRoomDto.TournamentId };
+            var roomEntity = new Database.Entities.RoomEntity
+            {
+                Name = newRoomDto.Name,
+                EntryFee = newRoomDto.EntryFee,
+                IsPrivate = newRoomDto.IsPrivate,
+                MaxUsers = newRoomDto.MaxParticipants,
+                Description = newRoomDto.Description,
+                TournamentId = newRoomDto.TournamentId,
+                RoomStatus = RoomStatus.Waiting,
+
+
+            };
             await _unitOfWork.Rooms.AddAsync(roomEntity);
             await _unitOfWork.CompleteAsync();
             await _roomHub.Clients.All.SendAsync("GetRooms", new List<RoomDTO>(){ new RoomDTO()
@@ -30,10 +42,10 @@ namespace Predicto.Gateway.Services.Room
                 Id = roomEntity.Id,
                 Name = roomEntity.Name,
                 Description = roomEntity.Description,
-                EntryFee = 10,
+                EntryFee = newRoomDto.EntryFee,
                 Users = new List<DTO.User.UserDto>(),
-                MaxUsers = 10,
-                IsPublic = true,
+                MaxUsers = newRoomDto.MaxParticipants,
+                IsPublic = !newRoomDto.IsPrivate,
                 RoomStatus = RoomStatus.Waiting,
                 TournamentId = 1,
                 CreatedAt = DateTime.UtcNow,
@@ -54,7 +66,7 @@ namespace Predicto.Gateway.Services.Room
                 IsPublic = true,
                 RoomStatus = RoomStatus.Waiting,
                 TournamentId = r.TournamentId,
-             
+
             }).ToList();
         }
     }

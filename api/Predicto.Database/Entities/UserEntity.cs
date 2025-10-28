@@ -18,7 +18,7 @@ namespace Predicto.Database.Entities
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
-        public string Bio { get; set; }
+        public string? Bio { get; set; }
         public string? Localization { get; set; }
         public string? PhotoUrl { get; set; }
 

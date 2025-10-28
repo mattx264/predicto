@@ -1,4 +1,5 @@
-﻿using Predicto.Gateway.DTO.User;
+﻿using Predicto.Database.Entities;
+using Predicto.Gateway.DTO.User;
 
 namespace Predicto.Gateway.DTO.Rooms
 {
@@ -7,7 +8,7 @@ namespace Predicto.Gateway.DTO.Rooms
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int EntryFee { get; set; }
+        public int? EntryFee { get; set; }
         public IList<UserDto> Users { get; set; }
         public int? MaxUsers { get; set; }
         public bool IsPublic { get; set; }
@@ -16,9 +17,5 @@ namespace Predicto.Gateway.DTO.Rooms
         public DateTime CreatedAt { get; set; }
         public int CreatedByUserId { get; set; }
     }
-public enum RoomStatus { 
-    Waiting,
-    InProgress,
-    Completed
-}
+
 }
