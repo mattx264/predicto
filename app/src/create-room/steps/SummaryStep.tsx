@@ -9,6 +9,8 @@ import {
   Check,
   Sparkles,
   ArrowLeft,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import PrizePoolPreview from "../prize-pool-preview/PrizePoolPreview";
 import type { TournamentTemplate } from "../CreateRoomPage";
@@ -19,6 +21,8 @@ interface Props {
   selectedTemplate: TournamentTemplate | undefined;
   onSubmit: () => void;
   onBack: () => void;
+  isSubmitting?: boolean;
+  error?: string;
 }
 
 const SummaryStep: React.FC<Props> = ({
@@ -26,6 +30,8 @@ const SummaryStep: React.FC<Props> = ({
   selectedTemplate,
   onSubmit,
   onBack,
+  isSubmitting = false,
+  error,
 }) => {
   const deadlineOptions: { [key: string]: string } = {
     matchStart: "Do startu każdego meczu",
@@ -55,6 +61,27 @@ const SummaryStep: React.FC<Props> = ({
           Sprawdź wszystkie dane przed utworzeniem pokoju
         </p>
       </div>
+
+      {/* Wyświetl błąd jeśli wystąpił */}
+      {error && (
+        <div
+          className="error-message"
+          style={{
+            background: "#fee2e2",
+            border: "1px solid #fca5a5",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            marginBottom: "20px",
+          }}
+        >
+          <AlertCircle size={20} color="#dc2626" />
+          <span style={{ color: "#dc2626", fontSize: "14px" }}>{error}</span>
+        </div>
+      )}
+
       <div className="summary-card">
         <h3 className="summary-title">Szczegóły pokoju</h3>
 
@@ -193,14 +220,28 @@ const SummaryStep: React.FC<Props> = ({
           </>
         )}
       </div>
+
       <div className="step-actions">
-        <button className="btn-back" onClick={onBack}>
+        <button className="btn-back" onClick={onBack} disabled={isSubmitting}>
           <ArrowLeft className="arrow-icon" />
           Wstecz
         </button>
-        <button className="btn-create" onClick={onSubmit}>
-          <Sparkles size={20} />
-          Utwórz Pokój
+        <button
+          className="btn-create"
+          onClick={onSubmit}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 size={20} className="spinner" />
+              Tworzenie...
+            </>
+          ) : (
+            <>
+              <Sparkles size={20} />
+              Utwórz Pokój
+            </>
+          )}
         </button>
       </div>
     </div>

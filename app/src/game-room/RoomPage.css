@@ -1,5 +1,3 @@
-/* RoomPage.css */
-
 .my-room-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
@@ -12,7 +10,6 @@
   padding: 2rem 5%;
 }
 
-/* Header */
 .my-room-header {
   margin-bottom: 2rem;
 }
@@ -167,7 +164,6 @@
   transform: translateY(-2px);
 }
 
-/* Stats Cards */
 .my-room-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -224,7 +220,6 @@
   font-weight: 700;
 }
 
-/* Tabs */
 .my-room-tabs {
   display: flex;
   gap: 1rem;
@@ -267,7 +262,6 @@
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
 }
 
-/* Tab Content */
 .my-tab-content {
   animation: my-fadeIn 0.4s ease-out;
 }
@@ -283,7 +277,6 @@
   }
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .my-room-stats {
     grid-template-columns: repeat(2, 1fr);
@@ -344,9 +337,6 @@
     padding: 0.625rem 0.75rem;
     font-size: 0.8rem;
   }
-
-  /* USUNIĘTE: .my-action-btn span { display: none; } */
-  /* Teraz tekst będzie widoczny na tabletach */
 
   .my-room-stats {
     grid-template-columns: repeat(2, 1fr);
@@ -424,9 +414,7 @@
     font-size: 0.7rem;
   }
 }
-/* Dodaj na końcu RoomPage.css */
 
-/* Refresh button w headerze */
 .my-action-btn.my-refresh {
   background: #fff;
   border: 2px solid #e5e7eb;
@@ -446,7 +434,6 @@
   animation: spin 1s linear infinite;
 }
 
-/* Loading state */
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -474,7 +461,6 @@
   }
 }
 
-/* Error state */
 .error-state {
   display: flex;
   flex-direction: column;

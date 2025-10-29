@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   X,
   User,
@@ -35,6 +35,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
     "profile" | "settings" | "wallet" | "security"
   >("profile");
   const [isEditing, setIsEditing] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
   const [userData, setUserData] = useState({
     username: username,
@@ -60,6 +61,19 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(false);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setShouldRender(true);
+        });
+      });
+    } else {
+      setShouldRender(false);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleSave = () => {
@@ -72,7 +86,10 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   };
 
   return (
-    <div className="my-profile-overlay" onClick={onClose}>
+    <div
+      className={`my-profile-overlay ${shouldRender ? "show" : ""}`}
+      onClick={onClose}
+    >
       <div className="my-profile-modal" onClick={(e) => e.stopPropagation()}>
         <div className="my-profile-header">
           <div className="my-profile-header-bg"></div>

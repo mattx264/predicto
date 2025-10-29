@@ -1,4 +1,3 @@
-/* User Stats Modal */
 .user-stats-modal-overlay {
   position: fixed;
   inset: 0;
@@ -36,7 +35,6 @@
   }
 }
 
-/* Header */
 .user-stats-header {
   display: flex;
   justify-content: space-between;
@@ -123,7 +121,6 @@
   transform: rotate(90deg);
 }
 
-/* Main Stats Grid */
 .user-stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -222,7 +219,6 @@
   font-weight: 500;
 }
 
-/* Predictions Breakdown */
 .predictions-breakdown {
   margin-bottom: 2rem;
 }
@@ -311,7 +307,6 @@
   background: rgba(239, 68, 68, 0.1);
 }
 
-/* Footer */
 .user-stats-footer {
   display: flex;
   justify-content: space-between;
@@ -336,7 +331,6 @@
   font-weight: 700;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .user-stats-modal {
     padding: 1.5rem;
@@ -444,7 +438,6 @@
   color: #ef4444;
 }
 
-/* Responsive */
 @media (max-width: 480px) {
   .recent-matches-row {
     gap: 0.5rem;

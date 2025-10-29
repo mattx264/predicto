@@ -1,13 +1,15 @@
 import * as signalR from "@microsoft/signalr";
 import { signalRService } from "./signalr.service";
-
 import apiService from "./api.service";
 import type { RoomDTO } from "../../types/types";
 
 export class RoomsHubService {
   private connection: signalR.HubConnection | null = null;
 
-  async connect(onRoomsReceived: (rooms: RoomDTO[]) => void): Promise<void> {
+  async connect(
+    onRoomsReceived: (rooms: RoomDTO[]) => void,
+    onRoomCreated: (room: RoomDTO) => void
+  ): Promise<void> {
     if (
       this.connection &&
       this.connection.state === signalR.HubConnectionState.Connected
@@ -23,6 +25,11 @@ export class RoomsHubService {
     this.connection.on("GetRooms", (rooms: RoomDTO[]) => {
       console.log("📥 Otrzymano listę pokoi z backendu:", rooms);
       onRoomsReceived(rooms);
+    });
+
+    this.connection.on("RoomCreated", (room: RoomDTO) => {
+      console.log("🆕 Nowy pokój został utworzony:", room);
+      onRoomCreated(room);
     });
 
     try {

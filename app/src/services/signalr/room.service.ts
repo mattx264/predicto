@@ -44,7 +44,7 @@ export const roomService = {
     }
   },
 
-  async createRoom(data: CreateRoomRequest): Promise<void> {
+  async createRoom(data: CreateRoomRequest): Promise<RoomDTO> {
     const token = getAuthToken();
 
     if (!token) {
@@ -65,14 +65,21 @@ export const roomService = {
 
         if (response.status === 400) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Nieprawidłowe dane pokoju");
+
+          if (errorData.errors) {
+            const messages = Object.values(errorData.errors).flat();
+            throw new Error(messages.join(", "));
+          }
+
+          throw new Error(errorData.title || "Nieprawidłowe dane pokoju");
         }
 
-        const errorText = await response.text();
-        throw new Error(errorText || `HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      console.log("✅ Room created successfully");
+      const createdRoom: RoomDTO = await response.json();
+      console.log("✅ Room created successfully:", createdRoom);
+      return createdRoom;
     } catch (error) {
       console.error("❌ Error creating room:", error);
       throw error;

@@ -1,5 +1,3 @@
-/* MatchLiveModal.css */
-
 .match-live-overlay {
   position: fixed;
   inset: 0;
@@ -47,7 +45,6 @@
   }
 }
 
-/* Header */
 .match-live-header {
   display: flex;
   justify-content: space-between;
@@ -120,7 +117,6 @@
   transform: rotate(90deg);
 }
 
-/* Main Content */
 .match-live-content {
   display: grid;
   grid-template-columns: 1fr 400px;
@@ -129,14 +125,12 @@
   min-height: 0;
 }
 
-/* Match Info Section */
 .match-info-section {
   padding: 2rem;
   overflow-y: auto;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Tablica wyników */
 .match-score-board {
   display: flex;
   align-items: center;
@@ -219,7 +213,6 @@
   font-size: 1.1rem;
 }
 
-/* Match Stats */
 .match-stats {
   padding: 1.5rem;
   background: rgba(0, 0, 0, 0.2);
@@ -257,7 +250,6 @@
   text-align: center;
 }
 
-/* Przycisk czatu - domyślnie ukryty */
 .chat-toggle-btn {
   display: none;
 }
@@ -272,7 +264,6 @@
   font-size: 0.85rem;
 }
 
-/* Chat Section */
 .match-chat-section {
   display: flex;
   flex-direction: column;
@@ -305,7 +296,6 @@
   font-size: 0.875rem;
 }
 
-/* Chat messages */
 .chat-messages {
   flex: 1;
   overflow-y: auto;
@@ -389,7 +379,6 @@
   border-color: rgba(34, 197, 94, 0.3);
 }
 
-/* Chat Input --- STYLES FOR VISIBILITY --- */
 .chat-input-wrapper {
   display: flex;
   gap: 0.75rem;
@@ -399,12 +388,11 @@
   flex-shrink: 0;
 }
 
-/* Base styles (Desktop-first) */
 .chat-input-top {
-  display: none; /* Ukryj górny input na dużych ekranach */
+  display: none;
 }
 .chat-input-bottom {
-  display: flex; /* Pokaż dolny input na dużych ekranach */
+  display: flex;
 }
 
 .chat-input {
@@ -443,7 +431,6 @@
   box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
 }
 
-/* Responsive - Tablet */
 @media (max-width: 1024px) {
   .match-live-content {
     grid-template-columns: 1fr;
@@ -470,7 +457,6 @@
   }
 }
 
-/* Responsive - Mobile */
 @media (max-width: 768px) {
   .match-live-overlay {
     padding: 0;
@@ -499,15 +485,14 @@
     overflow: hidden;
   }
 
-  /* --- ZMIANA WIDOCZNOŚCI INPUTÓW NA MOBILE --- */
   .chat-input-top {
-    display: flex; /* Pokaż górny input na mobile */
+    display: flex;
     border-top: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .chat-input-bottom {
-    display: none; /* Ukryj dolny input na mobile */
+    display: none;
   }
 
   .match-info-section {
@@ -649,7 +634,6 @@
   }
 }
 
-/* Responsive - Small Mobile */
 @media (max-width: 480px) {
   .match-live-header {
     padding: 0.875rem 1rem;

@@ -1,5 +1,3 @@
-/* RoomChat.css */
-
 .room-chat {
   display: flex;
   flex-direction: column;
@@ -243,7 +241,6 @@
   cursor: not-allowed;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .room-chat {
     height: 500px;

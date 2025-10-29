@@ -9,6 +9,9 @@ import TournamentSelectionStep from "./steps/TournamentSelectionStep";
 import RoomSettingsStep from "./steps/RoomSettingsStep";
 import SummaryStep from "./steps/SummaryStep";
 import type { RoomFormData } from "../types/types";
+import { mapFormDataToCreateRequest } from "../types/types";
+import { roomService } from "../services/signalr/room.service";
+import { toast } from "react-toastify";
 
 export interface TournamentTemplate {
   id: string;
@@ -118,6 +121,7 @@ const CreateRoomPage: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -163,8 +167,7 @@ const CreateRoomPage: React.FC = () => {
       });
     }
   };
-
-  const validateStep1 = () => {
+  const validateStep1 = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!formData.tournamentTemplateId) {
       newErrors.tournamentTemplateId = "Musisz wybrać szablon turnieju";
@@ -173,22 +176,26 @@ const CreateRoomPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const validateStep2 = () => {
+  const validateStep2 = (): boolean => {
     const newErrors: Record<string, string> = {};
     let firstErrorField: React.RefObject<HTMLInputElement | null> | null = null;
+
     if (!formData.roomName.trim()) {
       newErrors.roomName = "Nazwa pokoju jest wymagana";
       if (!firstErrorField) firstErrorField = roomNameRef;
     } else if (formData.roomName.length < 3) {
       newErrors.roomName = "Nazwa pokoju musi mieć co najmniej 3 znaki";
       if (!firstErrorField) firstErrorField = roomNameRef;
+    } else if (formData.roomName.length > 100) {
+      newErrors.roomName = "Nazwa pokoju może mieć maksymalnie 100 znaków";
+      if (!firstErrorField) firstErrorField = roomNameRef;
     }
 
     if (formData.maxParticipants < 2) {
       newErrors.maxParticipants = "Minimalna liczba uczestników to 2";
       if (!firstErrorField) firstErrorField = maxParticipantsRef;
-    } else if (formData.maxParticipants > 50) {
-      newErrors.maxParticipants = "Maksymalna liczba uczestników to 50";
+    } else if (formData.maxParticipants > 100) {
+      newErrors.maxParticipants = "Maksymalna liczba uczestników to 100";
       if (!firstErrorField) firstErrorField = maxParticipantsRef;
     }
 
@@ -198,6 +205,10 @@ const CreateRoomPage: React.FC = () => {
     } else if (formData.entryFee > 10000) {
       newErrors.entryFee = "Maksymalne wpisowe to 10000 PLN";
       if (!firstErrorField) firstErrorField = entryFeeRef;
+    }
+
+    if (formData.description.length > 500) {
+      newErrors.description = "Opis może mieć maksymalnie 500 znaków";
     }
 
     const { rules } = formData;
@@ -247,14 +258,99 @@ const CreateRoomPage: React.FC = () => {
   };
 
   const handleBack = () => {
-    if (step > 1) setStep(step - 1);
+    if (step > 1) {
+      setStep(step - 1);
+      if (errors.submit) {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.submit;
+          return newErrors;
+        });
+      }
+    }
   };
 
   const handleSubmit = async () => {
-    if (!validateStep2()) return;
-    console.log("Tworzenie pokoju:", formData);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    navigate("/rooms");
+    if (!validateStep2()) {
+      setStep(2);
+      return;
+    }
+
+    if (!roomService.isAuthenticated()) {
+      setErrors({ submit: "Musisz być zalogowany, aby utworzyć pokój" });
+      toast.error("Musisz być zalogowany, aby utworzyć pokój", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrors({});
+
+    try {
+      const request = mapFormDataToCreateRequest(formData);
+
+      await roomService.createRoom(request);
+
+      toast.success("🎉 Pokój został pomyślnie utworzony!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      setTimeout(() => {
+        navigate("/rooms");
+      }, 500);
+    } catch (error) {
+      console.error("❌ Błąd podczas tworzenia pokoju:", error);
+
+      let errorMessage = "Nie udało się utworzyć pokoju. Spróbuj ponownie.";
+
+      if (error instanceof Error && error.message) {
+        errorMessage = error.message;
+      }
+
+      if (
+        error instanceof Error &&
+        (error.message.includes("zalogowany") ||
+          error.message.includes("wygasła"))
+      ) {
+        toast.error(errorMessage, {
+          position: "top-center",
+          autoClose: 3000,
+        });
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      } else {
+        toast.error(errorMessage, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
+        setErrors({ submit: errorMessage });
+
+        if (contentRef.current) {
+          contentRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const renderStepContent = () => {
@@ -300,6 +396,8 @@ const CreateRoomPage: React.FC = () => {
             selectedTemplate={selectedTemplate}
             onSubmit={handleSubmit}
             onBack={handleBack}
+            isSubmitting={isSubmitting}
+            error={errors.submit}
           />
         );
       default:
@@ -310,6 +408,7 @@ const CreateRoomPage: React.FC = () => {
   return (
     <div className="create-room-page">
       <div className="create-room-container" ref={contentRef}>
+        {/* Header */}
         <div className="create-room-header">
           <button className="back-btn" onClick={() => navigate("/rooms")}>
             <ArrowLeft className="back-icon" />
@@ -326,6 +425,7 @@ const CreateRoomPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Progress Steps */}
         <div className="progress-steps">
           <div
             className={`step ${step >= 1 ? "active" : ""} ${step > 1 ? "completed" : ""}`}

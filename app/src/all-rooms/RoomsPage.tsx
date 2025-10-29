@@ -80,6 +80,7 @@ const RoomsPage: React.FC = () => {
   return (
     <div className="rooms-page">
       <div className="rooms-container">
+        {/* Header */}
         <div className="rooms-header">
           <div className="header-content">
             <h1 className="page-title">
@@ -101,7 +102,7 @@ const RoomsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* ✅ Error state */}
+        {/* Banner błędu */}
         {error && (
           <div className="error-banner">
             <AlertCircle size={20} />
@@ -111,7 +112,7 @@ const RoomsPage: React.FC = () => {
           </div>
         )}
 
-        {/* ✅ Loading state */}
+        {/* Loading state */}
         {isLoading && (
           <div className="loading-state">
             <div className="spinner"></div>
@@ -119,41 +120,49 @@ const RoomsPage: React.FC = () => {
           </div>
         )}
 
-        <RoomsFilters
-          searchQuery={searchQuery}
-          filterStatus={filterStatus}
-          filterLeague={filterLeague}
-          leagues={leagues}
-          onSearchChange={setSearchQuery}
-          onStatusChange={setFilterStatus}
-          onLeagueChange={setFilterLeague}
-        />
+        {/* Filtry */}
+        {!isLoading && (
+          <RoomsFilters
+            searchQuery={searchQuery}
+            filterStatus={filterStatus}
+            filterLeague={filterLeague}
+            leagues={leagues}
+            onSearchChange={setSearchQuery}
+            onStatusChange={setFilterStatus}
+            onLeagueChange={setFilterLeague}
+          />
+        )}
 
-        <div className="view-toggle">
-          <button
-            className={`toggle-btn ${viewMode === "all" ? "active" : ""}`}
-            onClick={() => setViewMode("all")}
-          >
-            Wszystkie pokoje ({filteredRooms.length})
-          </button>
-          <button
-            className={`toggle-btn ${viewMode === "my" ? "active" : ""}`}
-            onClick={() => setViewMode("my")}
-          >
-            Moje pokoje
-          </button>
-        </div>
+        {/* Przełącznik widoku */}
+        {!isLoading && (
+          <div className="view-toggle">
+            <button
+              className={`toggle-btn ${viewMode === "all" ? "active" : ""}`}
+              onClick={() => setViewMode("all")}
+            >
+              Wszystkie pokoje ({filteredRooms.length})
+            </button>
+            <button
+              className={`toggle-btn ${viewMode === "my" ? "active" : ""}`}
+              onClick={() => setViewMode("my")}
+            >
+              Moje pokoje
+            </button>
+          </div>
+        )}
 
-        <RoomsStats rooms={displayRooms} />
+        {/* Statystyki */}
+        {!isLoading && <RoomsStats rooms={displayRooms} />}
 
-        {/* ✅ Lista pokoi lub loading */}
+        {/* Lista pokoi */}
         {!isLoading && viewMode === "all" ? (
           <AllRoomsCards rooms={filteredRooms} onRoomClick={handleRoomClick} />
-        ) : viewMode === "my" ? (
+        ) : !isLoading && viewMode === "my" ? (
           <MyRooms currentUserId={currentUserId} />
         ) : null}
       </div>
 
+      {/* Modal płatności */}
       {selectedRoom && (
         <PaymentGateway
           isOpen={isPaymentOpen}
