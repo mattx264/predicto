@@ -1,5 +1,3 @@
-/* DashboardPage.css */
-
 .dashboard-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
@@ -12,7 +10,6 @@
   padding: 3rem 5%;
 }
 
-/* Header */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -66,7 +63,6 @@
   box-shadow: 0 12px 35px rgba(34, 197, 94, 0.5);
 }
 
-/* Stats Overview */
 .stats-overview {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -181,14 +177,12 @@
   font-weight: 800;
 }
 
-/* Dashboard Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 2rem;
 }
 
-/* Section Card */
 .section-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -214,7 +208,6 @@
   color: #22c55e;
 }
 
-/* Room Tabs */
 .room-tabs {
   display: flex;
   gap: 0.5rem;
@@ -251,7 +244,6 @@
   color: #22c55e;
 }
 
-/* Rooms List */
 .rooms-list {
   display: flex;
   flex-direction: column;
@@ -423,7 +415,6 @@
   transform: translateY(-50%) translateX(5px);
 }
 
-/* Empty State */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -439,7 +430,6 @@
   opacity: 0.5;
 }
 
-/* Upcoming Matches */
 .matches-list-dash {
   display: flex;
   flex-direction: column;
@@ -523,7 +513,6 @@
   font-weight: 600;
 }
 
-/* Notifications */
 .notifications-list {
   display: flex;
   flex-direction: column;
@@ -580,7 +569,6 @@
   font-size: 0.75rem;
 }
 
-/* Recent Results */
 .results-list {
   display: flex;
   flex-direction: column;
@@ -661,7 +649,6 @@
   font-weight: 600;
 }
 
-/* Responsive Design */
 @media (max-width: 1200px) {
   .dashboard-grid {
     grid-template-columns: 1fr;

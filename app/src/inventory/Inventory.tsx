@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Package, Search, Filter, SortAsc, Trash2, Eye } from "lucide-react";
 import "./Inventory.css";
 import InventoryItemModal from "./modal/InventoryItemModal";
-import PackOpeningModal from "./opening/PackOpeningModal";
+import PackOpeningModal from "./opening/PackOpening";
+import PackOpening from "./opening/PackOpening";
 
 interface InventoryItem {
   id: string;
@@ -209,7 +210,6 @@ const Inventory: React.FC = () => {
   const handlePackOpened = (newCards: PackItem[]) => {
     if (!packToOpen) return;
 
-    // Decrease quantity or remove pack
     setItems((prevItems) =>
       prevItems
         .map((item) =>
@@ -220,7 +220,6 @@ const Inventory: React.FC = () => {
         .filter((item) => item.quantity > 0)
     );
 
-    // Add new cards to inventory
     const newInventoryItems: InventoryItem[] = newCards.map((card) => ({
       id: card.id,
       name: card.name,
@@ -451,13 +450,10 @@ const Inventory: React.FC = () => {
       />
 
       {packToOpen && (
-        <PackOpeningModal
-          isOpen={isPackOpeningModalOpen}
+        <PackOpening
+          rarity={packToOpen.rarity}
+          onComplete={handlePackOpened}
           onClose={handleClosePackOpeningModal}
-          packName={packToOpen.name}
-          packRarity={packToOpen.rarity}
-          packImage={packToOpen.cardImage}
-          onPackOpened={handlePackOpened}
         />
       )}
     </div>

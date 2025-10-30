@@ -1,4 +1,3 @@
-/* Filters Section */
 .filters-section {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -87,7 +86,6 @@
   color: #f8fafc;
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .filters-section {
     grid-template-columns: 1fr 1fr;

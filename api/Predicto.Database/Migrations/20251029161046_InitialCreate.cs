@@ -67,7 +67,9 @@ namespace Predicto.Database.Migrations
                     FootballApiId = table.Column<int>(type: "int", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Coach = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FormLastGames = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,7 +89,7 @@ namespace Predicto.Database.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Localization = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhotoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetPasswordToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -186,7 +188,8 @@ namespace Predicto.Database.Migrations
                     EndGame = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TeamOneId = table.Column<int>(type: "int", nullable: true),
                     TeamTwoId = table.Column<int>(type: "int", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Referee = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -220,7 +223,11 @@ namespace Predicto.Database.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TournamentId = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    EntryFee = table.Column<int>(type: "int", nullable: true),
+                    IsPrivate = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    MaxUsers = table.Column<int>(type: "int", nullable: false),
+                    RoomStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

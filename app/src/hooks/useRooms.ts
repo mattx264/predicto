@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
-import { roomsHubService } from "../services/signalr/rooms-hub.service";
+import { roomsHubService } from "../services/signalr/signalr/rooms-hub.service";
 import {
   roomsSignal,
   roomsConnectionStatusSignal,
@@ -10,6 +10,7 @@ import {
   setConnectionStatus,
   setRoomsLoading,
   setRoomsError,
+  addRoom,
 } from "../signals/rooms.signals";
 import { mapRoomDtoToRoom, type RoomDTO, type Room } from "../types/types";
 
@@ -54,7 +55,18 @@ export const useRooms = (): UseRoomsReturn => {
           console.log("✅ Rooms loaded successfully:", mappedRooms);
         };
 
-        await roomsHubService.connect(handleRoomsReceived);
+        const handleRoomCreated = (roomDto: RoomDTO) => {
+          if (!isMounted) return;
+
+          console.log("🆕 New room created:", roomDto);
+          const mappedRoom = mapRoomDtoToRoom(roomDto);
+
+          addRoom(mappedRoom);
+
+          console.log("✅ Room added to list:", mappedRoom);
+        };
+
+        await roomsHubService.connect(handleRoomsReceived, handleRoomCreated);
 
         if (isMounted) {
           console.log("✅ Successfully connected to RoomsHub");

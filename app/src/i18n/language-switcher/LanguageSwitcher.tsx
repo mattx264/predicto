@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "flag-icons/css/flag-icons.min.css";
 import "./LanguageSwitcher.css";
@@ -12,6 +12,7 @@ interface Language {
 const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
 
   const languages: Language[] = [
     { code: "pl", name: "Polski", flag: "pl" },
@@ -20,6 +21,19 @@ const LanguageSwitcher: React.FC = () => {
 
   const currentLanguage =
     languages.find((lang) => lang.code === i18n.language) || languages[0];
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldAnimate(false);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setShouldAnimate(true);
+        });
+      });
+    } else {
+      setShouldAnimate(false);
+    }
+  }, [isOpen]);
 
   const changeLanguage = (languageCode: string) => {
     i18n.changeLanguage(languageCode);
@@ -40,7 +54,7 @@ const LanguageSwitcher: React.FC = () => {
       {isOpen && (
         <>
           <div className="language-overlay" onClick={() => setIsOpen(false)} />
-          <div className="language-dropdown">
+          <div className={`language-dropdown ${shouldAnimate ? "show" : ""}`}>
             {languages.map((lang) => (
               <button
                 key={lang.code}

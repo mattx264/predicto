@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
-import { roomHubService } from "../services/signalr/room-hub.service";
 import {
   currentRoomSignal,
   roomConnectionStatusSignal,
@@ -13,6 +12,7 @@ import {
   clearCurrentRoom,
 } from "../signals/room-detail.signals";
 import { mapRoomDtoToRoom, type RoomDTO, type Room } from "../types/types";
+import { roomHubService } from "../services/signalr/signalr/room-hub.service";
 
 interface UseRoomReturn {
   room: Room | null;

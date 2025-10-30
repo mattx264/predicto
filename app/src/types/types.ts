@@ -2,8 +2,10 @@ export interface CreateRoomRequest {
   name: string;
   description: string;
   tournamentId: number;
+  maxParticipants: number;
+  entryFee?: number;
+  isPrivate: boolean;
 }
-
 export interface TournamentDto {
   id: number;
   name: string;
@@ -36,6 +38,7 @@ export interface RoomFormData {
   entryFee: number;
   isPrivate: boolean;
   description: string;
+
   rules: {
     scoring: {
       exactScore: number;
@@ -48,7 +51,6 @@ export interface RoomFormData {
     };
   };
 }
-
 export interface Match {
   id: string;
   homeTeam: string;
@@ -120,7 +122,18 @@ export interface Room {
   isPrivate: boolean;
   status: "open" | "active" | "ended";
 }
-
+export const mapFormDataToCreateRequest = (
+  formData: RoomFormData
+): CreateRoomRequest => {
+  return {
+    name: formData.roomName,
+    description: formData.description,
+    tournamentId: parseInt(formData.tournamentTemplateId, 10),
+    maxParticipants: formData.maxParticipants,
+    entryFee: formData.entryFee,
+    isPrivate: formData.isPrivate,
+  };
+};
 export const mapRoomDtoToRoom = (dto: RoomDTO): Room => {
   const statusMap: Record<RoomStatusDTO, "open" | "active" | "ended"> = {
     [RoomStatusDTO.Waiting]: "open",

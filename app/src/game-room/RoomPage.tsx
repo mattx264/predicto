@@ -568,7 +568,6 @@ const RoomPage: React.FC = () => {
           </div>
         </div>
 
-        {/* ✅ ZAKTUALIZOWANE ZAKŁADKI - dodana "Tabela" */}
         <div className="my-room-tabs">
           <button
             className={`my-tab ${activeTab === "matches" ? "my-active" : ""}`}
@@ -578,7 +577,6 @@ const RoomPage: React.FC = () => {
             <span>Mecze ({mockMatches.length})</span>
           </button>
 
-          {/* ✅ NOWA ZAKŁADKA */}
           <button
             className={`my-tab ${activeTab === "table" ? "my-active" : ""}`}
             onClick={() => setActiveTab("table")}

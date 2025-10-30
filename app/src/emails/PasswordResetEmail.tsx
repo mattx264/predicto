@@ -142,14 +142,12 @@ export const PasswordResetEmail = ({
       <Preview>{previewText}</Preview>
       <Body style={main}>
         <Container style={container}>
-          {/* Logo PREDICTO */}
           <Section style={logoSection}>
             <div style={logoGlow}></div>
             <Heading style={logoText}>PREDICTO</Heading>
             <div style={logoUnderline}></div>
           </Section>
 
-          {/* Ikona główna */}
           <Section style={iconSection}>
             <KeyRoundIcon />
           </Section>
@@ -168,14 +166,12 @@ export const PasswordResetEmail = ({
             ustawić nowe hasło:
           </Text>
 
-          {/* Przycisk resetowania */}
           <Section style={btnContainer}>
             <Button style={button} href={resetLink}>
               Zresetuj hasło
             </Button>
           </Section>
 
-          {/* Ostrzeżenie o wygaśnięciu */}
           <Section style={warningBox}>
             <Text style={warningText}>
               <ClockIcon />
@@ -186,7 +182,6 @@ export const PasswordResetEmail = ({
             </Text>
           </Section>
 
-          {/* Szczegóły żądania */}
           <Section style={detailsCard}>
             <Heading style={detailsHeading}>Szczegóły żądania</Heading>
 
@@ -206,7 +201,6 @@ export const PasswordResetEmail = ({
             </Section>
           </Section>
 
-          {/* Sekcja bezpieczeństwa */}
           <Section style={securitySection}>
             <Heading style={sectionHeading}>
               <ShieldAlertIcon />
@@ -249,7 +243,6 @@ export const PasswordResetEmail = ({
             </Section>
           </Section>
 
-          {/* Wskazówki dotyczące hasła */}
           <Section style={tipsBox}>
             <Text style={tipsHeading}>
               <LockIcon />
@@ -270,7 +263,6 @@ export const PasswordResetEmail = ({
             </Text>
           </Section>
 
-          {/* Alternatywny link */}
           <Hr style={hr} />
 
           <Section style={infoBox}>
@@ -287,7 +279,6 @@ export const PasswordResetEmail = ({
 
           <Hr style={hr} />
 
-          {/* Stopka */}
           <Text style={footer}>
             &copy; {new Date().getFullYear()} {appName}. Wszelkie prawa
             zastrzeżone.

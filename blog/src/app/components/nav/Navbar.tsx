@@ -94,6 +94,9 @@ function NavbarContent() {
     return pathname.startsWith(href);
   };
 
+  const showTournamentSelector =
+    pathname !== "/" && !pathname.startsWith("/blog");
+
   const TournamentSelector = ({ inMobileMenu = false }) => (
     <div
       className={
@@ -126,7 +129,7 @@ function NavbarContent() {
           </div>
 
           <div className="navbar-desktop">
-            <TournamentSelector />
+            {showTournamentSelector && <TournamentSelector />}
 
             {allNavLinks.map((link) => (
               <Link
@@ -180,7 +183,7 @@ function NavbarContent() {
 
       <div className={`mobile-menu ${isOpen ? "open" : ""}`} id="mobile-menu">
         <div className="mobile-menu-content">
-          <TournamentSelector inMobileMenu={true} />
+          {showTournamentSelector && <TournamentSelector inMobileMenu={true} />}
 
           {allNavLinks.map((link) => (
             <Link

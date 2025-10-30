@@ -41,9 +41,8 @@ export const setRooms = (rooms: Room[]) => {
 };
 
 export const addRoom = (room: Room) => {
-  roomsSignal.value = [...roomsSignal.value, room];
+  roomsSignal.value = [room, ...roomsSignal.value];
 };
-
 export const updateRoom = (roomId: string, updates: Partial<Room>) => {
   roomsSignal.value = roomsSignal.value.map((room) =>
     room.id === roomId ? { ...room, ...updates } : room

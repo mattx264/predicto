@@ -1,19 +1,25 @@
-/* UserProfileModal.css */
-
 .my-profile-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  animation: fadeIn 0.3s ease-out;
   padding: 20px;
+  transition:
+    background-color 0.3s ease,
+    backdrop-filter 0.3s ease;
+  overflow-y: auto;
+}
+
+.my-profile-overlay.show {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
 }
 
 .my-profile-modal {
@@ -22,33 +28,22 @@
   border-radius: 24px;
   width: 90%;
   max-width: 900px;
-  max-height: 85vh;
+  max-height: 90vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  animation: slideUp 0.3s ease-out;
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
   margin: auto;
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.my-profile-overlay.show .my-profile-modal {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Header */
@@ -174,7 +169,6 @@
   font-size: 0.85rem;
 }
 
-/* Tabs */
 .my-profile-tabs {
   display: flex;
   gap: 0.5rem;
@@ -216,7 +210,6 @@
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
 }
 
-/* Content */
 .my-profile-content {
   flex: 1;
   overflow-y: auto;
@@ -316,7 +309,6 @@
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
 }
 
-/* Profile Fields */
 .my-profile-fields {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -371,7 +363,6 @@
   min-height: 70px;
 }
 
-/* Wallet */
 .my-profile-wallet-balance {
   margin-bottom: 1.25rem;
 }
@@ -491,7 +482,6 @@
   color: #3b82f6;
 }
 
-/* Settings */
 .my-profile-settings-list {
   display: flex;
   flex-direction: column;
@@ -529,7 +519,6 @@
   font-size: 0.8rem;
 }
 
-/* Toggle Switch */
 .my-profile-toggle-switch {
   position: relative;
   display: inline-block;
@@ -578,7 +567,6 @@
   background-color: #22c55e;
 }
 
-/* Security */
 .my-profile-password-input {
   position: relative;
   display: flex;
@@ -628,7 +616,6 @@
   box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
 }
 
-/* Danger Zone */
 .my-profile-danger-zone {
   border-color: rgba(239, 68, 68, 0.3);
   background: rgba(239, 68, 68, 0.05);
@@ -658,7 +645,6 @@
   transform: translateY(-2px);
 }
 
-/* Scrollbar */
 .my-profile-content::-webkit-scrollbar {
   width: 6px;
 }
@@ -676,20 +662,15 @@
   background: rgba(34, 197, 94, 0.5);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .my-profile-overlay {
-    padding: 0;
-    align-items: flex-start;
+    padding: 10px;
   }
 
   .my-profile-modal {
     width: 100%;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    margin: 0;
-    border: none;
+    max-height: 95vh;
+    border-radius: 16px;
   }
 
   .my-profile-header {
@@ -764,16 +745,14 @@
 }
 
 @media (max-width: 480px) {
-  .my-profile-modal {
-    width: 100%;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    border: none;
+  .my-profile-overlay {
+    padding: 10px;
   }
 
-  .my-profile-header-bg {
-    border-radius: 0;
+  .my-profile-modal {
+    width: 100%;
+    max-height: 95vh;
+    border-radius: 16px;
   }
 
   .my-profile-avatar-large {

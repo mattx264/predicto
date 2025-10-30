@@ -15,12 +15,15 @@ import {
   Package,
 } from "lucide-react";
 import "./Navigation.css";
-import UserProfileModal from "../user-profile-modal/UserProfileModal";
 import NotificationBell from "../notifications/NotificationsBell";
 import LanguageSwitcher from "../i18n/language-switcher/LanguageSwitcher";
 import { useAuth } from "../context/AuthContext";
 
-const Navigation: React.FC = () => {
+interface NavigationProps {
+  onOpenProfile: () => void;
+}
+
+const Navigation: React.FC<NavigationProps> = ({ onOpenProfile }) => {
   const { t } = useTranslation();
   const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,7 +32,6 @@ const Navigation: React.FC = () => {
   const [animatingNav, setAnimatingNav] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const allNavItems = [
     {
@@ -135,6 +137,11 @@ const Navigation: React.FC = () => {
     navigate("/");
   };
 
+  const handleProfileClick = () => {
+    setIsMenuOpen(false);
+    onOpenProfile();
+  };
+
   const username = user?.name || "Gracz";
 
   return (
@@ -187,7 +194,7 @@ const Navigation: React.FC = () => {
 
                 <button
                   className="user-profile-btn"
-                  onClick={() => setIsProfileOpen(true)}
+                  onClick={handleProfileClick}
                 >
                   <div className="user-avatar">
                     <User className="user-icon" />
@@ -263,10 +270,7 @@ const Navigation: React.FC = () => {
                 <>
                   <div
                     className="mobile-user-info"
-                    onClick={() => {
-                      setIsProfileOpen(true);
-                      setIsMenuOpen(false);
-                    }}
+                    onClick={handleProfileClick}
                     style={{ cursor: "pointer" }}
                   >
                     <div className="user-avatar">
@@ -301,11 +305,6 @@ const Navigation: React.FC = () => {
           </div>
         </div>
       </div>
-      <UserProfileModal
-        isOpen={isProfileOpen}
-        onClose={() => setIsProfileOpen(false)}
-        username={username}
-      />
     </nav>
   );
 };
