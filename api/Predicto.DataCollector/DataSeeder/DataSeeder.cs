@@ -1,5 +1,6 @@
 ﻿using Predicto.Database.Entities.Sport;
 using Predicto.Database.UnitOfWork;
+using Predicto.DataCollector.Fifa;
 using Predicto.DataCollector.Models;
 using Predicto.Gateway.DTO.Sport;
 using System;
@@ -20,7 +21,10 @@ namespace Predicto.DataCollector.NewFolder
         {
             using var unitOfWork = new UnitOfWork(new Database.PredictoDbContext());
             //  string[] fileEntries = Directory.GetFiles("C:\\Users\\mattx\\src\\predicto\\api\\Predicto.DataCollector\\Data/Teams/");
-            await SeedTeam(unitOfWork);
+            // await SeedTeam(unitOfWork);
+
+            FifaGamesSeed(unitOfWork);
+
             await unitOfWork.CompleteAsync();
 
             // await SeedPlayers(unitOfWork);
@@ -61,7 +65,7 @@ namespace Predicto.DataCollector.NewFolder
                         var playerEntity = new PlayerEntity
                         {
                             Name = player.name,
-                            Slug = player.name.ToLower().Replace(" ", "-").Replace(".", "")+ player.id,
+                            Slug = player.name.ToLower().Replace(" ", "-").Replace(".", "") + player.id,
                             FootballApiId = player.id,
                             Position = player.position,
                             ShirtNumber = player.number,
@@ -69,8 +73,8 @@ namespace Predicto.DataCollector.NewFolder
                             FirstName = names[0],
                             LastName = names[1],
                             BirthCountry = "Unknown",
-                            Height = 180,
-                            Weight = 75,
+                            Height = null,
+                            Weight = null,
                             Nationality = "Unknown",
                             Birthday = default,
                             BirthPlace = "Unknown",
@@ -87,7 +91,7 @@ namespace Predicto.DataCollector.NewFolder
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error deserializing file {fileEntry}: {ex.Message}");
-                  //  throw;
+                    //  throw;
                 }
             }
         }
@@ -145,6 +149,17 @@ namespace Predicto.DataCollector.NewFolder
                     }
                 }
             }
+        }
+
+        private void UefaPlayerSeed(UnitOfWork unitOfWork)
+        {
+            var uefa = new UefaCom();
+            uefa.SeedData(unitOfWork);
+        }
+        private void FifaGamesSeed(UnitOfWork unitOfWork)
+        {
+            var fifa = new FifaCom();
+            fifa.SeedData(unitOfWork);
         }
     }
 }

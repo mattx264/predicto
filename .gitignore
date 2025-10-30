@@ -472,3 +472,4 @@ yarn-error.log*
 next-env.d.ts
 /app/dist/
 /app/public 
+/api/Predicto.DataCollector/Data/

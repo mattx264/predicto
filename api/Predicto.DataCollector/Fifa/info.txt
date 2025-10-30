@@ -1,0 +1,3 @@
+﻿https://api.fifa.com/api/v3/live/football/520/288329/288330/400019338?language=en - game finished
+https://api.fifa.com/api/v3/live/football/520/288329/288330/400019279?language=en - game ongoing
+

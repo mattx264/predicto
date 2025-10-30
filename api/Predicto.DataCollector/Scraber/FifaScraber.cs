@@ -18,7 +18,7 @@ namespace Predicto.DataCollector.Scraber
             // Initialize ChromeDriver
             var driver = new ChromeDriver();
             // Navigate to the specified URL
-            driver.Navigate().GoToUrl("https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/qualifiers/conmebol/scores-fixtures?country=PL&wtw-filter=ALL");
+            driver.Navigate().GoToUrl("https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/qualifiers/uefa/scores-fixtures?country=PL&wtw-filter=ALL");
             // Additional actions can be implemented here
             // Close the browser after tasks are complete
            Thread.Sleep(10000);

@@ -15,7 +15,7 @@ namespace Predicto.DataCollector.FootballApi
         }
         public async Task CollectCountries()
         {
-            var countries = await _restClient.GetAsync("https://v3.football.api-sports.io/countries");
+            var countries = await _restClient.GetAsync("https://api.fifa.com/api/v3/live/football/520/288329/288330/400019338?language=en");
             File.WriteAllText("countries.json", countries);
         }
     }
