@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import Link from "next/link";
@@ -13,6 +14,8 @@ interface TeamCardProps {
 
 const TeamCard = ({ tournamentSlug }: TeamCardProps) => {
   const [teams, setTeams] = useState<Team[]>([]);
+  const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,6 +25,7 @@ const TeamCard = ({ tournamentSlug }: TeamCardProps) => {
         setLoading(true);
         const data = await getTeams(tournamentSlug);
         setTeams(data);
+        setFilteredTeams(data);
         setError(null);
       } catch (err) {
         console.error("Error fetching teams:", err);
@@ -33,6 +37,25 @@ const TeamCard = ({ tournamentSlug }: TeamCardProps) => {
 
     fetchTeams();
   }, [tournamentSlug]);
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredTeams(teams);
+    } else {
+      const filtered = teams.filter((team) =>
+        team.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredTeams(filtered);
+    }
+  }, [searchQuery, teams]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
 
   if (loading) {
     return (
@@ -62,28 +85,58 @@ const TeamCard = ({ tournamentSlug }: TeamCardProps) => {
   }
 
   return (
-    <div className="teams-grid">
-      {teams.map((team) => {
-        const FlagComponent = flags[team.flag as keyof typeof flags];
+    <>
+      <div className="search-container">
+        <div className="search-input-wrapper">
+          <input
+            type="text"
+            placeholder="Szukaj reprezentacji..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button onClick={clearSearch} className="clear-search-btn">
+              ✕
+            </button>
+          )}
+        </div>
+        {searchQuery && (
+          <p className="search-results-info">
+            Znaleziono {filteredTeams.length} z {teams.length} reprezentacji
+          </p>
+        )}
+      </div>
 
-        return (
-          <Link
-            href={`/${tournamentSlug}/reprezentacje/${team.slug}`}
-            key={team.slug}
-            className="team-card"
-          >
-            <div className="flag-container">
-              {FlagComponent ? (
-                <FlagComponent title={team.name} className="flag-svg" />
-              ) : (
-                <span className="flag-emoji">{team.flag}</span>
-              )}
-            </div>
-            <h3 className="team-name">{team.name}</h3>
-          </Link>
-        );
-      })}
-    </div>
+      {filteredTeams.length === 0 && searchQuery ? (
+        <p style={{ color: "white", textAlign: "center", padding: "2rem" }}>
+          Nie znaleziono reprezentacji dla "{searchQuery}"
+        </p>
+      ) : (
+        <div className="teams-grid">
+          {filteredTeams.map((team) => {
+            const FlagComponent = flags[team.flag as keyof typeof flags];
+
+            return (
+              <Link
+                href={`/${tournamentSlug}/reprezentacje/${team.slug}`}
+                key={team.slug}
+                className="team-card"
+              >
+                <div className="flag-container">
+                  {FlagComponent ? (
+                    <FlagComponent title={team.name} className="flag-svg" />
+                  ) : (
+                    <span className="flag-emoji">{team.flag}</span>
+                  )}
+                </div>
+                <h3 className="team-name">{team.name}</h3>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 };
 

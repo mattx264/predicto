@@ -16,17 +16,21 @@ namespace Predicto.Gateway.Services
         public async Task<IEnumerable<TournamentDto>> GetAllAsync()
         {
             return (await _unitOfWork.Tournament.GetAllAsync()).Select(
-               t =>
+               t => new TournamentDto
                {
-                     return new TournamentDto
-                     {
-                          Id = t.Id,
-                          Name = t.Name,
-                          SportCategoryId = t.SportCategoryId
-                     };
+                   Id = t.Id,
+                   Name = t.Name,
+                   SportCategoryId = t.SportCategoryId,
+                   Description = t.Description,
+                   League = t.League,
+                   MatchesCount = t.MatchesCount,
+                   StartDate = t.StartDate,
+                   EndDate = t.EndDate,
+                   LogoUrl = t.LogoUrl
                });
         }
     }
+    
     public interface ITournamentService
     {
         Task<IEnumerable<TournamentDto>> GetAllAsync();

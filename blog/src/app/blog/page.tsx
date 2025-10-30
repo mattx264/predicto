@@ -100,28 +100,28 @@ function BlogContent() {
           </p>
         </section>
 
-        <section className="search-section">
-          <div className="search-container">
-            <div className="search-input-wrapper">
+        <section className="posts-search-section">
+          <div className="posts-search-container">
+            <div className="posts-search-input-wrapper">
               <input
                 type="text"
                 placeholder="Szukaj postów..."
-                className="search-input"
+                className="posts-search-input"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Search className="search-icon" />
+              <Search className="posts-search-icon" />
             </div>
 
-            <div className="filter-wrapper">
-              <Filter className="filter-icon" />
-              <select className="filter-select">
+            <div className="posts-filter-wrapper">
+              <Filter className="posts-filter-icon" />
+              <select className="posts-filter-select">
                 <option>Sortuj: Najnowsze</option>
                 <option>Sortuj: Najpopularniejsze</option>
               </select>
 
               <select
-                className="filter-select"
+                className="posts-filter-select"
                 value={selectedTournament}
                 onChange={handleFilterChange}
               >

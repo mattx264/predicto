@@ -19,7 +19,6 @@ import DashboardPage from "./dashboard/DashboardPage";
 import HowToPlay from "./how-to-play/HowToPlay";
 import SplashScreen from "./splash-screen/SplashScreen";
 import { AuthProvider } from "./context/AuthContext";
-import PackOpening from "./pack-opening/PackOpening";
 import DemoPage from "./how-to-play/demo-page/DemoPage";
 import CardShop from "./card-shop/CardShop";
 import Inventory from "./inventory/Inventory";
@@ -56,7 +55,6 @@ function AppContent() {
         <Route path="/room/:id" element={<RoomPage />} />
         <Route path="/ranking" element={<RankingPage />} />
         <Route path="/jak-grac" element={<HowToPlay />} />
-        <Route path="/pack-opening" element={<PackOpening />} />
         <Route path="/demo" element={<DemoPage />} />
         <Route path="/shop" element={<CardShop />} />
         <Route path="/inventory" element={<Inventory />} />

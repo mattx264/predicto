@@ -5,7 +5,6 @@ export interface Post {
   date: string; // Data publikacji (format YYYY-MM-DD)
   tournamentSlug: string; // Klucz łączący z turniejem, np. "el-ms-2026"
   league: string; // Pełna, wyświetlana nazwa turnieju/ligi
-  image: string; // Ścieżka do obrazka posta
   author: string; // Autor posta
   content: string; // Pełna zawartość HTML posta
 }
@@ -20,7 +19,6 @@ const allPosts: Post[] = [
     date: "2025-10-14",
     tournamentSlug: "el-ms-2026",
     league: "Eliminacje MŚ 2026",
-    image: "/images/mundial-2026.jpg",
     content: `
       <p>Eliminacje do Mistrzostw Świata 2026 wkraczają w decydującą fazę. Turniej, który odbędzie się w USA, Kanadzie i Meksyku, będzie wyjątkowy – po raz pierwszy w historii wezmą w nim udział aż 48 drużyn. To oznacza więcej emocji, ale też więcej niespodzianek na etapie kwalifikacji.</p>
       
@@ -42,7 +40,6 @@ const allPosts: Post[] = [
     date: "2025-10-15",
     tournamentSlug: "el-ms-2026",
     league: "Eliminacje MŚ 2026",
-    image: "/images/polska-holandia.jpg",
     author: "Anna Kowalska",
     content: `
       <p>Reprezentacja Polski staje przed kluczowym wyzwaniem w eliminacjach do Mistrzostw Świata 2026. Mecz z Holandią na PGE Narodowym może zadecydować o bezpośrednim awansie. Analizujemy taktykę, składy i szanse obu drużyn.</p>
@@ -65,7 +62,6 @@ const allPosts: Post[] = [
     date: "2024-07-15",
     tournamentSlug: "euro-2024",
     league: "EURO 2024",
-    image: "/images/hiszpania-euro.jpg",
     author: "Maciej Iwański",
     content: `
       <p>Hiszpania po raz kolejny na tronie Europy! Podopieczni Luisa de la Fuente zaprezentowali futbol totalny, dominując w finale przeciwko Anglii. Młodzi gwiazdorzy, Lamine Yamal i Nico Williams, rozbili defensywę rywali, a Rodri kontrolował środek pola.</p>
@@ -81,7 +77,6 @@ const allPosts: Post[] = [
     date: "2024-06-27",
     tournamentSlug: "euro-2024",
     league: "EURO 2024",
-    image: "/images/gruzja-euro.jpg",
     author: "Tomasz Zieliński",
     content: `
       <p>Nikt na nich nie stawiał, a jednak dokonali niemożliwego. Reprezentacja Gruzji, absolutny debiutant na Mistrzostwach Europy, zszokowała piłkarski świat. Po remisie z Czechami i porażce z Turcją, w meczu o wszystko pokonali 2:0 Portugalię!</p>
@@ -99,7 +94,6 @@ const allPosts: Post[] = [
     date: "2022-12-19",
     tournamentSlug: "mundial-2022",
     league: "Mundial 2022",
-    image: "/images/messi-mundial.jpg",
     author: "Piotr Wójcik",
     content: `
       <p>To był finał, który przejdzie do legendy. Dramaturgia, zwroty akcji, 6 goli i konkurs rzutów karnych. Lionel Messi w końcu zdobył trofeum, którego brakowało mu w kolekcji, i zamknął dyskusję na temat najlepszego piłkarza w historii.</p>
@@ -115,7 +109,6 @@ const allPosts: Post[] = [
     date: "2022-12-11",
     tournamentSlug: "mundial-2022",
     league: "Mundial 2022",
-    image: "/images/maroko-mundial.jpg",
     author: "Tomasz Zieliński",
     content: `
       <p>Turniej w Katarze przyniósł historyczny sukces dla Afryki. Reprezentacja Maroka, prowadzona przez Walida Regraguiego, złamała wszelkie bariery. Po wyjściu z grupy z Belgią i Chorwacją, w fazie pucharowej wyeliminowali Hiszpanię i Portugalię!</p>

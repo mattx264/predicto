@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
-import { roomsHubService } from "../services/signalr/rooms-hub.service";
+import { roomsHubService } from "../services/signalr/signalr/rooms-hub.service";
 import {
   roomsSignal,
   roomsConnectionStatusSignal,

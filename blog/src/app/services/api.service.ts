@@ -1,13 +1,9 @@
-const isDevelopment = window.location.hostname === "localhost";
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5116";
 
-// const BACKEND_URL = isDevelopment
-//   ? "http://localhost:5116"
-//   : "http://predicto.gg";
-const BACKEND_URL = "http://predicto.gg";
-const blogApiService = {
+const apiService = {
   getBackendUrl: (): string => {
     return BACKEND_URL;
   },
 };
 
-export default blogApiService;
+export default apiService;

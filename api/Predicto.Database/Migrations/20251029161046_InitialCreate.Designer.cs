@@ -12,8 +12,8 @@ using Predicto.Database;
 namespace Predicto.Database.Migrations
 {
     [DbContext(typeof(PredictoDbContext))]
-    [Migration("20251028083625_InitialCreate5")]
-    partial class InitialCreate5
+    [Migration("20251029161046_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

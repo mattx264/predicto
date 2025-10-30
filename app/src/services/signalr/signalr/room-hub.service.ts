@@ -1,8 +1,7 @@
 import * as signalR from "@microsoft/signalr";
-import { signalRService } from "./signalr.service";
-
-import apiService from "./api.service";
-import type { RoomDTO } from "../../types/types";
+import type { RoomDTO } from "../../../types/types";
+import apiService from "../api.service";
+import { signalRService } from "../signalr.service";
 
 export class RoomHubService {
   private connections: Map<string, signalR.HubConnection> = new Map();
