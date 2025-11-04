@@ -6,11 +6,20 @@ using Predicto.DataCollector.Scraber;
 
 //new TeamCollector().Start().Wait();
 //new PlayerCollector().Start().Wait();
-new DataSeeder().Seed().Wait();
-//new FootballApiCollector().CollectCountries().Wait();
-//new FifaScraber().StartChrome(); 
-//new UefaCom().ImportDataFromHtmlTeam();
 
-//FIFA COM
+// main data importer
+new DataSeeder().Seed().Wait();
+
+
+//new FootballApiCollector().CollectCountries().Wait();
+
+
+
+//import html wiht payers
+//new UefaCom().Start();
+
+//FIFA COM list of matches
 //new FifaScraber().StartChrome();
+
+//FIFA COM collect match data API
 //new FifaCom().Start().Wait();
