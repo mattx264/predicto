@@ -20,15 +20,16 @@ namespace Predicto.DataCollector.NewFolder
         public async Task Seed()
         {
             using var unitOfWork = new UnitOfWork(new Database.PredictoDbContext());
-            //  string[] fileEntries = Directory.GetFiles("C:\\Users\\mattx\\src\\predicto\\api\\Predicto.DataCollector\\Data/Teams/");
-            // await SeedTeam(unitOfWork);
+           
 
-            FifaGamesSeed(unitOfWork);
+           // await SeedTeam(unitOfWork);
+            //wait unitOfWork.CompleteAsync();
+          await FifaGamesSeed(unitOfWork);
 
-            await unitOfWork.CompleteAsync();
+
 
             // await SeedPlayers(unitOfWork);
-            // await unitOfWork.CompleteAsync();
+            await unitOfWork.CompleteAsync();
 
 
         }
@@ -42,6 +43,10 @@ namespace Predicto.DataCollector.NewFolder
                 try
                 {
                     var data = JsonSerializer.Deserialize<TeamModelRoot>(json);
+                    if (data.response.Count == 0)
+                    {
+                        throw new Exception("data.response[0].team is empty");
+                    }
                     var teamData = data.response[0].team;
                     var team = await unitOfWork.Team.FindAsync(t => t.FootballApiId == teamData.id);
                     if (team == null)
@@ -62,6 +67,7 @@ namespace Predicto.DataCollector.NewFolder
                     foreach (var player in players)
                     {
                         var names = player.name.Split(" ");
+
                         var playerEntity = new PlayerEntity
                         {
                             Name = player.name,
@@ -71,21 +77,24 @@ namespace Predicto.DataCollector.NewFolder
                             ShirtNumber = player.number,
                             PhotoUrl = player.photo,
                             FirstName = names[0],
-                            LastName = names[1],
-                            BirthCountry = "Unknown",
+                            LastName = names[names.Length - 1],
+                            BirthCountry = null,
                             Height = null,
                             Weight = null,
-                            Nationality = "Unknown",
-                            Birthday = default,
-                            BirthPlace = "Unknown",
+                            Nationality = null,
+                            Birthday = null,
+                            BirthPlace = null,
+
 
                         };
+                        playerEntity.Teams = new List<TeamEntity> { team };
+
                         await unitOfWork.Player.AddAsync(playerEntity);
-                        await unitOfWork.TeamPlayer.AddAsync(new TeamPlayerEntity()
-                        {
-                            PlayerEntity = playerEntity,
-                            TeamEntity = team,
-                        });
+                        //await unitOfWork.TeamPlayer.AddAsync(new TeamPlayerEntity()
+                        //{
+                        //    PlayerEntity = playerEntity,
+                        //    TeamEntity = team,
+                        //});
                     }
                 }
                 catch (Exception ex)
@@ -95,7 +104,7 @@ namespace Predicto.DataCollector.NewFolder
                 }
             }
         }
-        private async Task SeedPlayers(UnitOfWork unitOfWork)
+        private async Task SeedPlayers(UnitOfWork unitOfWork, TeamEntity? team)
         {
             string[] fileEntries = Directory.GetDirectories("../../../../Predicto.DataCollector/Data/Teams/Players/");
 
@@ -106,6 +115,10 @@ namespace Predicto.DataCollector.NewFolder
                     var json = await File.ReadAllTextAsync(playerFile);
                     try
                     {
+                        var countryName = countryFolder.Split("/").Last();
+
+                        //   var team = await unitOfWork.Team.FindAsync(t => t.Name == countryName);
+
                         var data = JsonSerializer.Deserialize<RootPlayer>(json);
                         var playerData = data.response[0].player;
                         var player = new PlayerEntity
@@ -124,22 +137,17 @@ namespace Predicto.DataCollector.NewFolder
                             PhotoUrl = playerData.photo,
                             Age = playerData.age,
                             Position = playerData.position,
-
+                            ShirtNumber = playerData.number,
                         };
                         await unitOfWork.Player.AddAsync(player);
-                        var countryName = countryFolder.Split("/").Last();
-                        var team = await unitOfWork.Team.FindAsync(t => t.Name == countryName);
-                        if (team == null)
-                        {
-                            throw new Exception("Team not found for player " + player.Name);
-                        }
 
-                        await unitOfWork.TeamPlayer.AddAsync(new TeamPlayerEntity()
-                        {
-                            PlayerEntity = player,
-                            TeamEntityId = team.Id,
 
-                        });
+                        //await unitOfWork.TeamPlayer.AddAsync(new TeamPlayerEntity()
+                        //{
+                        //    PlayerEntity = player,
+                        //    TeamId = team.Id,
+
+                        //});
                         await unitOfWork.CompleteAsync();
                     }
                     catch (Exception ex)
@@ -156,10 +164,10 @@ namespace Predicto.DataCollector.NewFolder
             var uefa = new UefaCom();
             uefa.SeedData(unitOfWork);
         }
-        private void FifaGamesSeed(UnitOfWork unitOfWork)
+        private async Task FifaGamesSeed(UnitOfWork unitOfWork)
         {
             var fifa = new FifaCom();
-            fifa.SeedData(unitOfWork);
+            await fifa.SeedData(unitOfWork);
         }
     }
 }

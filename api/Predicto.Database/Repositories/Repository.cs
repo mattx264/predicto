@@ -16,6 +16,7 @@ namespace Predicto.Database.Repositories
         public Repository(PredictoDbContext context)
         {
             _context = context;
+
             _dbSet = _context.Set<T>();
         }
 

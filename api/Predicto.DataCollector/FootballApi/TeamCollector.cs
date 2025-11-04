@@ -25,7 +25,7 @@ namespace Predicto.DataCollector.FootballApi
             foreach (var team in data?.response)
             {
                 var teamData = await _restClient.GetAsync($"https://v3.football.api-sports.io/players/squads?team={team.team.id}");
-                File.WriteAllText($"C:\\Users\\mattx\\src\\predicto\\api\\Predicto.DataCollector\\Data\\Teams\\{team.team.name}.json", teamData);
+                File.WriteAllText($"C:\\Users\\mattx\\src\\predicto\\api\\Predicto.DataCollector\\Data\\Teams\\{team.team.name}.json", teamData, Encoding.UTF8);
                 Thread.Sleep(6000);
             }
         }

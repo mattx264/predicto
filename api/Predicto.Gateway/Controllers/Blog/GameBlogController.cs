@@ -26,7 +26,18 @@ namespace Predicto.Gateway.Controllers
             var games=await _unitOfWork.Game.GetAllAsync();
             return Ok(games);
         }
-        
+        [HttpGet("/{id}")]
+        public async Task<IActionResult> GetGameDetailsByGame(int id)
+        {
+            //var tournament = await _unitOfWork.Tournament.GetByIdAsync(id);
+            //if (tournament == null)
+            //{
+            //    return NotFound();
+            //}
+            //return Ok(tournament.Teams);
+            var games = await _unitOfWork.Game.GetByIdAsync(id);
+            return Ok(games);
+        }
 
     }
 }

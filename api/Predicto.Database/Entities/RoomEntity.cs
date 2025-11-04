@@ -19,6 +19,7 @@ namespace Predicto.Database.Entities
         public bool IsActive { get; set; } = true;
         public int MaxUsers { get; set; }
         public RoomStatus RoomStatus { get; set; }
+        public int CreatedById { get; set; } // user id of user that created room
     }
     public enum RoomStatus
     {

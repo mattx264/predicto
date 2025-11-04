@@ -43,7 +43,7 @@ namespace Predicto.Database.UnitOfWork
             Tournament = new Repository<TournamentEntity>(_context);
             Team = new Repository<TeamEntity>(_context);
             Player = new Repository<PlayerEntity>(_context);
-            TeamPlayer = new Repository<TeamPlayerEntity>(_context);
+            //TeamPlayer = new Repository<TeamPlayerEntity>(_context);
             Game = new Repository<GameEntity>(_context);
             Article = new Repository<ArticleEntity>(_context);
         }
