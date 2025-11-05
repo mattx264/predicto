@@ -42,7 +42,7 @@ namespace Predicto.DataCollector.FootballApi
                                 {
                                     throw new Exception("Limit for day reached");
                                 }
-                                File.WriteAllText(playerPath, playerData);
+                                File.WriteAllText(playerPath, playerData, Encoding.UTF8);
                                 Thread.Sleep(6000);
                             }
 

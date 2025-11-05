@@ -6,7 +6,7 @@
 
 public class AwayTeam
 {
-    public int Score { get; set; }
+    public int? Score { get; set; }
     public object Side { get; set; }
     public string IdTeam { get; set; }
     public string PictureUrl { get; set; }
@@ -19,7 +19,7 @@ public class AwayTeam
     public List<Coach> Coaches { get; set; }
     public List<Player> Players { get; set; }
     public List<Booking> Bookings { get; set; }
-    public List<object> Goals { get; set; }
+    public List<Goal> Goals { get; set; }
     public List<Substitution> Substitutions { get; set; }
     public int FootballType { get; set; }
     public int Gender { get; set; }
@@ -84,7 +84,7 @@ public class Goal
 
 public class HomeTeam
 {
-    public int Score { get; set; }
+    public int? Score { get; set; }
     public object Side { get; set; }
     public string IdTeam { get; set; }
     public string PictureUrl { get; set; }
@@ -131,7 +131,7 @@ public class Player
 {
     public string IdPlayer { get; set; }
     public string IdTeam { get; set; }
-    public int ShirtNumber { get; set; }
+    public int? ShirtNumber { get; set; }
     public int Status { get; set; }
     public object SpecialStatus { get; set; }
     public bool Captain { get; set; }
@@ -196,8 +196,8 @@ public class FifaComGameModel
     public string MatchTime { get; set; }
     public object SecondHalfTime { get; set; }
     public object FirstHalfTime { get; set; }
-    public int FirstHalfExtraTime { get; set; }
-    public int SecondHalfExtraTime { get; set; }
+    public int? FirstHalfExtraTime { get; set; }
+    public int? SecondHalfExtraTime { get; set; }
     public string Winner { get; set; }
     public int Period { get; set; }
     public HomeTeam HomeTeam { get; set; }

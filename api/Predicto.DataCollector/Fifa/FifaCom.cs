@@ -1,14 +1,9 @@
 ﻿using Predicto.Database.Entities.Sport;
 using Predicto.Database.UnitOfWork;
 using Predicto.DataCollector.Scraber;
-using Predicto.Gateway.DTO.Sport;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Predicto.DataCollector.Fifa
 {
@@ -42,7 +37,7 @@ namespace Predicto.DataCollector.Fifa
                 try
                 {
                     var response = await rest.GetAsync($"https://api.fifa.com/api/v3/live/football/{parts[6]}/{parts[7]}/{parts[8]}/{parts[9]}?language=en");
-                    File.WriteAllText($"{dataPath}{parts[9]}.json", response);
+                    File.WriteAllText($"{dataPath}{parts[9]}.json", response, Encoding.UTF8);
 
                 }
                 catch (Exception ex)
@@ -60,27 +55,393 @@ namespace Predicto.DataCollector.Fifa
         }
         internal async Task SeedData(UnitOfWork unitOfWork)
         {
-            var jsonFiles = Directory.GetFiles(dataPath, "*.json");
-            foreach (var jsonFile in jsonFiles)
+            try
             {
-                var jsonData = File.ReadAllText(jsonFile);
-                var gameData = JsonSerializer.Deserialize<FifaComGameModel>(jsonData);
-                var teamHome = await unitOfWork.Team.FindAsync(t => t.Name == gameData.HomeTeam.TeamName[0].Description);
-                var teamAway = await unitOfWork.Team.FindAsync(t => t.Name == gameData.AwayTeam.TeamName[0].Description);
-                var gameEntity = new GameEntity
+                var teams = unitOfWork.Team.GetAllAsync().Result;
+
+                var existingsGames = await unitOfWork.Game.GetAllAsync();
+                var players = await unitOfWork.Player.GetAllAsync();
+
+                var jsonFiles = Directory.GetFiles(dataPath, "*.json");
+                foreach (var jsonFile in jsonFiles)
                 {
-                    TournamentId = 1,// FIFA World Cup Qualifiers
-                    TeamIdOne = teamHome.Id,
-                    TeamIdTwo = teamAway.Id,
-                    FinalScore = $"{gameData.HomeTeam.Score}-{gameData.AwayTeam.Score}",
-                    StartGame = gameData.Date,
-                    IsActive = true,
-                    Referee = gameData.Officials[0].Name[0].Description
-                };
-                await unitOfWork.Game.AddAsync(gameEntity);
+                    try
+                    {
+                        var jsonData = File.ReadAllText(jsonFile);
+                        var gameData = JsonSerializer.Deserialize<FifaComGameModel>(jsonData);
+                        var teamHomeName = gameData.HomeTeam.TeamName[0].Description;
+                        var teamAwayName = gameData.AwayTeam.TeamName[0].Description;
+                        if (teamHomeName == "Bosnia-Herzegovina")
+                        {
+                            teamHomeName = "Bosnia & Herzegovina";
+                        }
+                        if (teamAwayName == "Bosnia-Herzegovina")
+                        {
+                            teamAwayName = "Bosnia & Herzegovina";
+                        }
+                        var teamHome = teams.First(t => t.Name == teamHomeName);
+                        var teamAway = teams.First(t => t.Name == teamAwayName);
+
+                        if (existingsGames.Any(g => g.Teams.Any(x => x.Id == teamHome.Id)
+                        && g.Teams.Any(x => x.Id == teamAway.Id)
+                        && g.StartGame == gameData.Date
+                                        ))
+                        {
+                            continue;
+                        }
+
+                        var gamePlayerEvents = new List<GamePlayerEventEntity>();
+
+                        var gamePlayer = new List<GamePlayerEntity>();
+                        var playersLocal = new Dictionary<int, string>();
+                        await SeedPlayers(gameData.AwayTeam.Players, unitOfWork, gamePlayer, teamAway);
+                        await SeedPlayers(gameData.HomeTeam.Players, unitOfWork, gamePlayer, teamHome);
+
+                        await SeedGoal(gameData.HomeTeam.Goals, gamePlayerEvents, unitOfWork);
+                        await SeedGoal(gameData.AwayTeam.Goals, gamePlayerEvents, unitOfWork);
+
+                        await SeedCard(gameData.AwayTeam.Bookings, gamePlayerEvents, unitOfWork);
+                        await SeedCard(gameData.HomeTeam.Bookings, gamePlayerEvents, unitOfWork);
+
+                        await SeedSubstitutions(gameData.AwayTeam.Substitutions, gamePlayerEvents, unitOfWork);
+                        await SeedSubstitutions(gameData.HomeTeam.Substitutions, gamePlayerEvents, unitOfWork);
+                        var homeTeam = new GameTeamEntity
+                        {
+                            TeamId = teamHome.Id,
+                            Tactics = gameData.HomeTeam.Tactics
+
+                        };
+                        var awayTeam = new GameTeamEntity
+                        {
+                            TeamId = teamAway.Id,
+                            Tactics = gameData.AwayTeam.Tactics
+                        };
+                        var teamsEntity = new List<GameTeamEntity> { homeTeam, awayTeam };
+                        var gameEntity = new GameEntity
+                        {
+                            TournamentId = 1,// FIFA World Cup Qualifiers
+                            Teams = teamsEntity,
+                            FinalScore = gameData.HomeTeam.Score == null ? null : $"{gameData.HomeTeam.Score}-{gameData.AwayTeam.Score}",
+                            StartGame = gameData.Date,
+                            IsActive = true,
+                            StadiumName = gameData.Stadium == null ? null : gameData.Stadium.Name[0].Description,
+                            StadiumNameCityName = gameData.Stadium == null ? null : gameData.Stadium.CityName[0].Description,
+                            Referee = gameData.Officials == null || gameData.Officials.Count == 0 ? null : gameData.Officials[0].Name[0].Description,
+                            GamePlayers = gamePlayer,
+                            GamePlayerEvents = gamePlayerEvents
+                        };
+                        await unitOfWork.Game.AddAsync(gameEntity);
+                        await unitOfWork.CompleteAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error processing file {jsonFile}: {ex.Message}");
+                        continue;
+                    }
+                }
+
             }
-            await unitOfWork.CompleteAsync();
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
+        private async Task SeedSubstitutions(List<Substitution> substitutions, List<GamePlayerEventEntity> gamePlayerEvents, UnitOfWork unitOfWork)
+        {
+            foreach (var item in substitutions)
+            {
+                var playeroff = await unitOfWork.Player.FindAsync(x => x.FifaId == int.Parse(item.IdPlayerOff));
+                if (playeroff == null)
+                {
+                    Console.WriteLine($"Player not found for substitution off: {item.IdPlayerOff}");
+                    continue;
+                }
+                int idoff = playeroff.Id;
+
+                var playeron = await unitOfWork.Player.FindAsync(x => x.FifaId == int.Parse(item.IdPlayerOn));
+                if (playeron == null)
+                {
+                    Console.WriteLine($"Player not found for substitution on: {item.IdPlayerOn}");
+                    continue;
+                }
+                int idon = playeron.Id;
+                gamePlayerEvents.Add(new GamePlayerEventEntity()
+                {
+                    GamePlayerEvent = GamePlayerEvent.SubstitutionIn,
+                    Minute = getMinute(item.Minute),
+                    PlayerId = idon,
+
+                });
+                gamePlayerEvents.Add(new GamePlayerEventEntity()
+                {
+                    GamePlayerEvent = GamePlayerEvent.SubstitutionOut,
+                    Minute = getMinute(item.Minute),
+                    PlayerId = idoff,
+
+                });
+            }
+        }
+
+        private int getMinute(string minute)
+        {
+            if (minute == null)
+                return 0;
+            if (minute.Contains("+"))
+            {
+                var parts = minute.Split("+");
+                return int.Parse(parts[0].Replace("'", "")) + int.Parse(parts[1].Replace("'", ""));
+            }
+            return int.Parse(minute.Replace("'", ""));
+
+        }
+
+        private async Task SeedCard(List<Booking> bookings, List<GamePlayerEventEntity> gamePlayerEvents, UnitOfWork unitOfWork)
+        {
+            foreach (var item in bookings)
+            {
+                try
+                {
+                    if (item.IdPlayer == null)
+                    {
+                        continue;
+                    }
+                    //todo handle cache   item.IdCoach
+
+                    var player = await unitOfWork.Player.FindAsync(x => x.FifaId == int.Parse(item.IdPlayer));
+                    if (player == null)
+                    {
+                        Console.WriteLine($"Player not found for card: {item.IdPlayer}");
+                        continue;
+                    }
+                    int id = player.Id;
+
+                    gamePlayerEvents.Add(new GamePlayerEventEntity()
+                    {
+                        GamePlayerEvent = item.Card == 1 ? GamePlayerEvent.YellowCard : GamePlayerEvent.RedCard,
+                        Minute = getMinute(item.Minute),
+                        PlayerId = id,
+
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Player not found for card: {item.IdPlayer}");
+                    throw;
+                }
+            }
+        }
+
+        private async Task SeedGoal(List<Goal> goals, List<GamePlayerEventEntity> gamePlayerEvents, UnitOfWork unitOfWork)
+        {
+            foreach (var item in goals)
+            {
+                var player = await unitOfWork.Player.FindAsync(x => x.FifaId == int.Parse(item.IdPlayer));
+                if (player == null)
+                {
+                    Console.WriteLine($"Player not found: {item.IdPlayer}");
+                    continue;
+                }
+                int id = player.Id;
+                gamePlayerEvents.Add(new GamePlayerEventEntity()
+                {
+                    GamePlayerEvent = GamePlayerEvent.Goal,
+                    Minute = getMinute(item.Minute),
+                    PlayerId = id,
+
+                });
+            }
+        }
+
+        private async Task SeedPlayers(List<Player> players, UnitOfWork unitOfWork, List<GamePlayerEntity> gamePlayer, TeamEntity teamEntity)
+        {
+            try
+            {
+                foreach (var item in players)
+                {
+
+                    var player = await FindPlayerByLastName(unitOfWork, item, int.Parse(item.IdPlayer), teamEntity);
+                    if (player == null)
+                    {
+                        Console.WriteLine($"Player not found: {item.ShortName[0].Description}");
+                    }
+                    gamePlayer.Add(new GamePlayerEntity()
+                    {
+                        PlayerId = player.Id,
+                        Position = item.Position,
+                        IsCaptain = item.Captain,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        private Dictionary<char, char> replacements = new Dictionary<char, char>
+        {
+            // A
+            ['À'] = 'A',
+            ['Á'] = 'A',
+            ['Â'] = 'A',
+            ['Ã'] = 'A',
+            ['Ä'] = 'A',
+            ['Å'] = 'A',
+            ['à'] = 'a',
+            ['á'] = 'a',
+            ['â'] = 'a',
+            ['ã'] = 'a',
+            ['ä'] = 'a',
+            ['å'] = 'a',
+            ['ă'] = 'a',
+            // AE ligature
+            ['Æ'] = 'A',
+            ['æ'] = 'a',
+
+            // C
+            ['Ç'] = 'C',
+            ['ç'] = 'c',
+            ['Č'] = 'C',
+            ['č'] = 'c',
+            ['Ć'] = 'C',
+            ['ć'] = 'c',
+
+            // D
+            ['Ð'] = 'D',
+            ['ð'] = 'd',
+            ['Đ'] = 'D',
+            ['đ'] = 'd',
+
+            // E
+            ['È'] = 'E',
+            ['É'] = 'E',
+            ['Ê'] = 'E',
+            ['Ë'] = 'E',
+            ['è'] = 'e',
+            ['é'] = 'e',
+            ['ê'] = 'e',
+            ['ë'] = 'e',
+
+            // G
+            ['Ğ'] = 'G',
+            ['ğ'] = 'g',
+
+            // I
+            ['Ì'] = 'i',
+            ['Í'] = 'i',
+            ['Î'] = 'i',
+            ['Ï'] = 'i',
+            ['ì'] = 'i',
+            ['í'] = 'i',
+            ['î'] = 'i',
+            ['ï'] = 'i',
+
+            // N
+            ['Ñ'] = 'N',
+            ['ñ'] = 'n',
+
+            // O
+            ['Ò'] = 'O',
+            ['Ó'] = 'O',
+            ['Ô'] = 'O',
+            ['Õ'] = 'O',
+            ['Ö'] = 'O',
+            ['Ø'] = 'O',
+            ['ò'] = 'o',
+            ['ó'] = 'o',
+            ['ô'] = 'o',
+            ['õ'] = 'o',
+            ['ö'] = 'o',
+            ['ø'] = 'o',
+
+            // S
+            ['Š'] = 'S',
+            ['š'] = 's',
+            ['Ś'] = 'S',
+            ['ś'] = 's',
+            ['Ş'] = 'S',
+            ['ş'] = 's',
+            ['ș'] = 's',
+
+            // U
+            ['Ù'] = 'U',
+            ['Ú'] = 'U',
+            ['Û'] = 'U',
+            ['Ü'] = 'U',
+            ['ù'] = 'u',
+            ['ú'] = 'u',
+            ['û'] = 'u',
+            ['ü'] = 'u',
+
+            ['ţ'] = 't',
+            ['ț'] = 't',
+            // Y
+            ['Ý'] = 'Y',
+            ['ý'] = 'y',
+            ['Ÿ'] = 'Y',
+            ['ÿ'] = 'y',
+
+            // Z
+            ['Ž'] = 'Z',
+            ['ž'] = 'z',
+            ['Ź'] = 'Z',
+            ['ź'] = 'z',
+            ['Ż'] = 'Z',
+            ['ż'] = 'z'
+        };
+
+        private string ReplaceSpecialCharacters(string input)
+        {
+            return new string(input
+                .Select(c => replacements.ContainsKey(c) ? replacements[c] : c)
+                .ToArray());
+        }
+
+        private async Task<PlayerEntity> FindPlayerByLastName(UnitOfWork unitOfWork, Player playerEntity, int id, TeamEntity teamEntity)
+        {
+            var names = playerEntity.ShortName[0].Description.Split(" ");
+            var lastName = names[names.Length - 1];
+            var player = await unitOfWork.Player.FindAsync(x => x.FifaId == id);
+            if (player != null)
+            {
+                return player;
+            }
+            player = await unitOfWork.Player.FindAsync(
+                   p => p.LastName.ToLower() == lastName.ToLower()
+                 && p.Teams.Contains(teamEntity)
+                 );
+            if (player == null)
+            {
+                var replacedLastName = ReplaceSpecialCharacters(lastName);
+                player = await unitOfWork.Player.FindAsync(
+                   p => ReplaceSpecialCharacters(p.LastName.ToLower()) == replacedLastName.ToLower()
+                 && p.Teams.Contains(teamEntity)
+                 );
+                if (player == null)
+                {
+                    player = new PlayerEntity
+                    {
+                        FirstName = string.Join(" ", names, 0, names.Length - 1),
+                        LastName = lastName,
+                        Name = playerEntity.ShortName[0].Description,
+                        Slug = (string.Join(" ", names, 0, names.Length - 1) + "-" + lastName).ToLower().Replace(" ", "-").Replace(".", ""),
+                        FifaId = id,
+                        BirthCountry = null,
+                        Height = null,
+                        Weight = null,
+                        Nationality = null,
+                        IsActive = true,
+                        Teams = new List<TeamEntity> { teamEntity }
+                    };
+                    await unitOfWork.Player.AddAsync(player);
+                    await unitOfWork.CompleteAsync();
+                    return player;
+                    //  throw new Exception($"Player with last name {lastName} not found in team {teamEntity.Name}");
+                }//  return await FindPlayerByLastName(unitOfWork, lastName.Substring(1, lastName.Length - 2), id, teamEntity);
+            }
+            player.FifaId = id;
+            return player;
+        }
     }
 }

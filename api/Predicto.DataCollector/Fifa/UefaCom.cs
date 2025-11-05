@@ -1,7 +1,9 @@
 ﻿using HtmlAgilityPack.CssSelectors.NetCore;
+using Predicto.Database.Entities.Sport;
 using Predicto.Database.UnitOfWork;
 using Predicto.DataCollector.Scraber;
-using Predicto.Gateway.DTO.Sport;
+
+using System.Text;
 
 namespace Predicto.DataCollector.Fifa
 {
@@ -29,7 +31,7 @@ namespace Predicto.DataCollector.Fifa
                 {
                     throw new Exception("body is null");
                 }
-                File.WriteAllText($"{path}{name}.html", body.GetAttribute("innerHTML"));
+                File.WriteAllText($"{path}{name}.html", body.GetAttribute("innerHTML"), Encoding.UTF8);
 
             }
         }
@@ -49,7 +51,7 @@ namespace Predicto.DataCollector.Fifa
                     Directory.CreateDirectory(folderPath);
                     foreach (var playerElement in playerElements)
                     {
-                        var playerName = playerElement.InnerText.Replace("\r\n", "").Replace(" ", "");
+                        var playerName = playerElement.InnerText.Replace("\r\n", "").Replace(" ", "").Replace("\t","");
                         if (File.Exists($"{folderPath}{playerName}.html"))
                         {
                             continue;
@@ -70,7 +72,7 @@ namespace Predicto.DataCollector.Fifa
                             throw new Exception("body is null");
                         }
 
-                        File.WriteAllText($"{folderPath}{playerName}.html", body.GetAttribute("innerHTML"));
+                        File.WriteAllText($"{folderPath}{playerName}.html", body.GetAttribute("innerHTML"), Encoding.UTF8);
                     }
                 }
             }
@@ -85,7 +87,7 @@ namespace Predicto.DataCollector.Fifa
                 throw new Exception("body is null");
             }
             Console.Write(body.GetAttribute("innerHTML"));
-            File.WriteAllText($"C:\\Users\\mattx\\src\\Predicto\\api\\Predicto.DataCollector\\Data\\Uefa\\2--albania.html", body.GetAttribute("innerHTML"));
+            File.WriteAllText($"C:\\Users\\mattx\\src\\Predicto\\api\\Predicto.DataCollector\\Data\\Uefa\\2--albania.html", body.GetAttribute("innerHTML"), Encoding.UTF8);
         }
         internal async Task SeedTeamAsync(UnitOfWork unitOfWork)
         {

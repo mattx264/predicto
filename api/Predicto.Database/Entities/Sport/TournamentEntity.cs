@@ -1,5 +1,5 @@
 ﻿using Predicto.Database.Interfaces;
-using Predicto.Gateway.DTO.Sport;
+using Predicto.Database.Entities.Sport;
 
 namespace Predicto.Database.Entities.Sport
 {

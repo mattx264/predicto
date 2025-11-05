@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Predicto.Database.Entities;
 using Predicto.Database.Entities.Sport;
-using Predicto.Gateway.DTO.Sport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +18,10 @@ namespace Predicto.Database.Repositories.Sport
         {
             _context = context;
             _dbSet = _context.Set<PlayerEntity>();
+        }
+        public async Task<PlayerEntity?> GetByLikeLastName(string lastName)
+        {
+            return await _dbSet.FirstOrDefaultAsync(p => p.Slug.Contains(lastName));
         }
 
     }

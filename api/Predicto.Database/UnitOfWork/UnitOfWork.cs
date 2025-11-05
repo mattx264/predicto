@@ -4,12 +4,6 @@ using Predicto.Database.Entities.Sport;
 using Predicto.Database.Interfaces;
 using Predicto.Database.Interfaces.Repositories;
 using Predicto.Database.Repositories;
-using Predicto.Gateway.DTO.Sport;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Predicto.Database.UnitOfWork
 {
@@ -43,7 +37,7 @@ namespace Predicto.Database.UnitOfWork
             Tournament = new Repository<TournamentEntity>(_context);
             Team = new Repository<TeamEntity>(_context);
             Player = new Repository<PlayerEntity>(_context);
-            TeamPlayer = new Repository<TeamPlayerEntity>(_context);
+            //TeamPlayer = new Repository<TeamPlayerEntity>(_context);
             Game = new Repository<GameEntity>(_context);
             Article = new Repository<ArticleEntity>(_context);
         }
