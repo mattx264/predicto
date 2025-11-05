@@ -117,6 +117,15 @@ namespace Predicto.DataCollector.Fifa
                             Tactics = gameData.AwayTeam.Tactics
                         };
                         var teamsEntity = new List<GameTeamEntity> { homeTeam, awayTeam };
+                        var stadium = (GameStadiumEntity?)null;
+                        if (gameData.Stadium.Name[0] != null)
+                        {
+                            stadium = new GameStadiumEntity
+                            {
+                                StadiumName = gameData.Stadium.Name[0].Description,
+                                StadiumNameCityName = gameData.Stadium.CityName[0].Description,
+                            };
+                        }
                         var gameEntity = new GameEntity
                         {
                             TournamentId = 1,// FIFA World Cup Qualifiers
@@ -124,11 +133,10 @@ namespace Predicto.DataCollector.Fifa
                             FinalScore = gameData.HomeTeam.Score == null ? null : $"{gameData.HomeTeam.Score}-{gameData.AwayTeam.Score}",
                             StartGame = gameData.Date,
                             IsActive = true,
-                            StadiumName = gameData.Stadium == null ? null : gameData.Stadium.Name[0].Description,
-                            StadiumNameCityName = gameData.Stadium == null ? null : gameData.Stadium.CityName[0].Description,
                             Referee = gameData.Officials == null || gameData.Officials.Count == 0 ? null : gameData.Officials[0].Name[0].Description,
                             GamePlayers = gamePlayer,
-                            GamePlayerEvents = gamePlayerEvents
+                            GamePlayerEvents = gamePlayerEvents,
+                            Stadium = stadium
                         };
                         await unitOfWork.Game.AddAsync(gameEntity);
                         await unitOfWork.CompleteAsync();

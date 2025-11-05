@@ -17,16 +17,13 @@ namespace Predicto.Database.Entities
         public int MaxUsers { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int CreatedByUserId { get; set; }
-        public virtual UserEntity CreatedByUser { get; set; }
+        //public  virtual  UserEntity CreatedByUser { get; set; }//todo should be required
         public RoomStatus RoomStatus { get; set; }
-<<<<<<< HEAD
-        
-        public virtual ICollection<UserEntity> Participants { get; set; } = new List<UserEntity>();
-=======
+
+        public virtual ICollection<RoomUserEntity> Participants { get; set; } = new List<RoomUserEntity>();
         public int CreatedById { get; set; } // user id of user that created room
->>>>>>> 8c23d5ac1ddca0aa8a29598e28e392360c8a46b8
     }
-    
+
     public enum RoomStatus
     {
         Waiting,
