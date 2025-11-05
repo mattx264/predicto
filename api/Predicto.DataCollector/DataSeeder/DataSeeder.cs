@@ -16,8 +16,8 @@ namespace Predicto.DataCollector.NewFolder
             using var unitOfWork = new UnitOfWork(new Database.PredictoDbContext());
 
 
-            //await SeedTeam(unitOfWork);
-            //await unitOfWork.CompleteAsync();
+            await SeedTeam(unitOfWork);
+            await unitOfWork.CompleteAsync();
             await FifaGamesSeed(unitOfWork);
 
 
