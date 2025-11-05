@@ -38,7 +38,7 @@ namespace Predicto.Database.UnitOfWork
         {
             _context = context;
             Users = new UserRepository(_context);
-            Rooms = new Repository<RoomEntity>(_context);
+             Rooms = new RoomRepository(_context); 
             SportCategory = new Repository<SportCategoryEntity>(_context);
             Tournament = new Repository<TournamentEntity>(_context);
             Team = new Repository<TeamEntity>(_context);

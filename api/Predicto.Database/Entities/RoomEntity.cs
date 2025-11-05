@@ -1,9 +1,6 @@
 ﻿using Predicto.Database.Entities.Sport;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Predicto.Database.Entities
 {
@@ -18,8 +15,14 @@ namespace Predicto.Database.Entities
         public bool IsPrivate { get; set; } = false;
         public bool IsActive { get; set; } = true;
         public int MaxUsers { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public int CreatedByUserId { get; set; }
+        public virtual UserEntity CreatedByUser { get; set; }
         public RoomStatus RoomStatus { get; set; }
+        
+        public virtual ICollection<UserEntity> Participants { get; set; } = new List<UserEntity>();
     }
+    
     public enum RoomStatus
     {
         Waiting,

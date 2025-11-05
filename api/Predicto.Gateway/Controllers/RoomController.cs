@@ -16,18 +16,17 @@ namespace Predicto.Gateway.Controllers
         {
             _roomService = roomService;
         }
-        
+
         [HttpPost]
-        [Authorize] 
+        [Authorize]
         public async Task<IActionResult> CreateRoom([FromBody] NewRoomDto newRoomDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            
+
             try
             {
                 var userId = User.GetUserId();
-                
                 var room = await _roomService.CreateRoomAsync(newRoomDto, userId);
                 return CreatedAtAction(nameof(GetRoom), new { id = room.Id }, room);
             }
@@ -40,14 +39,27 @@ namespace Predicto.Gateway.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> GetRooms()
         {
-            var rooms = await _roomService.GetRoomsAsync();
-            return Ok(rooms);
+            try
+            {
+                int? currentUserId = null;
+                if (User.Identity?.IsAuthenticated == true)
+                {
+                    currentUserId = User.GetUserId();
+                }
+                
+                var rooms = await _roomService.GetRoomsAsync(currentUserId);
+                return Ok(rooms);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "error downloading rooms", error = ex.Message });
+            }
         }
-        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRoom(int id)
         {
@@ -55,6 +67,70 @@ namespace Predicto.Gateway.Controllers
             if (room == null)
                 return NotFound();
             return Ok(room);
+        }
+
+        [HttpGet("my")]
+        [Authorize]
+        public async Task<IActionResult> GetMyRooms()
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var rooms = await _roomService.GetMyRoomsAsync(userId);
+                return Ok(rooms);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "error fetching rooms", error = ex.Message });
+            }
+        }
+
+        [HttpPost("{id}/join")]
+        [Authorize]
+        public async Task<IActionResult> JoinRoom(int id)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                await _roomService.JoinRoomAsync(id, userId);
+                return Ok(new { message = "succesfully joined room" });
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "error by joining to room", error = ex.Message });
+            }
+        }
+
+        [HttpPost("{id}/leave")]
+        [Authorize]
+        public async Task<IActionResult> LeaveRoom(int id)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                await _roomService.LeaveRoomAsync(id, userId);
+                return Ok(new { message = "succesfully left room" });
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "error leaving room", error = ex.Message });
+            }
         }
     }
 }

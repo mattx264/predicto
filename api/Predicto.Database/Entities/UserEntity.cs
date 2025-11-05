@@ -1,9 +1,5 @@
 ﻿using Predicto.Database.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Predicto.Database.Entities
 {
@@ -25,5 +21,7 @@ namespace Predicto.Database.Entities
         public string? ResetPasswordToken { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsLocked { get; set; } = false;
+        
+        public virtual ICollection<RoomEntity> JoinedRooms { get; set; } = new List<RoomEntity>();
     }
 }

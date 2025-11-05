@@ -14,8 +14,16 @@ namespace Predicto.Gateway.DTO.Rooms
         public bool IsPublic { get; set; }
         public RoomStatus RoomStatus { get; set; }
         public int TournamentId { get; set; }
+        
+        public string TournamentName { get; set; }
+        public string TournamentLeague { get; set; }
+        public DateTime TournamentStartDate { get; set; }
+        public DateTime TournamentEndDate { get; set; }
+        
         public DateTime CreatedAt { get; set; }
         public int CreatedByUserId { get; set; }
+        public string CreatedByUserName { get; set; }
+        
+        public bool IsUserInRoom { get; set; } 
     }
-
 }

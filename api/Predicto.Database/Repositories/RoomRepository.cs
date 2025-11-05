@@ -1,23 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Predicto.Database.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Predicto.Database.Repositories
+namespace Predicto.Database.Interfaces.Repositories
 {
     public class RoomRepository : Repository<RoomEntity>
     {
-        protected readonly PredictoDbContext _context;
-        protected readonly DbSet<RoomEntity> _dbSet;
-
         public RoomRepository(PredictoDbContext context) : base(context)
         {
-            _context = context;
-            _dbSet = _context.Set<RoomEntity>();
         }
-      
+        
+        public override async Task<IEnumerable<RoomEntity>> GetAllAsync()
+        {
+            return await _dbSet
+                .Include(r => r.Tournament)
+                .Include(r => r.CreatedByUser)
+                .Include(r => r.Participants)
+                .ToListAsync();
+        }
+        
+        public override async Task<RoomEntity?> GetByIdAsync(int id)
+        {
+            return await _dbSet
+                .Include(r => r.Tournament)
+                .Include(r => r.CreatedByUser)
+                   .Include(r => r.Participants)
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
     }
 }
