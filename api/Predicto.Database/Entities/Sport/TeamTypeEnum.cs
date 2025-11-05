@@ -1,4 +1,4 @@
-﻿namespace Predicto.Gateway.DTO.Sport
+﻿namespace Predicto.Database.Entities.Sport
 {
     public enum TeamTypeEnum
     {

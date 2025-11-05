@@ -140,17 +140,8 @@ namespace Predicto.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AwayTeamId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EndGame")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("FinalScore")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("HomeTeamId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -172,12 +163,70 @@ namespace Predicto.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AwayTeamId")
-                        .IsUnique();
-
                     b.HasIndex("TournamentId");
 
                     b.ToTable("Game");
+                });
+
+            modelBuilder.Entity("Predicto.Database.Entities.Sport.GameGroupEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameGroup");
+                });
+
+            modelBuilder.Entity("Predicto.Database.Entities.Sport.GameGroupTeamEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Drawn")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GameGroupEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GoalsDiference")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Lost")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Played")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Won")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameGroupEntityId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("GameGroupTeamEntity");
                 });
 
             modelBuilder.Entity("Predicto.Database.Entities.Sport.GamePlayerEntity", b =>
@@ -293,9 +342,11 @@ namespace Predicto.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GameId");
+
                     b.HasIndex("TeamId");
 
-                    b.ToTable("GameTeamEntity");
+                    b.ToTable("GameTeam");
                 });
 
             modelBuilder.Entity("Predicto.Database.Entities.Sport.PlayerEntity", b =>
@@ -396,6 +447,54 @@ namespace Predicto.Database.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SportCategory");
+                });
+
+            modelBuilder.Entity("Predicto.Database.Entities.Sport.TeamEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Coach")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("FootballApiId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FormLastGames")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("Team");
                 });
 
             modelBuilder.Entity("Predicto.Database.Entities.Sport.TeamPlayerEntity", b =>
@@ -523,54 +622,6 @@ namespace Predicto.Database.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Predicto.Gateway.DTO.Sport.TeamEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Coach")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("FootballApiId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FormLastGames")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Slug")
-                        .IsUnique();
-
-                    b.ToTable("Team");
-                });
-
             modelBuilder.Entity("PlayerEntityTeamEntity", b =>
                 {
                     b.HasOne("Predicto.Database.Entities.Sport.PlayerEntity", null)
@@ -579,7 +630,7 @@ namespace Predicto.Database.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Predicto.Gateway.DTO.Sport.TeamEntity", null)
+                    b.HasOne("Predicto.Database.Entities.Sport.TeamEntity", null)
                         .WithMany()
                         .HasForeignKey("TeamsId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -609,21 +660,29 @@ namespace Predicto.Database.Migrations
 
             modelBuilder.Entity("Predicto.Database.Entities.Sport.GameEntity", b =>
                 {
-                    b.HasOne("Predicto.Database.Entities.Sport.GameTeamEntity", "HomeTeam")
-                        .WithOne("Game")
-                        .HasForeignKey("Predicto.Database.Entities.Sport.GameEntity", "AwayTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Predicto.Database.Entities.Sport.TournamentEntity", "Tournament")
                         .WithMany()
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("HomeTeam");
-
                     b.Navigation("Tournament");
+                });
+
+            modelBuilder.Entity("Predicto.Database.Entities.Sport.GameGroupTeamEntity", b =>
+                {
+                    b.HasOne("Predicto.Database.Entities.Sport.GameGroupEntity", null)
+                        .WithMany("GameGroupTeam")
+                        .HasForeignKey("GameGroupEntityId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Predicto.Database.Entities.Sport.TeamEntity", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("Predicto.Database.Entities.Sport.GamePlayerEntity", b =>
@@ -677,11 +736,19 @@ namespace Predicto.Database.Migrations
 
             modelBuilder.Entity("Predicto.Database.Entities.Sport.GameTeamEntity", b =>
                 {
-                    b.HasOne("Predicto.Gateway.DTO.Sport.TeamEntity", "Team")
+                    b.HasOne("Predicto.Database.Entities.Sport.GameEntity", "Game")
+                        .WithMany("Teams")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Predicto.Database.Entities.Sport.TeamEntity", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Game");
 
                     b.Navigation("Team");
                 });
@@ -694,7 +761,7 @@ namespace Predicto.Database.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Predicto.Gateway.DTO.Sport.TeamEntity", "TeamEntity")
+                    b.HasOne("Predicto.Database.Entities.Sport.TeamEntity", "TeamEntity")
                         .WithMany()
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -723,12 +790,13 @@ namespace Predicto.Database.Migrations
                     b.Navigation("GamePlayers");
 
                     b.Navigation("GameScoreEvents");
+
+                    b.Navigation("Teams");
                 });
 
-            modelBuilder.Entity("Predicto.Database.Entities.Sport.GameTeamEntity", b =>
+            modelBuilder.Entity("Predicto.Database.Entities.Sport.GameGroupEntity", b =>
                 {
-                    b.Navigation("Game")
-                        .IsRequired();
+                    b.Navigation("GameGroupTeam");
                 });
 #pragma warning restore 612, 618
         }

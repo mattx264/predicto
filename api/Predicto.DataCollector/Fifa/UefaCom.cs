@@ -1,7 +1,8 @@
 ﻿using HtmlAgilityPack.CssSelectors.NetCore;
+using Predicto.Database.Entities.Sport;
 using Predicto.Database.UnitOfWork;
 using Predicto.DataCollector.Scraber;
-using Predicto.Gateway.DTO.Sport;
+
 using System.Text;
 
 namespace Predicto.DataCollector.Fifa

@@ -1,18 +1,9 @@
 ﻿using Predicto.Database.Entities.Sport;
-using Predicto.Database.Interfaces;
-using Predicto.Database.Migrations;
 using Predicto.Database.UnitOfWork;
 using Predicto.DataCollector.Scraber;
-using Predicto.Gateway.DTO.Sport;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using static Azure.Core.HttpHeader;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Predicto.DataCollector.Fifa
 {
@@ -74,65 +65,85 @@ namespace Predicto.DataCollector.Fifa
                 var jsonFiles = Directory.GetFiles(dataPath, "*.json");
                 foreach (var jsonFile in jsonFiles)
                 {
-                    var jsonData = File.ReadAllText(jsonFile);
-                    var gameData = JsonSerializer.Deserialize<FifaComGameModel>(jsonData);
-                    var teamHome = teams.First(t => t.Name == gameData.HomeTeam.TeamName[0].Description);
-                    var teamAway = teams.First(t => t.Name == gameData.AwayTeam.TeamName[0].Description);
-
-                    if (existingsGames.Any(g => g.HomeTeamId == teamHome.Id
-                    && g.AwayTeamId == teamAway.Id
-                    && g.StartGame == gameData.Date
-                                    ))
+                    try
                     {
+                        var jsonData = File.ReadAllText(jsonFile);
+                        var gameData = JsonSerializer.Deserialize<FifaComGameModel>(jsonData);
+                        var teamHomeName = gameData.HomeTeam.TeamName[0].Description;
+                        var teamAwayName = gameData.AwayTeam.TeamName[0].Description;
+                        if (teamHomeName == "Bosnia-Herzegovina")
+                        {
+                            teamHomeName = "Bosnia & Herzegovina";
+                        }
+                        if (teamAwayName == "Bosnia-Herzegovina")
+                        {
+                            teamAwayName = "Bosnia & Herzegovina";
+                        }
+                        var teamHome = teams.First(t => t.Name == teamHomeName);
+                        var teamAway = teams.First(t => t.Name == teamAwayName);
+
+                        if (existingsGames.Any(g => g.Teams.Any(x => x.Id == teamHome.Id)
+                        && g.Teams.Any(x => x.Id == teamAway.Id)
+                        && g.StartGame == gameData.Date
+                                        ))
+                        {
+                            continue;
+                        }
+
+                        var gamePlayerEvents = new List<GamePlayerEventEntity>();
+
+                        var gamePlayer = new List<GamePlayerEntity>();
+                        var playersLocal = new Dictionary<int, string>();
+                        await SeedPlayers(gameData.AwayTeam.Players, unitOfWork, gamePlayer, teamAway);
+                        await SeedPlayers(gameData.HomeTeam.Players, unitOfWork, gamePlayer, teamHome);
+
+                        await SeedGoal(gameData.HomeTeam.Goals, gamePlayerEvents, unitOfWork);
+                        await SeedGoal(gameData.AwayTeam.Goals, gamePlayerEvents, unitOfWork);
+
+                        await SeedCard(gameData.AwayTeam.Bookings, gamePlayerEvents, unitOfWork);
+                        await SeedCard(gameData.HomeTeam.Bookings, gamePlayerEvents, unitOfWork);
+
+                        await SeedSubstitutions(gameData.AwayTeam.Substitutions, gamePlayerEvents, unitOfWork);
+                        await SeedSubstitutions(gameData.HomeTeam.Substitutions, gamePlayerEvents, unitOfWork);
+                        var homeTeam = new GameTeamEntity
+                        {
+                            TeamId = teamHome.Id,
+                            Tactics = gameData.HomeTeam.Tactics
+
+                        };
+                        var awayTeam = new GameTeamEntity
+                        {
+                            TeamId = teamAway.Id,
+                            Tactics = gameData.AwayTeam.Tactics
+                        };
+                        var teamsEntity = new List<GameTeamEntity> { homeTeam, awayTeam };
+                        var gameEntity = new GameEntity
+                        {
+                            TournamentId = 1,// FIFA World Cup Qualifiers
+                            Teams = teamsEntity,
+                            FinalScore = gameData.HomeTeam.Score == null ? null : $"{gameData.HomeTeam.Score}-{gameData.AwayTeam.Score}",
+                            StartGame = gameData.Date,
+                            IsActive = true,
+                            StadiumName = gameData.Stadium == null ? null : gameData.Stadium.Name[0].Description,
+                            StadiumNameCityName = gameData.Stadium == null ? null : gameData.Stadium.CityName[0].Description,
+                            Referee = gameData.Officials == null || gameData.Officials.Count == 0 ? null : gameData.Officials[0].Name[0].Description,
+                            GamePlayers = gamePlayer,
+                            GamePlayerEvents = gamePlayerEvents
+                        };
+                        await unitOfWork.Game.AddAsync(gameEntity);
+                        await unitOfWork.CompleteAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error processing file {jsonFile}: {ex.Message}");
                         continue;
                     }
-                    var gamePlayerEvents = new List<GamePlayerEventEntity>();
-
-                    var gamePlayer = new List<GamePlayerEntity>();
-                    var playersLocal = new Dictionary<int, string>();
-                    await SeedPlayers(gameData.AwayTeam.Players, unitOfWork, gamePlayer, teamAway);
-                    await SeedPlayers(gameData.HomeTeam.Players, unitOfWork, gamePlayer, teamHome);
-
-                    await SeedGoal(gameData.HomeTeam.Goals, gamePlayerEvents, unitOfWork);
-                    await SeedGoal(gameData.AwayTeam.Goals, gamePlayerEvents, unitOfWork);
-
-                    await SeedCard(gameData.AwayTeam.Bookings, gamePlayerEvents, unitOfWork);
-                    await SeedCard(gameData.HomeTeam.Bookings, gamePlayerEvents, unitOfWork);
-
-                    await SeedSubstitutions(gameData.AwayTeam.Substitutions, gamePlayerEvents, unitOfWork);
-                    await SeedSubstitutions(gameData.HomeTeam.Substitutions, gamePlayerEvents, unitOfWork);
-                    var homeTeam = new GameTeamEntity
-                    {
-                        TeamId = teamHome.Id,
-                        Tactics = gameData.HomeTeam.Tactics
-
-                    };
-                    var awayTeam = new GameTeamEntity
-                    {
-                        TeamId = teamAway.Id,
-                        Tactics = gameData.AwayTeam.Tactics
-                    };
-                    var gameEntity = new GameEntity
-                    {
-                        TournamentId = 1,// FIFA World Cup Qualifiers
-                        HomeTeamId = homeTeam.TeamId,
-                        AwayTeamId = awayTeam.TeamId,
-                        FinalScore = gameData.HomeTeam.Score == null ? null : $"{gameData.HomeTeam.Score}-{gameData.AwayTeam.Score}",
-                        StartGame = gameData.Date,
-                        IsActive = true,
-                        StadiumName = gameData.Stadium == null ? null : gameData.Stadium.Name[0].Description,
-                        StadiumNameCityName = gameData.Stadium == null ? null : gameData.Stadium.CityName[0].Description,
-                        Referee = gameData.Officials == null || gameData.Officials.Count == 0 ? null : gameData.Officials[0].Name[0].Description,
-                        GamePlayers = gamePlayer,
-                        GamePlayerEvents = gamePlayerEvents
-                    };
-                    await unitOfWork.Game.AddAsync(gameEntity);
-                    await unitOfWork.CompleteAsync();
                 }
 
             }
             catch (Exception ex)
             {
+
                 throw;
             }
         }

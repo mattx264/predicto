@@ -2,13 +2,7 @@
 using Predicto.Database.UnitOfWork;
 using Predicto.DataCollector.Fifa;
 using Predicto.DataCollector.Models;
-using Predicto.Gateway.DTO.Sport;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Predicto.DataCollector.NewFolder
 {
@@ -20,16 +14,16 @@ namespace Predicto.DataCollector.NewFolder
         public async Task Seed()
         {
             using var unitOfWork = new UnitOfWork(new Database.PredictoDbContext());
-           
 
-           // await SeedTeam(unitOfWork);
-            //wait unitOfWork.CompleteAsync();
-          await FifaGamesSeed(unitOfWork);
+
+            //await SeedTeam(unitOfWork);
+            //await unitOfWork.CompleteAsync();
+            await FifaGamesSeed(unitOfWork);
 
 
 
             // await SeedPlayers(unitOfWork);
-            await unitOfWork.CompleteAsync();
+            //await unitOfWork.CompleteAsync();
 
 
         }

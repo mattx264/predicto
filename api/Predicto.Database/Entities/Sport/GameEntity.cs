@@ -1,5 +1,5 @@
 ﻿using Predicto.Database.Interfaces;
-using Predicto.Gateway.DTO.Sport;
+using Predicto.Database.Entities.Sport;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Predicto.Database.Entities.Sport
@@ -8,10 +8,8 @@ namespace Predicto.Database.Entities.Sport
     {
         public int Id { get; set; }
         public int TournamentId { get; set; }
-        public int HomeTeamId { get; set; }
-        public int AwayTeamId { get; set; }
-        public virtual GameTeamEntity HomeTeam { get; set; }
-        public virtual GameTeamEntity AwayTeam { get; set; }
+       
+        public virtual ICollection<GameTeamEntity> Teams { get; set; }//Home and Away teams
 
         public required string? FinalScore { get; set; }// 1:1 (4:5) //
         public DateTime StartGame { get; set; }

@@ -15,6 +15,7 @@
   <ItemGroup>
     <Folder Include="Data\Countries\" />
     <Folder Include="Data\Fifacom\Games\" />
+    <Folder Include="Data\Fifacom\NewFolder\" />
     <Folder Include="Data\Uefa\" />
   </ItemGroup>
 

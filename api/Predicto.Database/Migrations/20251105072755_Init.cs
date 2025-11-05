@@ -12,6 +12,20 @@ namespace Predicto.Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "GameGroup",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameGroup", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Player",
                 columns: table => new
                 {
@@ -131,21 +145,31 @@ namespace Predicto.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GameTeamEntity",
+                name: "GameGroupTeamEntity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TeamId = table.Column<int>(type: "int", nullable: false),
-                    GameId = table.Column<int>(type: "int", nullable: false),
-                    Tactics = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    Won = table.Column<int>(type: "int", nullable: false),
+                    Lost = table.Column<int>(type: "int", nullable: false),
+                    Drawn = table.Column<int>(type: "int", nullable: false),
+                    Played = table.Column<int>(type: "int", nullable: false),
+                    Points = table.Column<int>(type: "int", nullable: false),
+                    GoalsDiference = table.Column<int>(type: "int", nullable: false),
+                    GameGroupEntityId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameTeamEntity", x => x.Id);
+                    table.PrimaryKey("PK_GameGroupTeamEntity", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GameTeamEntity_Team_TeamId",
+                        name: "FK_GameGroupTeamEntity_GameGroup_GameGroupEntityId",
+                        column: x => x.GameGroupEntityId,
+                        principalTable: "GameGroup",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GameGroupTeamEntity_Team_TeamId",
                         column: x => x.TeamId,
                         principalTable: "Team",
                         principalColumn: "Id",
@@ -230,6 +254,31 @@ namespace Predicto.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Game",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TournamentId = table.Column<int>(type: "int", nullable: false),
+                    FinalScore = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartGame = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Referee = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StadiumName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StadiumNameCityName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Game", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Game_Tournament_TournamentId",
+                        column: x => x.TournamentId,
+                        principalTable: "Tournament",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Room",
                 columns: table => new
                 {
@@ -250,40 +299,6 @@ namespace Predicto.Database.Migrations
                     table.PrimaryKey("PK_Room", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Room_Tournament_TournamentId",
-                        column: x => x.TournamentId,
-                        principalTable: "Tournament",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Game",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TournamentId = table.Column<int>(type: "int", nullable: false),
-                    HomeTeamId = table.Column<int>(type: "int", nullable: false),
-                    AwayTeamId = table.Column<int>(type: "int", nullable: false),
-                    FinalScore = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartGame = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndGame = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    Referee = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StadiumName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StadiumNameCityName = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Game", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Game_GameTeamEntity_AwayTeamId",
-                        column: x => x.AwayTeamId,
-                        principalTable: "GameTeamEntity",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Game_Tournament_TournamentId",
                         column: x => x.TournamentId,
                         principalTable: "Tournament",
                         principalColumn: "Id",
@@ -370,6 +385,34 @@ namespace Predicto.Database.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "GameTeam",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TeamId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    Tactics = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameTeam", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GameTeam_Game_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Game",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GameTeam_Team_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Team",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Article_Slug",
                 table: "Article",
@@ -382,15 +425,19 @@ namespace Predicto.Database.Migrations
                 column: "TournamentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Game_AwayTeamId",
-                table: "Game",
-                column: "AwayTeamId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Game_TournamentId",
                 table: "Game",
                 column: "TournamentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameGroupTeamEntity_GameGroupEntityId",
+                table: "GameGroupTeamEntity",
+                column: "GameGroupEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameGroupTeamEntity_TeamId",
+                table: "GameGroupTeamEntity",
+                column: "TeamId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GamePlayerEntity_GameId",
@@ -418,8 +465,13 @@ namespace Predicto.Database.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameTeamEntity_TeamId",
-                table: "GameTeamEntity",
+                name: "IX_GameTeam_GameId",
+                table: "GameTeam",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameTeam_TeamId",
+                table: "GameTeam",
                 column: "TeamId");
 
             migrationBuilder.CreateIndex(
@@ -467,6 +519,9 @@ namespace Predicto.Database.Migrations
                 name: "Article");
 
             migrationBuilder.DropTable(
+                name: "GameGroupTeamEntity");
+
+            migrationBuilder.DropTable(
                 name: "GamePlayerEntity");
 
             migrationBuilder.DropTable(
@@ -474,6 +529,9 @@ namespace Predicto.Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "GameScoreEntity");
+
+            migrationBuilder.DropTable(
+                name: "GameTeam");
 
             migrationBuilder.DropTable(
                 name: "PlayerEntityTeamEntity");
@@ -488,19 +546,19 @@ namespace Predicto.Database.Migrations
                 name: "User");
 
             migrationBuilder.DropTable(
+                name: "GameGroup");
+
+            migrationBuilder.DropTable(
                 name: "Game");
 
             migrationBuilder.DropTable(
                 name: "Player");
 
             migrationBuilder.DropTable(
-                name: "GameTeamEntity");
+                name: "Team");
 
             migrationBuilder.DropTable(
                 name: "Tournament");
-
-            migrationBuilder.DropTable(
-                name: "Team");
 
             migrationBuilder.DropTable(
                 name: "SportCategory");

@@ -1,7 +1,7 @@
 ﻿using Predicto.Database.Entities.Sport;
 using Predicto.Database.Interfaces;
 
-namespace Predicto.Gateway.DTO.Sport
+namespace Predicto.Database.Entities.Sport
 {
     public class TeamEntity : IEntity
     {

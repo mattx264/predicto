@@ -1,5 +1,4 @@
 ﻿using Predicto.Database.Interfaces;
-using Predicto.Gateway.DTO.Sport;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Predicto.Database.Entities.Sport

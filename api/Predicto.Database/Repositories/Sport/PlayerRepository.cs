@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Predicto.Database.Entities;
 using Predicto.Database.Entities.Sport;
-using Predicto.Gateway.DTO.Sport;
 using System;
 using System.Collections.Generic;
 using System.Linq;

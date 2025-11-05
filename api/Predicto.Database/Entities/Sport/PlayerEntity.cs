@@ -1,10 +1,4 @@
 ﻿using Predicto.Database.Interfaces;
-using Predicto.Gateway.DTO.Sport;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Predicto.Database.Entities.Sport
 {
