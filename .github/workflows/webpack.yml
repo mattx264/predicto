@@ -3,6 +3,7 @@ name: NodeJS with Webpack
 on:
   push:
     branches: [ "main" ]
+    paths: ['./app/**']
   pull_request:
     branches: [ "main" ]
 
