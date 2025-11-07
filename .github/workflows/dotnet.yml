@@ -27,4 +27,14 @@ jobs:
     - name: Build
       working-directory: ./api
       run: dotnet build --no-restore
-   
+    - name: Publish
+      working-directory: ./api
+      run: dotnet publish
+    - name: Deploy to Simply        
+      uses: talunzhang/auto-web-deploy@v1.0.1
+      with:
+          website-name: mattx2642-001-site22
+          server-computer-name: https://win8210.site4now.net:8172/msdeploy.axd?site=mattx2642-001-site22
+          server-username: mattx2642-001
+          server-password: ${{ secrets.SERVER_PASSWORD }}
+          source-path: '\bin\Release\net9.0\publish\'
