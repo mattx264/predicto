@@ -24,26 +24,26 @@
     {
         public int GameId { get; set; }
         public DateTime GameDate { get; set; }
-        public string FinalScore { get; set; }
+        public required string FinalScore { get; set; }
         public int TeamId1 { get; set; }
         public int TeamId2 { get; set; }
-        public string TeamName1 { get; set; }
-        public string TeamName2 { get; set; }
+        public required string TeamName1 { get; set; }
+        public required string TeamName2 { get; set; }
     }
     public class GameListDto
     {
         public int Id { get; set; }
         public DateTime StartTime { get; set; }
 
-        public IList<GameListTeamDto> Teams { get; set; }
+        public required IList<GameListTeamDto> Teams { get; set; }
         public string? FinalScore { get; set; }
 
     }
     public class GameListTeamDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string LogoUrl { get; set; }
+        public required string Name { get; set; }
+        public required string LogoUrl { get; set; }
     }
-  
+
 }

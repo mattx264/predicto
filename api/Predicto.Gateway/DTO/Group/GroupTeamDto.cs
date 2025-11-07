@@ -2,7 +2,7 @@
 {
     public class GroupTeamDto
     {
-        public string TeamName { get; internal set; }
+        public required string TeamName { get; set; }
         public int Won { get; set; }
         public int Lost { get; set; }
         public int Drawn { get; set; }
