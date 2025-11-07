@@ -6,14 +6,13 @@ name: .NET
 on:
   push:
     branches: [ "main" ]
-    paths: ['./api/**']
+    paths-ignore: ['./app/**']
   pull_request:
     branches: [ "main" ]
-    paths: ['./api/**']
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -37,4 +36,4 @@ jobs:
           server-computer-name: https://win8210.site4now.net:8172/msdeploy.axd?site=mattx2642-001-site22
           server-username: mattx2642-001
           server-password: ${{ secrets.SERVER_PASSWORD }}
-          source-path: '\bin\Release\net9.0\publish\'
+          source-path: '\api\Predicto.Gateway\bin\Release\net9.0\publish\'
