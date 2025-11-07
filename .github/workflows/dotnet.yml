@@ -6,10 +6,9 @@ name: .NET
 on:
   push:
     branches: [ "main" ]
-    paths: ['./api/**']
+    paths-ignore: ['./app/**']
   pull_request:
     branches: [ "main" ]
-    paths: ['./api/**']
 jobs:
   build:
 
