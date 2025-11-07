@@ -3,6 +3,7 @@ using Predicto.Database.UnitOfWork;
 using Predicto.DataCollector.Fifa;
 using Predicto.DataCollector.Models;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Predicto.DataCollector.NewFolder
 {
@@ -16,8 +17,11 @@ namespace Predicto.DataCollector.NewFolder
             using var unitOfWork = new UnitOfWork(new Database.PredictoDbContext());
 
 
-            await SeedTeam(unitOfWork);
-            await unitOfWork.CompleteAsync();
+          //  await SeedTeam(unitOfWork);
+           // await unitOfWork.CompleteAsync();
+
+        //    await UefaPlayerSeed(unitOfWork);
+
             await FifaGamesSeed(unitOfWork);
 
 
@@ -65,13 +69,13 @@ namespace Predicto.DataCollector.NewFolder
                         var playerEntity = new PlayerEntity
                         {
                             Name = player.name,
-                            Slug = player.name.ToLower().Replace(" ", "-").Replace(".", "") + player.id,
+                            Slug = FifacomHelper.ReplaceSpecialCharacters(player.name.ToLower().Replace(" ", "-").Replace(".", "") )+ "-" + player.id,
                             FootballApiId = player.id,
                             Position = player.position,
                             ShirtNumber = player.number,
                             PhotoUrl = player.photo,
                             FirstName = names[0],
-                            LastName = names[names.Length - 1],
+                            LastName = FifacomHelper.Capitalize(names[names.Length - 1]),
                             BirthCountry = null,
                             Height = null,
                             Weight = null,
@@ -153,10 +157,10 @@ namespace Predicto.DataCollector.NewFolder
             }
         }
 
-        private void UefaPlayerSeed(UnitOfWork unitOfWork)
+        private async Task UefaPlayerSeed(UnitOfWork unitOfWork)
         {
             var uefa = new UefaCom();
-            uefa.SeedData(unitOfWork);
+            await uefa.SeedData(unitOfWork);
         }
         private async Task FifaGamesSeed(UnitOfWork unitOfWork)
         {

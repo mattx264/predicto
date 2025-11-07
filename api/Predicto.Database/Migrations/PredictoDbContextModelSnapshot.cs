@@ -450,6 +450,9 @@ namespace Predicto.Database.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -489,6 +492,128 @@ namespace Predicto.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("Player");
+                });
+
+            modelBuilder.Entity("Predicto.Database.Entities.Sport.PlayerTournamentEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("Assists")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AttemptsConcededOnTarget")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BallsRecovered")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Blocks")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Cleansheets")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClearChances")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClearancesAttempted")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CornersTaken")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CrossesCompleted")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("CrossingAccuracy")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("DistanceCovered")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("FoulsCommitted")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FoulsSuffered")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FreeKicksTaken")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Goals")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MatchesPlayed")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Minutesplayed")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Offsides")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OwnGoalsConceded")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PassesCompleted")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("PassingAccuracy")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("PenaltiesAwarded")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PenaltiesConceded")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PenaltiesMissed")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PenaltiesScored")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RedCards")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Saves")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Tackles")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TimesInPossession")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("TopSpeed")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("TotalAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TournamentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("YellowCards")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("TournamentId");
+
+                    b.ToTable("PlayerTournament");
                 });
 
             modelBuilder.Entity("Predicto.Database.Entities.Sport.SportCategoryEntity", b =>
@@ -840,6 +965,25 @@ namespace Predicto.Database.Migrations
                     b.Navigation("Game");
 
                     b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("Predicto.Database.Entities.Sport.PlayerTournamentEntity", b =>
+                {
+                    b.HasOne("Predicto.Database.Entities.Sport.PlayerEntity", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Predicto.Database.Entities.Sport.TournamentEntity", "Tournament")
+                        .WithMany()
+                        .HasForeignKey("TournamentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+
+                    b.Navigation("Tournament");
                 });
 
             modelBuilder.Entity("Predicto.Database.Entities.Sport.TeamPlayerEntity", b =>

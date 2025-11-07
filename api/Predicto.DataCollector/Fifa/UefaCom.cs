@@ -2,8 +2,10 @@
 using Predicto.Database.Entities.Sport;
 using Predicto.Database.UnitOfWork;
 using Predicto.DataCollector.Scraber;
-
+using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Predicto.DataCollector.Fifa
 {
@@ -51,7 +53,7 @@ namespace Predicto.DataCollector.Fifa
                     Directory.CreateDirectory(folderPath);
                     foreach (var playerElement in playerElements)
                     {
-                        var playerName = playerElement.InnerText.Replace("\r\n", "").Replace(" ", "").Replace("\t","");
+                        var playerName = playerElement.InnerText.Replace("\r\n", "").Replace(" ", "").Replace("\t", "");
                         if (File.Exists($"{folderPath}{playerName}.html"))
                         {
                             continue;
@@ -112,56 +114,307 @@ namespace Predicto.DataCollector.Fifa
             }
         }
 
-        internal void SeedData(UnitOfWork unitOfWork)
+        internal async Task SeedData(UnitOfWork unitOfWork)
         {
 
-            string[] fileEntries = Directory.GetDirectories($"{path}/Players");
-            foreach (var file in fileEntries)
+            string[] fileEntries = Directory.GetDirectories($"{path}Players");
+            var teams = await unitOfWork.Team.GetAllAsync();
+
+            foreach (var file in fileEntries.Skip(51))
+            //   foreach (var file in fileEntries)
             {
+
                 foreach (var player in Directory.GetFiles(file))
                 {
-
-                    var html = File.ReadAllText(player);
-                    var doc = new HtmlAgilityPack.HtmlDocument();
-                    doc.LoadHtml(html);
-                    var name = doc.QuerySelector("h2[slot]").InnerText.Trim().Replace(" ", "").Replace("\r\n", " ").Split(" ");
-
-                    var db = doc.DocumentNode.SelectSingleNode("/div/div[3]/div[1]/div[1]/div/div[2]/div[5]/pk-identifier/span[2]").InnerText;
-                    var dbDate = db.Split("(")[0];
-                    var age= db.Split("(")[1].Replace("(","").Replace(")","");
-                    DateTime.Parse(dbDate);
-                   var dbPlace= doc.DocumentNode.SelectSingleNode("/div/div[3]/div[1]/div[1]/div/div[2]/div[4]/pk-identifier/span[2]").InnerText;
-                    var height = doc.DocumentNode.SelectSingleNode("/div/div[3]/div[1]/div[1]/div/div[2]/div[6]/pk-identifier/span[2]")?.InnerText;
-                    var weight = doc.DocumentNode.SelectSingleNode("/div/div[3]/div[1]/div[1]/div/div[2]/div[7]/pk-identifier/span[2]")?.InnerText;
-                    //if (db != null)
-                    //{
-                    //    playerEntity.Birthday = DateTime.Parse(db);
-                    //}
-
-
-
-                    var playerEntity = unitOfWork.Player.FindAsync(p => p.LastName == name[1].Trim()).Result;
-                    if (playerEntity == null)
+                    try
                     {
-                        continue;
+                        var teamName = FifacomHelper.TeamNormalization(file.Split("\\").Last()).ToLower();
+                        var team = teams.FirstOrDefault(t => t.Name.ToLower() == teamName);
+                        if (team == null)
+                        {
+                            throw new Exception("Team not found: " + teamName);
+                        }
+                        var html = File.ReadAllText(player);
+                        var doc = new HtmlAgilityPack.HtmlDocument();
+                        doc.LoadHtml(html);
+                        var names = doc.QuerySelector("h2[slot]").InnerText.Trim().Split(" ").Where(x => x.Length > 0).Select(x => x.Trim()).ToArray();
+
+
+                        // var db = doc.DocumentNode.SelectSingleNode("/div/div[3]/div[1]/div[1]/div/div[2]/div[5]/pk-identifier/span[2]").InnerText;
+                        // var dbDate = db.Split("(")[0];
+                        // var age = db.Split("(")[1].Replace("(", "").Replace(")", "");
+                        //var dbBirthDate = DateTime.Parse(dbDate);
+                        // var dbPlace = doc.DocumentNode.SelectSingleNode("/div/div[3]/div[1]/div[1]/div/div[2]/div[4]/pk-identifier/span[2]").InnerText;
+                        // var height = doc.DocumentNode.SelectSingleNode("/div/div[3]/div[1]/div[1]/div/div[2]/div[6]/pk-identifier/span[2]")?.InnerText;
+                        // var weight = doc.DocumentNode.SelectSingleNode("/div/div[3]/div[1]/div[1]/div/div[2]/div[7]/pk-identifier/span[2]")?.InnerText;
+
+                        //if (db != null)
+                        //{
+                        //    playerEntity.Birthday = DateTime.Parse(db);
+                        //}
+                        var playerEntity = (PlayerEntity)null;
+                        if (names.Length == 1)
+                        {
+                            playerEntity = unitOfWork.Player.FindAsync(p => p.Name.Contains(names[0])
+                             && p.Teams.Contains(team)).Result;
+                            if (playerEntity == null)
+                            {
+                                throw new Exception("Name is invalid");
+                            }
+                        }
+                        else
+                        {
+
+                            var firstName = FifacomHelper.Capitalize(names[0].Trim());
+                            var firstLetter = firstName.ToLower()[0];
+                            var playerLastName = FifacomHelper.Capitalize(names[1].Trim());
+                            playerEntity = unitOfWork.Player.FindAsync(p => p.LastName.ToLower() == playerLastName.ToLower()
+                           && p.FirstName.ToLower()[0] == firstLetter
+                           && p.Teams.Contains(team)).Result;
+                            Console.WriteLine(firstName + " " + playerLastName);
+
+
+
+                            if (playerEntity == null)
+                            {
+                                if (names.Length > 2)
+                                {
+                                    playerLastName = FifacomHelper.Capitalize(names.Last());
+                                    playerEntity = unitOfWork.Player.FindAsync(p => p.LastName.ToLower() == playerLastName.ToLower() && p.FirstName.ToLower()[0] == firstLetter
+                                     && p.Teams.Contains(team)).Result;
+
+                                }
+                                if (playerEntity == null)
+                                {
+                                    var lastnameWithoutSpecial = FifacomHelper.ReplaceSpecialCharacters(playerLastName);
+                                    playerEntity = unitOfWork.Player.FindAsync(p => p.LastName.ToLower() == lastnameWithoutSpecial.ToLower() && p.FirstName.ToLower()[0] == firstLetter 
+                            && p.Teams.Contains(team)).Result;
+                                }
+                                if (playerEntity == null)
+                                {
+                                    playerEntity = new PlayerEntity()
+                                    {
+                                        Name = string.Join(" ", names),
+                                        Slug = FifacomHelper.ReplaceSpecialCharacters(string.Join("-", names).ToLower()),
+                                        LastName = playerLastName,
+                                        FirstName = firstName,
+                                        Teams = new List<TeamEntity> { team }
+                                    };
+                                }
+                            }
+                            playerEntity.FirstName = firstName;
+                        }
+
+                        var profileStats = doc.QuerySelectorAll(".player-profile pk-identifier");
+                        foreach (var stat in profileStats)
+                        {
+                            var statName = stat.QuerySelector("span:nth-child(1)")?.InnerText.Trim();
+                            var statValue = stat.QuerySelector("span:nth-child(2)")?.InnerText.Trim();
+                            switch (statName)
+                            {
+                                case "Date of birth":
+                                    var dbDate = statValue.Split("(")[0].Trim();
+                                    var age = statValue.Split("(")[1].Replace("(", "").Replace(")", "").Trim();
+                                    var dbBirthDate = DateTime.ParseExact(dbDate, "d/M/yyyy", CultureInfo.InvariantCulture);
+                                    playerEntity.Birthday = DateOnly.FromDateTime(dbBirthDate);
+                                    playerEntity.Age = int.Parse(age);
+                                    break;
+                                case "Place of birth":
+                                    playerEntity.BirthPlace = statValue;
+                                    break;
+                                case "Height":
+                                    if (statValue != null)
+                                    {
+                                        playerEntity.Height = int.Parse(statValue.Replace(" cm", ""));
+                                    }
+                                    break;
+                                case "Weight":
+                                    if (statValue != null)
+                                    {
+                                        playerEntity.Weight = int.Parse(statValue.Replace(" kg", ""));
+                                    }
+                                    break;
+                                case "Country":
+                                case "Country of birth":
+                                    if (statValue != null)
+                                    {
+                                        playerEntity.Nationality = statValue.Trim();
+                                    }
+                                    break;
+                                case "Position":
+                                    if (statValue != null)
+                                    {
+                                        playerEntity.Position = statValue.Trim();
+                                    }
+                                    break;
+                                case "National Team number":
+                                case "Shirt number":
+                                    if (statValue != null)
+                                    {
+                                        playerEntity.ShirtNumber = int.Parse(statValue);
+                                    }
+                                    break;
+                                case "Club number":
+                                case "Club position":
+                                case "National team position":
+                                    break;
+                                //    if (statValue != null)
+                                //    {
+                                //        playerEntity.ClubNumber = int.Parse(statValue);
+                                //    }
+                                //    break;
+                                default:
+                                    throw new Exception("Profile Key not found: " + statName);
+                            }
+                        }
+
+                        var playerTournament = unitOfWork.PlayerTournamentRepository.FindAsync(p => p.PlayerId == playerEntity.Id && p.TournamentId == 1).Result;
+                        if (playerTournament != null)
+                        {
+                            continue;
+                        }
+
+
+                        playerTournament = new PlayerTournamentEntity()
+                        {
+                            Player = playerEntity,
+                            TournamentId = 1,
+
+                            IsActive = true
+
+                        };
+
+                        var stats = doc.QuerySelectorAll(".stats-module pk-num-stat-item");
+                        foreach (var stat in stats)
+                        {
+                            var statName = stat.QuerySelector("div:nth-child(2)")?.InnerText.Trim();
+                            var statValue = stat.QuerySelector("div:nth-child(1)")?.InnerText.Trim();
+                            switch (statName)
+                            {
+                                case "Matches played":
+                                    playerTournament.MatchesPlayed = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Minutes played":
+                                    playerTournament.Minutesplayed = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Goals":
+                                    playerTournament.Goals = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Saves":
+                                    playerTournament.Saves = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Clean sheets":
+                                    playerTournament.Cleansheets = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Passing accuracy (%)":
+                                    if (statValue.Contains("/"))
+                                    {
+                                        var vals = statValue.Split("/");
+
+                                        playerTournament.PassingAccuracy = int.Parse(vals[0]) / int.Parse(vals[1]) * 100;
+                                        break;
+                                    }
+                                    playerTournament.PassingAccuracy = statValue != null ? double.Parse(statValue.Replace("%", "")) : 0;
+                                    break;
+                                case "Crossing accuracy (%)":
+                                    playerTournament.CrossingAccuracy = statValue != null ? double.Parse(statValue.Replace("%", "")) : 0;
+                                    break;
+                                case "Yellow cards":
+                                    playerTournament.YellowCards = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Red cards":
+                                    playerTournament.RedCards = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Top speed (km/h)":
+                                    playerTournament.TopSpeed = statValue != null ? double.Parse(statValue) : 0;
+                                    break;
+                                case "Distance covered (km)":
+                                    playerTournament.DistanceCovered = statValue != null ? double.Parse(statValue) : 0;
+                                    break;
+                                case "Tackles":
+                                    playerTournament.Tackles = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Balls recovered":
+                                    playerTournament.BallsRecovered = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Assists":
+                                    playerTournament.Assists = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Total attempts":
+                                    playerTournament.TotalAttempts = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Blocks":
+                                    playerTournament.Blocks = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Own goals conceded":
+                                    playerTournament.OwnGoalsConceded = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Penalties conceded":
+                                    playerTournament.PenaltiesConceded = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Clearances attempted":
+                                    playerTournament.ClearancesAttempted = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Attempts conceded on target":
+                                    playerTournament.AttemptsConcededOnTarget = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Passes completed":
+                                    playerTournament.PassesCompleted = statValue;
+                                    break;
+                                case "Crosses completed":
+                                    playerTournament.CrossesCompleted = statValue;
+                                    break;
+                                case "Free-kicks taken":
+                                    playerTournament.FreeKicksTaken = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Times in possession":
+                                    playerTournament.TimesInPossession = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Clear chances":
+                                    playerTournament.ClearChances = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Fouls committed":
+                                    playerTournament.FoulsCommitted = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Fouls suffered":
+                                    playerTournament.FoulsSuffered = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Offsides":
+                                    playerTournament.Offsides = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Corners taken":
+                                    playerTournament.CornersTaken = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Penalties scored":
+                                    playerTournament.PenaltiesScored = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Penalties missed":
+                                    playerTournament.PenaltiesMissed = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "Penalties awarded":
+                                    playerTournament.PenaltiesAwarded = statValue != null ? int.Parse(statValue) : 0;
+                                    break;
+                                case "0":
+                                case "1":
+                                case "2":
+                                case "3":
+                                case "4":
+                                case "5":
+                                    break;
+                                default:
+                                    throw new Exception("Key not found: " + statName);
+                            }
+                        }
+
+                        await unitOfWork.PlayerTournamentRepository.AddAsync(playerTournament);
+                        await unitOfWork.CompleteAsync();
                     }
-                    playerEntity.FirstName = name[1];
-                    var shirtNumberNode = doc.DocumentNode.SelectSingleNode("/div/div[3]/div[1]/div[1]/div/div[2]/div[2]/pk-identifier/span[2]").InnerText;
-                    if (shirtNumberNode != null)
+                    catch (Exception ex)
                     {
-                        playerEntity.ShirtNumber = int.Parse(shirtNumberNode);
+                        Console.WriteLine("Error processing player file: " + player + " Error: " + ex.Message);
+                        throw;
                     }
-                   
-                    //var team = new TeamEntity()
-                    //{
-                    //    Name = name,
-                    //    Slug = name.Replace(" ", ""),
-                    //    Coach = doc.QuerySelectorAll("[column-key='coach'] span")[2].InnerText.Trim(),
-                    //    Code = "",
-                    //    FormLastGames = doc.QuerySelectorAll("#accordion-item-0 pk-accordion-item-title div")[1].InnerText,
-                    //    ImageUrl = ""
-                    //};
-                    //await unitOfWork.Team.AddAsync(team);
+
 
                 }
             }

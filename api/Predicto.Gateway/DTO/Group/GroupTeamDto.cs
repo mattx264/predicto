@@ -1,17 +1,13 @@
-﻿namespace Predicto.Database.Entities.Sport
+﻿namespace Predicto.Gateway.DTO.Group
 {
-    public class GameGroupTeamEntity
+    public class GroupTeamDto
     {
-        public int Id { get; set; }
-        public int TeamId { get; set; }
-        public virtual TeamEntity Team { get; set; }
+        public string TeamName { get; internal set; }
         public int Won { get; set; }
         public int Lost { get; set; }
         public int Drawn { get; set; }
         public int Played { get; set; }
         public int Points { get; set; }
         public int GoalsDiference { get; set; }
-
-
     }
 }

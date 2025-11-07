@@ -65,7 +65,8 @@ namespace Predicto.Database.Migrations
                     PhotoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MarketValue = table.Column<int>(type: "int", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -289,6 +290,65 @@ namespace Predicto.Database.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Game_Tournament_TournamentId",
+                        column: x => x.TournamentId,
+                        principalTable: "Tournament",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlayerTournament",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PlayerId = table.Column<int>(type: "int", nullable: false),
+                    TournamentId = table.Column<int>(type: "int", nullable: false),
+                    MatchesPlayed = table.Column<int>(type: "int", nullable: false),
+                    Minutesplayed = table.Column<int>(type: "int", nullable: false),
+                    Goals = table.Column<int>(type: "int", nullable: false),
+                    Saves = table.Column<int>(type: "int", nullable: true),
+                    Cleansheets = table.Column<int>(type: "int", nullable: true),
+                    PassingAccuracy = table.Column<double>(type: "float", nullable: true),
+                    TopSpeed = table.Column<double>(type: "float", nullable: true),
+                    DistanceCovered = table.Column<double>(type: "float", nullable: true),
+                    YellowCards = table.Column<int>(type: "int", nullable: false),
+                    RedCards = table.Column<int>(type: "int", nullable: false),
+                    Tackles = table.Column<int>(type: "int", nullable: true),
+                    BallsRecovered = table.Column<int>(type: "int", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Assists = table.Column<int>(type: "int", nullable: true),
+                    TotalAttempts = table.Column<int>(type: "int", nullable: true),
+                    Blocks = table.Column<int>(type: "int", nullable: true),
+                    OwnGoalsConceded = table.Column<int>(type: "int", nullable: true),
+                    FoulsSuffered = table.Column<int>(type: "int", nullable: true),
+                    FoulsCommitted = table.Column<int>(type: "int", nullable: true),
+                    ClearChances = table.Column<int>(type: "int", nullable: true),
+                    TimesInPossession = table.Column<int>(type: "int", nullable: true),
+                    FreeKicksTaken = table.Column<int>(type: "int", nullable: true),
+                    CrossesCompleted = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PassesCompleted = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AttemptsConcededOnTarget = table.Column<int>(type: "int", nullable: true),
+                    ClearancesAttempted = table.Column<int>(type: "int", nullable: true),
+                    PenaltiesConceded = table.Column<int>(type: "int", nullable: true),
+                    Offsides = table.Column<int>(type: "int", nullable: true),
+                    CornersTaken = table.Column<int>(type: "int", nullable: true),
+                    PenaltiesScored = table.Column<int>(type: "int", nullable: true),
+                    PenaltiesMissed = table.Column<int>(type: "int", nullable: true),
+                    PenaltiesAwarded = table.Column<int>(type: "int", nullable: true),
+                    CrossingAccuracy = table.Column<double>(type: "float", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayerTournament", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PlayerTournament_Player_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Player",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlayerTournament_Tournament_TournamentId",
                         column: x => x.TournamentId,
                         principalTable: "Tournament",
                         principalColumn: "Id",
@@ -544,6 +604,16 @@ namespace Predicto.Database.Migrations
                 column: "TeamsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PlayerTournament_PlayerId",
+                table: "PlayerTournament",
+                column: "PlayerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlayerTournament_TournamentId",
+                table: "PlayerTournament",
+                column: "TournamentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Room_TournamentId",
                 table: "Room",
                 column: "TournamentId");
@@ -608,6 +678,9 @@ namespace Predicto.Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "PlayerEntityTeamEntity");
+
+            migrationBuilder.DropTable(
+                name: "PlayerTournament");
 
             migrationBuilder.DropTable(
                 name: "RoomUserEntity");

@@ -2,6 +2,7 @@
 using Predicto.Database.Entities.Blog;
 using Predicto.Database.Entities.Sport;
 using Predicto.Database.Interfaces.Repositories;
+using Predicto.Database.Repositories.Sport;
 
 namespace Predicto.Database.Interfaces
 {
@@ -16,6 +17,7 @@ namespace Predicto.Database.Interfaces
         IRepository<TeamPlayerEntity> TeamPlayer { get; }
         IRepository<GameEntity> Game { get; }
         IRepository<ArticleEntity> Article { get; }
+        IGameGroupRepository GameGroupRepository { get; }
 
         Task<int> CompleteAsync(); // SaveChanges
     }

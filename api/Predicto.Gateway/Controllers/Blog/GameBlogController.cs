@@ -8,35 +8,23 @@ namespace Predicto.Gateway.Controllers
     [Route("api/[controller]")]
     public class GameBlogController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IGameService _gameService;
 
-        public GameBlogController(IUnitOfWork unitOfWork)
+        public GameBlogController(IGameService gameService)
         {
-            _unitOfWork = unitOfWork;
+            _gameService = gameService;
         }
         [HttpGet("tournament/{id}")]
         public async Task<IActionResult> GetTeamsByTournamentId(int id)
         {
-            //var tournament = await _unitOfWork.Tournament.GetByIdAsync(id);
-            //if (tournament == null)
-            //{
-            //    return NotFound();
-            //}
-            //return Ok(tournament.Teams);
-            var games=await _unitOfWork.Game.GetAllAsync();
+            var games = await _gameService.GetAll();
             return Ok(games);
         }
-        [HttpGet("/{id}")]
+        [HttpGet("details/{id}")]
         public async Task<IActionResult> GetGameDetailsByGame(int id)
         {
-            //var tournament = await _unitOfWork.Tournament.GetByIdAsync(id);
-            //if (tournament == null)
-            //{
-            //    return NotFound();
-            //}
-            //return Ok(tournament.Teams);
-            var games = await _unitOfWork.Game.GetByIdAsync(id);
-            return Ok(games);
+            var game = await _gameService.GetByIdAsync(id);
+            return Ok(game);
         }
 
     }
