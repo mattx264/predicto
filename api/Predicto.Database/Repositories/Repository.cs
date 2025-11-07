@@ -48,5 +48,10 @@ namespace Predicto.Database.Repositories
         {
             return Task.FromResult(_dbSet.FirstOrDefault(value));
         }
+
+        public Task<IEnumerable<T>> WhereAsync(Func<T, bool> predicate)
+        {
+            return Task.FromResult(_dbSet.Where(predicate));
+        }
     }
 }
