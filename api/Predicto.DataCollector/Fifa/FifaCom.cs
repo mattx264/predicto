@@ -55,6 +55,14 @@ namespace Predicto.DataCollector.Fifa
         }
         internal async Task SeedData(UnitOfWork unitOfWork)
         {
+            //try
+            //{
+            //    await new FifacomGroup().SeedData(unitOfWork);
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
             try
             {
                 var teams = unitOfWork.Team.GetAllAsync().Result;
@@ -69,16 +77,9 @@ namespace Predicto.DataCollector.Fifa
                     {
                         var jsonData = File.ReadAllText(jsonFile);
                         var gameData = JsonSerializer.Deserialize<FifaComGameModel>(jsonData);
-                        var teamHomeName = gameData.HomeTeam.TeamName[0].Description;
-                        var teamAwayName = gameData.AwayTeam.TeamName[0].Description;
-                        if (teamHomeName == "Bosnia-Herzegovina")
-                        {
-                            teamHomeName = "Bosnia & Herzegovina";
-                        }
-                        if (teamAwayName == "Bosnia-Herzegovina")
-                        {
-                            teamAwayName = "Bosnia & Herzegovina";
-                        }
+                        var teamHomeName = FifacomHelper.TeamNormalization(gameData.HomeTeam.TeamName[0].Description);
+                        var teamAwayName = FifacomHelper.TeamNormalization(gameData.AwayTeam.TeamName[0].Description);
+
                         var teamHome = teams.First(t => t.Name == teamHomeName);
                         var teamAway = teams.First(t => t.Name == teamAwayName);
 
@@ -117,6 +118,21 @@ namespace Predicto.DataCollector.Fifa
                             Tactics = gameData.AwayTeam.Tactics
                         };
                         var teamsEntity = new List<GameTeamEntity> { homeTeam, awayTeam };
+                        var stadium = (GameStadiumEntity?)null;
+                        if (gameData.Stadium != null && gameData.Stadium.Name[0] != null)
+                        {
+                            var stadiumName = gameData.Stadium.Name[0].Description;
+                            stadium = await unitOfWork.GameStadium.FindAsync(x => x.StadiumName == stadiumName);
+                            if (stadium == null)
+                            {
+                                stadium = new GameStadiumEntity
+                                {
+                                    StadiumName = stadiumName,
+                                    StadiumNameCityName = gameData.Stadium.CityName[0].Description,
+                                };
+                            }
+
+                        }
                         var gameEntity = new GameEntity
                         {
                             TournamentId = 1,// FIFA World Cup Qualifiers
@@ -124,11 +140,10 @@ namespace Predicto.DataCollector.Fifa
                             FinalScore = gameData.HomeTeam.Score == null ? null : $"{gameData.HomeTeam.Score}-{gameData.AwayTeam.Score}",
                             StartGame = gameData.Date,
                             IsActive = true,
-                            StadiumName = gameData.Stadium == null ? null : gameData.Stadium.Name[0].Description,
-                            StadiumNameCityName = gameData.Stadium == null ? null : gameData.Stadium.CityName[0].Description,
                             Referee = gameData.Officials == null || gameData.Officials.Count == 0 ? null : gameData.Officials[0].Name[0].Description,
                             GamePlayers = gamePlayer,
-                            GamePlayerEvents = gamePlayerEvents
+                            GamePlayerEvents = gamePlayerEvents,
+                            Stadium = stadium
                         };
                         await unitOfWork.Game.AddAsync(gameEntity);
                         await unitOfWork.CompleteAsync();
@@ -279,124 +294,7 @@ namespace Predicto.DataCollector.Fifa
                 throw;
             }
         }
-        private Dictionary<char, char> replacements = new Dictionary<char, char>
-        {
-            // A
-            ['À'] = 'A',
-            ['Á'] = 'A',
-            ['Â'] = 'A',
-            ['Ã'] = 'A',
-            ['Ä'] = 'A',
-            ['Å'] = 'A',
-            ['à'] = 'a',
-            ['á'] = 'a',
-            ['â'] = 'a',
-            ['ã'] = 'a',
-            ['ä'] = 'a',
-            ['å'] = 'a',
-            ['ă'] = 'a',
-            // AE ligature
-            ['Æ'] = 'A',
-            ['æ'] = 'a',
 
-            // C
-            ['Ç'] = 'C',
-            ['ç'] = 'c',
-            ['Č'] = 'C',
-            ['č'] = 'c',
-            ['Ć'] = 'C',
-            ['ć'] = 'c',
-
-            // D
-            ['Ð'] = 'D',
-            ['ð'] = 'd',
-            ['Đ'] = 'D',
-            ['đ'] = 'd',
-
-            // E
-            ['È'] = 'E',
-            ['É'] = 'E',
-            ['Ê'] = 'E',
-            ['Ë'] = 'E',
-            ['è'] = 'e',
-            ['é'] = 'e',
-            ['ê'] = 'e',
-            ['ë'] = 'e',
-
-            // G
-            ['Ğ'] = 'G',
-            ['ğ'] = 'g',
-
-            // I
-            ['Ì'] = 'i',
-            ['Í'] = 'i',
-            ['Î'] = 'i',
-            ['Ï'] = 'i',
-            ['ì'] = 'i',
-            ['í'] = 'i',
-            ['î'] = 'i',
-            ['ï'] = 'i',
-
-            // N
-            ['Ñ'] = 'N',
-            ['ñ'] = 'n',
-
-            // O
-            ['Ò'] = 'O',
-            ['Ó'] = 'O',
-            ['Ô'] = 'O',
-            ['Õ'] = 'O',
-            ['Ö'] = 'O',
-            ['Ø'] = 'O',
-            ['ò'] = 'o',
-            ['ó'] = 'o',
-            ['ô'] = 'o',
-            ['õ'] = 'o',
-            ['ö'] = 'o',
-            ['ø'] = 'o',
-
-            // S
-            ['Š'] = 'S',
-            ['š'] = 's',
-            ['Ś'] = 'S',
-            ['ś'] = 's',
-            ['Ş'] = 'S',
-            ['ş'] = 's',
-            ['ș'] = 's',
-
-            // U
-            ['Ù'] = 'U',
-            ['Ú'] = 'U',
-            ['Û'] = 'U',
-            ['Ü'] = 'U',
-            ['ù'] = 'u',
-            ['ú'] = 'u',
-            ['û'] = 'u',
-            ['ü'] = 'u',
-
-            ['ţ'] = 't',
-            ['ț'] = 't',
-            // Y
-            ['Ý'] = 'Y',
-            ['ý'] = 'y',
-            ['Ÿ'] = 'Y',
-            ['ÿ'] = 'y',
-
-            // Z
-            ['Ž'] = 'Z',
-            ['ž'] = 'z',
-            ['Ź'] = 'Z',
-            ['ź'] = 'z',
-            ['Ż'] = 'Z',
-            ['ż'] = 'z'
-        };
-
-        private string ReplaceSpecialCharacters(string input)
-        {
-            return new string(input
-                .Select(c => replacements.ContainsKey(c) ? replacements[c] : c)
-                .ToArray());
-        }
 
         private async Task<PlayerEntity> FindPlayerByLastName(UnitOfWork unitOfWork, Player playerEntity, int id, TeamEntity teamEntity)
         {
@@ -413,9 +311,9 @@ namespace Predicto.DataCollector.Fifa
                  );
             if (player == null)
             {
-                var replacedLastName = ReplaceSpecialCharacters(lastName);
+                var replacedLastName = FifacomHelper.ReplaceSpecialCharacters(lastName);
                 player = await unitOfWork.Player.FindAsync(
-                   p => ReplaceSpecialCharacters(p.LastName.ToLower()) == replacedLastName.ToLower()
+                   p => FifacomHelper.ReplaceSpecialCharacters(p.LastName.ToLower()) == replacedLastName.ToLower()
                  && p.Teams.Contains(teamEntity)
                  );
                 if (player == null)

@@ -41,6 +41,10 @@ public class Repository<T> : IRepository<T> where T : class
     {
         return Task.FromResult(_dbSet.FirstOrDefault(value));
     }
+    public Task<IEnumerable<T>> WhereAsync(Func<T, bool> predicate)
+    {
+        return Task.FromResult(_dbSet.Where(predicate));
+    }
 }
 
 public interface IRepository<T> where T : class
@@ -51,4 +55,5 @@ public interface IRepository<T> where T : class
     void Update(T entity);
     void Remove(T entity);
     Task<T?> FindAsync(Func<T, bool> value);
+    Task<IEnumerable<T>> WhereAsync(Func<T, bool> predicate);
 }

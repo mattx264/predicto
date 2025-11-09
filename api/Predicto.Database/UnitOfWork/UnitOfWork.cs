@@ -4,6 +4,7 @@ using Predicto.Database.Entities.Sport;
 using Predicto.Database.Interfaces;
 using Predicto.Database.Interfaces.Repositories;
 using Predicto.Database.Repositories;
+using Predicto.Database.Repositories.Sport;
 
 namespace Predicto.Database.UnitOfWork
 {
@@ -27,19 +28,26 @@ namespace Predicto.Database.UnitOfWork
         public IRepository<GameEntity> Game { get; }
 
         public IRepository<ArticleEntity> Article { get; }
+        public IRepository<GameStadiumEntity> GameStadium { get; }
+        public IRepository<GameGroupEntity> GameGroup { get; }
+        public IRepository<PlayerTournamentEntity> PlayerTournamentRepository { get; }
 
+        public IGameGroupRepository GameGroupRepository { get; }
         public UnitOfWork(PredictoDbContext context)
         {
             _context = context;
             Users = new UserRepository(_context);
-             Rooms = new RoomRepository(_context); 
+            Rooms = new RoomRepository(_context);
             SportCategory = new Repository<SportCategoryEntity>(_context);
             Tournament = new Repository<TournamentEntity>(_context);
             Team = new Repository<TeamEntity>(_context);
             Player = new Repository<PlayerEntity>(_context);
-            //TeamPlayer = new Repository<TeamPlayerEntity>(_context);
+            GameStadium = new Repository<GameStadiumEntity>(_context);
             Game = new Repository<GameEntity>(_context);
             Article = new Repository<ArticleEntity>(_context);
+            GameGroup = new Repository<GameGroupEntity>(_context);
+            PlayerTournamentRepository = new Repository<PlayerTournamentEntity>(_context);
+            GameGroupRepository = new GameGroupRepository(_context);
         }
 
         public async Task<int> CompleteAsync()

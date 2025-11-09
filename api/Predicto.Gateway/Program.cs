@@ -139,11 +139,11 @@ builder.Services.AddAuthentication(options =>
         {
             var accessToken = context.Request.Query["access_token"];
             var path = context.HttpContext.Request.Path;
-            
-            
+
+
             if (!string.IsNullOrEmpty(accessToken) &&
-                (path.StartsWithSegments("/roomsHub") || 
-                 path.StartsWithSegments("/roomHub") || 
+                (path.StartsWithSegments("/roomsHub") ||
+                 path.StartsWithSegments("/roomHub") ||
                  path.StartsWithSegments("/testHub")))
             {
                 context.Token = accessToken;
@@ -161,6 +161,11 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<ITeamService, TeamService>();
+
+
 builder.Services.AddFluentEmail(builder.Configuration);
 
 
@@ -178,7 +183,7 @@ builder.Services.AddCors(options =>
               )
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); 
+              .AllowCredentials();
     });
 });
 

@@ -18,6 +18,7 @@ namespace Predicto.Database
         public DbSet<GameEntity> Game => Set<GameEntity>();
         public DbSet<GameGroupEntity> GameGroup => Set<GameGroupEntity>();
         public DbSet<GameTeamEntity> GameTeam => Set<GameTeamEntity>();
+        public DbSet<PlayerTournamentEntity> PlayerTournament => Set<PlayerTournamentEntity>();
 
 
 
@@ -31,44 +32,41 @@ namespace Predicto.Database
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var eTypes = modelBuilder.Model.GetEntityTypes();
-            foreach (var type in eTypes)
-            {
-                var foreignKeys = type.GetForeignKeys();
-                foreach (var foreignKey in foreignKeys)
-                {
 
-                    // Unique indexes
-                    modelBuilder.Entity<ArticleEntity>()
-                        .HasIndex(a => a.Slug)
-                        .IsUnique();
+           
+            //make unique column for article slug
+            modelBuilder.Entity<ArticleEntity>()
+                .HasIndex(a => a.Slug)
+                .IsUnique();
+            modelBuilder.Entity<PlayerEntity>()
+                .HasIndex(a => a.Slug)
+                .IsUnique();
+            modelBuilder.Entity<TeamEntity>()
+                .HasIndex(a => a.Slug)
+                .IsUnique();
 
-                    modelBuilder.Entity<PlayerEntity>()
-                        .HasIndex(a => a.Slug)
-                        .IsUnique();
+            modelBuilder.Entity<PlayerEntity>()
+                .HasMany(g => g.Teams)
+                .WithMany(t => t.Players);
+
+            modelBuilder.Entity<TeamEntity>()
+                .HasMany(g => g.Players)
+                .WithMany(t => t.Teams);
 
 
-                    modelBuilder.Entity<RoomEntity>()
-                        .HasOne(r => r.CreatedByUser)
-                        .WithMany()
-                        .HasForeignKey(r => r.CreatedByUserId)
-                        .OnDelete(DeleteBehavior.Restrict);
 
-                    modelBuilder.Entity<RoomEntity>()
-                        .HasMany(r => r.Participants)
-                        .WithMany(u => u.JoinedRooms)
-                        .UsingEntity<Dictionary<string, object>>(
-                            "RoomParticipants",
-                            j => j.HasOne<UserEntity>().WithMany().HasForeignKey("UserId"),
-                            j => j.HasOne<RoomEntity>().WithMany().HasForeignKey("RoomId"),
-                            j =>
-                            {
-                                j.HasKey("RoomId", "UserId");
-                                j.ToTable("RoomParticipants");
-                            }
-                        );
-                }
-            }
+            modelBuilder.Entity<GameEntity>()
+                 .HasMany(g => g.Teams)
+                 .WithOne(t => t.Game)
+                 .HasForeignKey(t => t.GameId);
+
+        //    modelBuilder.Entity<RoomEntity>()
+        //.HasMany(r => r.Participants)
+        //.WithMany(u => u.JoinedRooms);
+        //    base.OnModelCreating(modelBuilder);
+
+
         }
+
     }
 }

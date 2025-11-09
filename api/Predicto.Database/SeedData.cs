@@ -19,8 +19,10 @@ namespace Predicto.Database
                 {
                     context.Add(new TournamentEntity { Name = "FIFA World Cup", SportCategoryId = 1 });
                 }
-                SeedArticles(context);
                 context.SaveChanges();
+                //   SeedArticles(context);
+
+                //  context.SaveChanges();
             };
         }
         private void SeedArticles(DbContext context)
