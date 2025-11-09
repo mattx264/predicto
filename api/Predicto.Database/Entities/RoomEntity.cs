@@ -19,12 +19,9 @@ namespace Predicto.Database.Entities
         public int CreatedByUserId { get; set; }
         public virtual UserEntity CreatedByUser { get; set; }
         public RoomStatus RoomStatus { get; set; }
-<<<<<<< HEAD
         
         public virtual ICollection<UserEntity> Participants { get; set; } = new List<UserEntity>();
-=======
-        public int CreatedById { get; set; } // user id of user that created room
->>>>>>> 8c23d5ac1ddca0aa8a29598e28e392360c8a46b8
+        // public int CreatedById { get; set; } // user id of user that created room
     }
     
     public enum RoomStatus
