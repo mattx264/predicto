@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Package, Trash2, Calendar, Star, Award } from "lucide-react";
+import { X, Package, Trash2, Calendar, Award } from "lucide-react";
 import "./InventoryItemModal.css";
 
 interface InventoryItem {
@@ -70,35 +70,35 @@ const InventoryItemModal: React.FC<InventoryItemModalProps> = ({
     onClose();
   };
 
-  const getRarityColor = (rarity: string) => {
-    switch (rarity) {
-      case "bronze":
-        return "#cd7f32";
-      case "silver":
-        return "#c0c0c0";
-      case "gold":
-        return "#ffd700";
-      case "diamond":
-        return "#00bfff";
-      case "legendary":
-        return "#ff6b35";
-      default:
-        return "#64748b";
-    }
-  };
+  // const getRarityColor = (rarity: string) => {
+  //   switch (rarity) {
+  //     case "bronze":
+  //       return "#cd7f32";
+  //     case "silver":
+  //       return "#c0c0c0";
+  //     case "gold":
+  //       return "#ffd700";
+  //     case "diamond":
+  //       return "#00bfff";
+  //     case "legendary":
+  //       return "#ff6b35";
+  //     default:
+  //       return "#64748b";
+  //   }
+  // };
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "pack":
-        return <Package size={20} />;
-      case "card":
-        return <Award size={20} />;
-      case "bundle":
-        return <Star size={20} />;
-      default:
-        return <Package size={20} />;
-    }
-  };
+  // const getTypeIcon = (type: string) => {
+  //   switch (type) {
+  //     case "pack":
+  //       return <Package size={20} />;
+  //     case "card":
+  //       return <Award size={20} />;
+  //     case "bundle":
+  //       return <Star size={20} />;
+  //     default:
+  //       return <Package size={20} />;
+  //   }
+  // };
 
   return (
     <div className="inventory-modal-backdrop" onClick={handleBackdropClick}>

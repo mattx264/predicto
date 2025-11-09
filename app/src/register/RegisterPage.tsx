@@ -126,7 +126,6 @@ const RegisterPage: React.FC = () => {
         "pl"
       );
 
-      console.log("Zarejestrowano i zalogowano pomyślnie!");
       navigate("/dashboard");
     } catch (err) {
       console.error("Błąd rejestracji:", err);

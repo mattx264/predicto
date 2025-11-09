@@ -1,33 +1,28 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  ArrowLeft,
   Trophy,
-  Users,
-  Calendar,
-  DollarSign,
-  Share2,
-  Settings,
-  LogOut,
-  TrendingUp,
   Target,
   MessageSquare,
   MessageCircle,
   AlertCircle,
   BarChart3,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 import "./RoomPage.css";
 
+import RoomHeader from "./room-header/RoomHeader";
 import RoomChat from "./chat/RoomChat";
 import RoomComments from "./comments/RoomComments";
 import RoomStatistics from "./room-statistics/RoomStatistics";
 import RoomLeaderboard from "./leaderboard/RoomLeaderboard";
 import RoomMatches from "./room-matches/RoomMatches";
 import RoomInfo from "./room-info/RoomInfo";
-import InviteButton from "./invite-user/InviteButton";
 import LeagueTable from "./league-table/LeagueTable";
 
 import { useRoom } from "../hooks/useRoom";
+import { roomService } from "../services/signalr/room.service";
 import type { Match, Participant } from "../types/types";
 
 const RoomPage: React.FC = () => {
@@ -381,31 +376,22 @@ const RoomPage: React.FC = () => {
   ];
 
   const displayRoom = error ? null : room;
-
   const isCreator = currentUserId === displayRoom?.creator;
-  const isParticipant = true;
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "open":
-        return <span className="my-status-badge-detail my-open">Otwarte</span>;
-      case "active":
-        return (
-          <span className="my-status-badge-detail my-active">Aktywne</span>
-        );
-      case "ended":
-        return (
-          <span className="my-status-badge-detail my-ended">Zakończone</span>
-        );
-      default:
-        return null;
+  const handleLeaveRoom = async () => {
+    if (!window.confirm("Czy na pewno chcesz opuścić ten pokój?")) {
+      return;
     }
-  };
 
-  const handleLeaveRoom = () => {
-    if (window.confirm("Czy na pewno chcesz opuścić ten pokój?")) {
-      console.log("Leaving room", id);
+    try {
+      await roomService.leaveRoom(Number(id));
+      console.log("✅ Pomyślnie opuszczono pokój");
       navigate("/rooms");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Nie udało się opuścić pokoju";
+      alert(errorMessage);
+      console.error("❌ Błąd podczas opuszczania pokoju:", error);
     }
   };
 
@@ -415,24 +401,20 @@ const RoomPage: React.FC = () => {
     alert("Link do pokoju skopiowany do schowka!");
   };
 
-  const getConnectionStatusBadge = () => {
-    switch (connectionStatus) {
-      case "connected":
-        return (
-          <span className="connection-status connected">🟢 Połączono</span>
-        );
-      case "connecting":
-        return (
-          <span className="connection-status connecting">🟡 Łączenie...</span>
-        );
-      case "error":
-        return (
-          <span className="connection-status error">🔴 Błąd połączenia</span>
-        );
-      default:
-        return null;
-    }
+  const handleSettings = () => {
+    alert("Ustawienia pokoju");
   };
+
+  React.useEffect(() => {
+    if (!room) return;
+
+    console.log("🔄 Room data updated via SignalR:", {
+      roomId: room.id,
+      participants: room.participants,
+      maxParticipants: room.maxParticipants,
+      prize: room.prize,
+    });
+  }, [room]);
 
   if (isLoading) {
     return (
@@ -463,110 +445,14 @@ const RoomPage: React.FC = () => {
   return (
     <div className="my-room-page">
       <div className="my-room-container">
-        <div className="my-room-header">
-          <button
-            className="my-back-btn-room"
-            onClick={() => navigate("/rooms")}
-          >
-            <ArrowLeft className="my-back-icon" />
-            <span>Powrót do pokoi</span>
-          </button>
-
-          <div className="my-room-header-content">
-            <div className="my-room-header-main">
-              <div className="my-room-header-left">
-                <h1 className="my-room-title">{displayRoom.name}</h1>
-                <div className="my-room-meta">
-                  <span className="my-room-creator">
-                    <Users size={16} />
-                    Organizator: {displayRoom.creator}
-                  </span>
-                  <span className="my-room-league">
-                    <Trophy size={16} />
-                    {displayRoom.league}
-                  </span>
-                  {getStatusBadge(displayRoom.status)}
-                  {getConnectionStatusBadge()}
-                </div>
-              </div>
-
-              <div className="my-room-header-actions">
-                <InviteButton
-                  roomId={displayRoom.id}
-                  inviteCode="MOCK-CODE"
-                  roomName={displayRoom.name}
-                />
-                <button
-                  className="my-action-btn my-share"
-                  onClick={handleShareRoom}
-                >
-                  <Share2 size={20} />
-                  <span>Udostępnij</span>
-                </button>
-                {isCreator && (
-                  <button
-                    className="my-action-btn my-settings"
-                    onClick={() => alert("Ustawienia pokoju")}
-                  >
-                    <Settings size={20} />
-                    <span>Ustawienia</span>
-                  </button>
-                )}
-                {isParticipant && !isCreator && (
-                  <button
-                    className="my-action-btn my-leave"
-                    onClick={handleLeaveRoom}
-                  >
-                    <LogOut size={20} />
-                    <span>Opuść</span>
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="my-room-stats">
-              <div className="my-stat-card-room">
-                <Users className="my-stat-icon-room" />
-                <div className="my-stat-content">
-                  <span className="my-stat-label">Uczestnicy</span>
-                  <span className="my-stat-value">
-                    {displayRoom.participants}/{displayRoom.maxParticipants}
-                  </span>
-                </div>
-              </div>
-
-              <div className="my-stat-card-room">
-                <Trophy className="my-stat-icon-room" />
-                <div className="my-stat-content">
-                  <span className="my-stat-label">Pula nagród</span>
-                  <span className="my-stat-value">{displayRoom.prize} PLN</span>
-                </div>
-              </div>
-
-              <div className="my-stat-card-room">
-                <Calendar className="my-stat-icon-room" />
-                <div className="my-stat-content">
-                  <span className="my-stat-label">Termin</span>
-                  <span className="my-stat-value">
-                    {new Date(displayRoom.startDate).toLocaleDateString(
-                      "pl-PL"
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              <div className="my-stat-card-room">
-                <DollarSign className="my-stat-icon-room" />
-                <div className="my-stat-content">
-                  <span className="my-stat-label">Wpisowe</span>
-                  <span className="my-stat-value">
-                    {displayRoom.entryFee} PLN
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <RoomHeader
+          room={displayRoom}
+          currentUserId={currentUserId}
+          connectionStatus={connectionStatus}
+          onLeaveRoom={handleLeaveRoom}
+          onShareRoom={handleShareRoom}
+          onSettings={handleSettings}
+        />
 
         <div className="my-room-tabs">
           <button
@@ -628,7 +514,7 @@ const RoomPage: React.FC = () => {
           {activeTab === "matches" && (
             <RoomMatches
               matches={mockMatches}
-              isParticipant={isParticipant}
+              isParticipant={true}
               currentUserId={currentUserId}
             />
           )}
@@ -675,9 +561,9 @@ const RoomPage: React.FC = () => {
               startDate={displayRoom.startDate}
               endDate={displayRoom.endDate}
               isPrivate={displayRoom.isPrivate}
-              inviteCode="MOCK-CODE"
-              description="Mock description"
-              rules="Mock rules"
+              inviteCode={displayRoom.isPrivate ? "MOCK-CODE" : undefined}
+              description={displayRoom.description || undefined}
+              rules={undefined}
             />
           )}
         </div>

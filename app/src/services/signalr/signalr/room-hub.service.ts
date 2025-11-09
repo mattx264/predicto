@@ -17,7 +17,6 @@ export class RoomHubService {
       existingConnection &&
       existingConnection.state === signalR.HubConnectionState.Connected
     ) {
-      console.log(`⚠️ Już połączono z pokojem ${roomId}`);
       return;
     }
 
@@ -25,13 +24,14 @@ export class RoomHubService {
 
     const connection = signalRService.createConnection(ROOM_HUB_URL);
 
+    connection.off("GetRoom");
+    connection.off("RoomUpdated");
+
     connection.on("GetRoom", (room: RoomDTO) => {
-      console.log(`📥 Otrzymano dane dla pokoju ${roomId}:`, room);
       onRoomDataReceived(room);
     });
 
     connection.on("RoomUpdated", (room: RoomDTO) => {
-      console.log(`🔄 Pokój ${roomId} został zaktualizowany:`, room);
       onRoomDataReceived(room);
     });
 
@@ -51,9 +51,11 @@ export class RoomHubService {
     const connection = this.connections.get(connectionKey);
 
     if (connection) {
+      connection.off("GetRoom");
+      connection.off("RoomUpdated");
+
       await signalRService.stopConnection(connection);
       this.connections.delete(connectionKey);
-      console.log(`✅ Rozłączono z pokojem ${roomId}`);
     }
   }
 

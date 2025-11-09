@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trophy, AlertCircle } from "lucide-react";
 import "./RoomsPage.css";
@@ -44,6 +44,10 @@ const RoomsPage: React.FC = () => {
 
   const displayRooms = error ? mockRooms : rooms;
 
+  const myRooms = useMemo(() => {
+    return displayRooms.filter((room) => room.isUserInRoom === true);
+  }, [displayRooms]);
+
   const leagues = [
     "all",
     ...Array.from(new Set(displayRooms.map((r) => r.league))),
@@ -62,7 +66,8 @@ const RoomsPage: React.FC = () => {
 
   const handleRoomClick = (roomId: string) => {
     const room = displayRooms.find((r) => r.id === roomId);
-    if (room && room.status === "open") {
+    if (room && room.status === "open" && !room.isUserInRoom) {
+      // ✅ DODAJ: nie otwieraj płatności jeśli już w pokoju
       setSelectedRoom(room);
       setIsPaymentOpen(true);
     } else {
@@ -80,7 +85,6 @@ const RoomsPage: React.FC = () => {
   return (
     <div className="rooms-page">
       <div className="rooms-container">
-        {/* Header */}
         <div className="rooms-header">
           <div className="header-content">
             <h1 className="page-title">
@@ -102,7 +106,6 @@ const RoomsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Banner błędu */}
         {error && (
           <div className="error-banner">
             <AlertCircle size={20} />
@@ -112,7 +115,6 @@ const RoomsPage: React.FC = () => {
           </div>
         )}
 
-        {/* Loading state */}
         {isLoading && (
           <div className="loading-state">
             <div className="spinner"></div>
@@ -120,7 +122,6 @@ const RoomsPage: React.FC = () => {
           </div>
         )}
 
-        {/* Filtry */}
         {!isLoading && (
           <RoomsFilters
             searchQuery={searchQuery}
@@ -133,7 +134,6 @@ const RoomsPage: React.FC = () => {
           />
         )}
 
-        {/* Przełącznik widoku */}
         {!isLoading && (
           <div className="view-toggle">
             <button
@@ -146,23 +146,25 @@ const RoomsPage: React.FC = () => {
               className={`toggle-btn ${viewMode === "my" ? "active" : ""}`}
               onClick={() => setViewMode("my")}
             >
-              Moje pokoje
+              Moje pokoje ({myRooms.length})
             </button>
           </div>
         )}
 
-        {/* Statystyki */}
         {!isLoading && <RoomsStats rooms={displayRooms} />}
 
-        {/* Lista pokoi */}
         {!isLoading && viewMode === "all" ? (
           <AllRoomsCards rooms={filteredRooms} onRoomClick={handleRoomClick} />
         ) : !isLoading && viewMode === "my" ? (
-          <MyRooms currentUserId={currentUserId} />
+          <MyRooms
+            currentUserId={currentUserId}
+            rooms={myRooms}
+            isLoading={false}
+            error={null}
+          />
         ) : null}
       </div>
 
-      {/* Modal płatności */}
       {selectedRoom && (
         <PaymentGateway
           isOpen={isPaymentOpen}
@@ -170,6 +172,7 @@ const RoomsPage: React.FC = () => {
           roomName={selectedRoom.name}
           entryFee={selectedRoom.entryFee}
           onPaymentSuccess={handlePaymentSuccess}
+          roomId={selectedRoom.id}
         />
       )}
     </div>

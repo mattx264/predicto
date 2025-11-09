@@ -11,8 +11,15 @@ import {
   setRoomsLoading,
   setRoomsError,
   addRoom,
+  updateRoomParticipants,
 } from "../signals/rooms.signals";
-import { mapRoomDtoToRoom, type RoomDTO, type Room } from "../types/types";
+import {
+  mapRoomDtoToRoom,
+  type RoomDTO,
+  type Room,
+  type UserJoinedEvent,
+  type UserLeftEvent,
+} from "../types/types";
 
 interface UseRoomsReturn {
   rooms: Room[];
@@ -39,37 +46,45 @@ export const useRooms = (): UseRoomsReturn => {
         setRoomsLoading(true);
         setRoomsError(null);
 
-        console.log("🔌 Connecting to RoomsHub...");
-
         const handleRoomsReceived = (roomsDto: RoomDTO[]) => {
           if (!isMounted) return;
-
-          console.log("📦 Processing rooms from backend:", roomsDto);
 
           const mappedRooms = roomsDto.map(mapRoomDtoToRoom);
 
           setRooms(mappedRooms);
           setConnectionStatus("connected");
           setRoomsLoading(false);
-
-          console.log("✅ Rooms loaded successfully:", mappedRooms);
         };
 
         const handleRoomCreated = (roomDto: RoomDTO) => {
           if (!isMounted) return;
 
-          console.log("🆕 New room created:", roomDto);
           const mappedRoom = mapRoomDtoToRoom(roomDto);
 
           addRoom(mappedRoom);
-
-          console.log("✅ Room added to list:", mappedRoom);
         };
 
-        await roomsHubService.connect(handleRoomsReceived, handleRoomCreated);
+        const handleUserJoined = (event: UserJoinedEvent) => {
+          if (!isMounted) return;
+
+          updateRoomParticipants(event.roomId, event.participantsCount);
+        };
+
+        const handleUserLeft = (event: UserLeftEvent) => {
+          if (!isMounted) return;
+
+          updateRoomParticipants(event.roomId, event.participantsCount);
+        };
+
+        await roomsHubService.connect(
+          handleRoomsReceived,
+          handleRoomCreated,
+          handleUserJoined,
+          handleUserLeft
+        );
 
         if (isMounted) {
-          console.log("✅ Successfully connected to RoomsHub");
+          console.log("successfully connected to RoomsHub");
         }
       } catch (error) {
         if (!isMounted) return;
@@ -87,13 +102,11 @@ export const useRooms = (): UseRoomsReturn => {
 
     return () => {
       isMounted = false;
-      console.log("🧹 Cleaning up RoomsHub connection");
       roomsHubService.disconnect();
     };
   }, []);
 
   const refetch = async () => {
-    console.log("🔄 Refetching rooms...");
     await roomsHubService.disconnect();
   };
 

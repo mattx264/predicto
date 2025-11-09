@@ -91,3 +91,114 @@
     font-size: 1rem;
   }
 }
+/* Dodaj te style do istniejącego RoomInfo.css */
+
+/* Pusta wiadomość */
+.info-text.empty {
+  color: #94a3b8;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Zasady punktacji z formatowaniem */
+.info-text.rules p {
+  margin: 0.75rem 0;
+  padding-left: 0.5rem;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.info-text.rules p:hover {
+  border-left-color: #3b82f6;
+  padding-left: 1rem;
+  background: rgba(59, 130, 246, 0.05);
+}
+
+/* Highlight card */
+.info-card-highlight {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.05) 0%,
+    rgba(147, 197, 253, 0.05) 100%
+  );
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Kroki - jak to działa */
+.info-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.info-step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.info-step:hover {
+  background: rgba(59, 130, 246, 0.05);
+  transform: translateX(8px);
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.step-content h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.step-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.info-value.code {
+  font-family: "Courier New", monospace;
+  background: rgba(59, 130, 246, 0.1) !important;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .info-step {
+    padding: 0.875rem;
+  }
+
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .step-content h4 {
+    font-size: 0.95rem;
+  }
+
+  .step-content p {
+    font-size: 0.85rem;
+  }
+}
