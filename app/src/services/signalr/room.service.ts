@@ -78,7 +78,6 @@ export const roomService = {
       }
 
       const createdRoom: RoomDTO = await response.json();
-      console.log("✅ Room created successfully:", createdRoom);
       return createdRoom;
     } catch (error) {
       console.error("❌ Error creating room:", error);
@@ -109,5 +108,118 @@ export const roomService = {
 
   isAuthenticated(): boolean {
     return !!getAuthToken();
+  },
+  async getMyRooms(): Promise<RoomDTO[]> {
+    const token = getAuthToken();
+
+    if (!token) {
+      throw new Error("Musisz być zalogowany, aby zobaczyć swoje pokoje");
+    }
+
+    try {
+      const response = await fetch(
+        `${apiService.getBackendUrl()}/api/room/my`,
+        {
+          method: "GET",
+          headers: getAuthHeaders(),
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Sesja wygasła. Zaloguj się ponownie");
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("❌ Error fetching my rooms:", error);
+      throw error;
+    }
+  },
+
+  async joinRoom(roomId: number): Promise<{ message: string }> {
+    const token = getAuthToken();
+
+    if (!token) {
+      throw new Error("Musisz być zalogowany, aby dołączyć do pokoju");
+    }
+
+    try {
+      const response = await fetch(
+        `${apiService.getBackendUrl()}/api/room/${roomId}/join`,
+        {
+          method: "POST",
+          headers: getAuthHeaders(),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+
+        if (response.status === 401) {
+          throw new Error("Sesja wygasła. Zaloguj się ponownie");
+        }
+
+        if (response.status === 404) {
+          throw new Error(errorData.message || "Pokój nie istnieje");
+        }
+
+        if (response.status === 400) {
+          throw new Error(errorData.message || "Nie można dołączyć do pokoju");
+        }
+
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error("❌ Error joining room:", error);
+      throw error;
+    }
+  },
+
+  async leaveRoom(roomId: number): Promise<{ message: string }> {
+    const token = getAuthToken();
+
+    if (!token) {
+      throw new Error("Musisz być zalogowany, aby opuścić pokój");
+    }
+
+    try {
+      const response = await fetch(
+        `${apiService.getBackendUrl()}/api/room/${roomId}/leave`,
+        {
+          method: "POST",
+          headers: getAuthHeaders(),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+
+        if (response.status === 401) {
+          throw new Error("Sesja wygasła. Zaloguj się ponownie");
+        }
+
+        if (response.status === 404) {
+          throw new Error(errorData.message || "Pokój nie istnieje");
+        }
+
+        if (response.status === 400) {
+          throw new Error(errorData.message || "Nie można opuścić pokoju");
+        }
+
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error("❌ Error leaving room:", error);
+      throw error;
+    }
   },
 };

@@ -8,21 +8,10 @@ import "./CreateRoomPage.css";
 import TournamentSelectionStep from "./steps/TournamentSelectionStep";
 import RoomSettingsStep from "./steps/RoomSettingsStep";
 import SummaryStep from "./steps/SummaryStep";
-import type { RoomFormData } from "../types/types";
+import type { RoomFormData, TournamentDto } from "../types/types";
 import { mapFormDataToCreateRequest } from "../types/types";
 import { roomService } from "../services/signalr/room.service";
 import { toast } from "react-toastify";
-
-export interface TournamentTemplate {
-  id: string;
-  name: string;
-  league: string;
-  description: string;
-  matchesCount: number;
-  startDate: string;
-  endDate: string;
-  logoUrl: string;
-}
 
 const CreateRoomPage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,69 +24,12 @@ const CreateRoomPage: React.FC = () => {
   const exactScoreRef = useRef<HTMLInputElement>(null);
   const jokerCountRef = useRef<HTMLInputElement>(null);
 
-  const tournamentTemplates: TournamentTemplate[] = [
-    {
-      id: "1",
-      name: "Liga Mistrzów UEFA 2025/26 - Faza Grupowa",
-      league: "Champions League",
-      description: "Wszystkie mecze fazy grupowej Ligi Mistrzów UEFA.",
-      matchesCount: 96,
-      startDate: "2025-09-16",
-      endDate: "2025-12-10",
-      logoUrl: "/tournament-logos/championsleague.png",
-    },
-    {
-      id: "2",
-      name: "Premier League 2025/26 - Runda Jesienna",
-      league: "Premier League",
-      description:
-        "Typuj wyniki pierwszych 19 kolejek angielskiej Premier League.",
-      matchesCount: 190,
-      startDate: "2025-08-16",
-      endDate: "2025-12-28",
-      logoUrl: "/tournament-logos/premier-league.png",
-    },
-    {
-      id: "3",
-      name: "La Liga 2025/26 - Początek Sezonu",
-      league: "La Liga",
-      description: "Pierwsza połowa sezonu hiszpańskiej ekstraklasy.",
-      matchesCount: 190,
-      startDate: "2025-08-15",
-      endDate: "2025-12-21",
-      logoUrl: "/tournament-logos/laliga.png",
-    },
-    {
-      id: "4",
-      name: "Bundesliga 2025/26 - Runda Jesienna",
-      league: "Bundesliga",
-      description: "Wszystkie mecze rundy jesiennej Bundesligi.",
-      matchesCount: 153,
-      startDate: "2025-08-22",
-      endDate: "2025-12-21",
-      logoUrl: "/tournament-logos/bundesliga.png",
-    },
-    {
-      id: "5",
-      name: "Serie A 2025/26 - Pierwsze 15 kolejek",
-      league: "Serie A",
-      description: "Początek zmagań we włoskiej Serie A, pierwsze 15 kolejek.",
-      matchesCount: 150,
-      startDate: "2025-08-23",
-      endDate: "2025-12-14",
-      logoUrl: "/tournament-logos/serie-a.png",
-    },
-    {
-      id: "6",
-      name: "Ekstraklasa 2025/26 - Runda Jesienna",
-      league: "Ekstraklasa",
-      description: "Wszystkie mecze rundy jesiennej polskiej ekstraklasy.",
-      matchesCount: 153,
-      startDate: "2025-07-18",
-      endDate: "2025-12-15",
-      logoUrl: "/tournament-logos/ekstraklasa.png",
-    },
-  ];
+  const [tournamentTemplates, setTournamentTemplates] = useState<
+    TournamentDto[]
+  >([]);
+
+  const [isLoadingTournaments, setIsLoadingTournaments] = useState(true);
+  const [tournamentsError, setTournamentsError] = useState<string>("");
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<RoomFormData>({
@@ -124,13 +56,39 @@ const CreateRoomPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    const fetchTournaments = async () => {
+      try {
+        setIsLoadingTournaments(true);
+        setTournamentsError("");
+
+        const tournaments = await roomService.getTournaments();
+
+        setTournamentTemplates(tournaments);
+      } catch (error) {
+        console.error("❌ Błąd podczas pobierania turniejów:", error);
+        setTournamentsError(
+          "Nie udało się pobrać listy turniejów. Spróbuj odświeżyć stronę."
+        );
+        toast.error("Nie udało się pobrać turniejów", {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      } finally {
+        setIsLoadingTournaments(false);
+      }
+    };
+
+    fetchTournaments();
+  }, []);
+
+  useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [step]);
 
   const selectedTemplate = tournamentTemplates.find(
-    (t) => t.id === formData.tournamentTemplateId
+    (t) => t.id.toString() === formData.tournamentTemplateId
   );
 
   const handleInputChange = (
@@ -366,8 +324,9 @@ const CreateRoomPage: React.FC = () => {
                 setErrors({});
               }
             }}
-            error={errors.tournamentTemplateId}
+            error={errors.tournamentTemplateId || tournamentsError}
             onNext={handleNext}
+            isLoading={isLoadingTournaments}
           />
         );
       case 2:
@@ -408,7 +367,6 @@ const CreateRoomPage: React.FC = () => {
   return (
     <div className="create-room-page">
       <div className="create-room-container" ref={contentRef}>
-        {/* Header */}
         <div className="create-room-header">
           <button className="back-btn" onClick={() => navigate("/rooms")}>
             <ArrowLeft className="back-icon" />
@@ -425,7 +383,6 @@ const CreateRoomPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Progress Steps */}
         <div className="progress-steps">
           <div
             className={`step ${step >= 1 ? "active" : ""} ${step > 1 ? "completed" : ""}`}

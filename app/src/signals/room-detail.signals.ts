@@ -8,7 +8,6 @@ export const roomConnectionStatusSignal = signal<
 >("disconnected");
 
 export const roomLoadingSignal = signal<boolean>(false);
-
 export const roomErrorSignal = signal<string | null>(null);
 
 export const hasRoomDataSignal = computed(
@@ -29,18 +28,34 @@ export const isRoomOpenSignal = computed(
   () => currentRoomSignal.value?.status === "open"
 );
 
+export const canJoinRoomSignal = computed(() => {
+  const room = currentRoomSignal.value;
+  if (!room) return false;
+  return room.status === "open" && room.participants < room.maxParticipants;
+});
+
+export const roomProgressSignal = computed(() => {
+  const room = currentRoomSignal.value;
+  if (!room) return 0;
+  return (room.participants / room.maxParticipants) * 100;
+});
+
 export const setCurrentRoom = (room: Room) => {
   currentRoomSignal.value = room;
-  console.log(`✅ Room detail signal updated:`, room);
 };
 
 export const updateCurrentRoom = (updates: Partial<Room>) => {
-  if (currentRoomSignal.value) {
+  const current = currentRoomSignal.value;
+  if (current) {
     currentRoomSignal.value = {
-      ...currentRoomSignal.value,
+      ...current,
       ...updates,
     };
   }
+};
+
+export const updateRoomParticipantsCount = (count: number) => {
+  updateCurrentRoom({ participants: count });
 };
 
 export const clearCurrentRoom = () => {

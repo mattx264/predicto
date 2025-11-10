@@ -13,6 +13,7 @@ import {
 } from "../signals/room-detail.signals";
 import { mapRoomDtoToRoom, type RoomDTO, type Room } from "../types/types";
 import { roomHubService } from "../services/signalr/signalr/room-hub.service";
+import { roomsHubService } from "../services/signalr/signalr/rooms-hub.service";
 
 interface UseRoomReturn {
   room: Room | null;
@@ -41,31 +42,44 @@ export const useRoom = (roomId: string): UseRoomReturn => {
         setRoomLoading(true);
         setRoomError(null);
 
-        console.log(`🔌 Connecting to room ${roomId}...`);
-
         const handleRoomDataReceived = (roomDto: RoomDTO) => {
           if (!isMounted) return;
-
-          console.log(`📦 Processing room data:`, roomDto);
 
           const mappedRoom = mapRoomDtoToRoom(roomDto);
 
           setCurrentRoom(mappedRoom);
           setRoomConnectionStatus("connected");
           setRoomLoading(false);
-
-          console.log(`✅ Room ${roomId} loaded successfully:`, mappedRoom);
         };
 
         await roomHubService.connect(roomId, handleRoomDataReceived);
 
-        if (isMounted) {
-          console.log(`✅ Successfully connected to room ${roomId}`);
+        const roomsConnection = roomsHubService.getConnection();
+
+        if (roomsConnection) {
+          const handleUserJoined = (data: { roomId: number }) => {
+            if (data.roomId === Number(roomId)) {
+              // Room will be automatically updated via GetRoom or RoomUpdated
+            }
+          };
+
+          const handleUserLeft = (data: { roomId: number }) => {
+            if (data.roomId === Number(roomId)) {
+              // Room will be automatically updated via GetRoom or RoomUpdated
+            }
+          };
+
+          roomsConnection.on("UserJoined", handleUserJoined);
+          roomsConnection.on("UserLeft", handleUserLeft);
+
+          return () => {
+            roomsConnection.off("UserJoined", handleUserJoined);
+            roomsConnection.off("UserLeft", handleUserLeft);
+          };
         }
       } catch (error) {
         if (!isMounted) return;
 
-        console.error(`❌ Error connecting to room ${roomId}:`, error);
         setRoomConnectionStatus("error");
         setRoomError(
           error instanceof Error
@@ -80,14 +94,12 @@ export const useRoom = (roomId: string): UseRoomReturn => {
 
     return () => {
       isMounted = false;
-      console.log(`🧹 Cleaning up room ${roomId} connection`);
       roomHubService.disconnect(roomId);
       clearCurrentRoom();
     };
   }, [roomId]);
 
   const refetch = async () => {
-    console.log(`🔄 Refetching room ${roomId}...`);
     await roomHubService.disconnect(roomId);
   };
 

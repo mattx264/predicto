@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Trophy,
@@ -8,75 +8,30 @@ import {
   Lock,
   Globe,
   Crown,
+  Loader2,
+  AlertCircle,
+  UserMinus,
 } from "lucide-react";
-import "../all-rooms/RoomsPage.css";
 
-interface Room {
-  id: string;
-  name: string;
-  creator: string;
-  participants: number;
-  maxParticipants: number;
-  entryFee: number;
-  prize: number;
-  league: string;
-  startDate: string;
-  endDate: string;
-  isPrivate: boolean;
-  status: "open" | "active" | "ended";
-}
+import "../all-rooms/RoomsPage.css";
+import type { Room } from "../types/types";
+import { roomService } from "../services/signalr/room.service";
 
 interface MyRoomsProps {
   currentUserId: string;
+  rooms: Room[];
+  isLoading: boolean;
+  error: string | null;
 }
 
-const MyRooms: React.FC<MyRoomsProps> = () => {
+const MyRooms: React.FC<MyRoomsProps> = ({
+  currentUserId,
+  rooms,
+  isLoading,
+  error,
+}) => {
   const navigate = useNavigate();
-
-  const myRooms: Room[] = [
-    {
-      id: "1",
-      name: "Premier League Masters",
-      creator: "JanKowalski",
-      participants: 8,
-      maxParticipants: 10,
-      entryFee: 50,
-      prize: 500,
-      league: "Premier League",
-      startDate: "2025-10-05",
-      endDate: "2025-11-30",
-      isPrivate: false,
-      status: "active",
-    },
-    {
-      id: "3",
-      name: "Prywatna Liga Znajomych",
-      creator: "AnnaWiśniewska",
-      participants: 6,
-      maxParticipants: 8,
-      entryFee: 25,
-      prize: 200,
-      league: "La Liga",
-      startDate: "2025-10-01",
-      endDate: "2025-10-31",
-      isPrivate: true,
-      status: "active",
-    },
-    {
-      id: "4",
-      name: "Bundesliga Pro",
-      creator: "MarcinKowalczyk",
-      participants: 10,
-      maxParticipants: 10,
-      entryFee: 75,
-      prize: 750,
-      league: "Bundesliga",
-      startDate: "2025-09-01",
-      endDate: "2025-09-30",
-      isPrivate: false,
-      status: "ended",
-    },
-  ];
+  const [leavingRoomId, setLeavingRoomId] = useState<string | null>(null);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -96,10 +51,50 @@ const MyRooms: React.FC<MyRoomsProps> = () => {
   };
 
   const isCreator = (room: Room) => {
-    return room.creator === "JanKowalski";
+    return room.creator === currentUserId;
   };
 
-  if (myRooms.length === 0) {
+  const handleLeaveRoom = async (e: React.MouseEvent, roomId: string) => {
+    e.stopPropagation();
+
+    const confirmed = window.confirm("Czy na pewno chcesz opuścić ten pokój?");
+    if (!confirmed) return;
+
+    setLeavingRoomId(roomId);
+
+    try {
+      const result = await roomService.leaveRoom(Number(roomId));
+      alert(result.message);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Nie udało się opuścić pokoju";
+      alert(errorMessage);
+      console.error("❌ Błąd podczas opuszczania pokoju:", err);
+    } finally {
+      setLeavingRoomId(null);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="loading-state">
+        <Loader2 className="spinner" size={48} />
+        <p>Ładowanie twoich pokoi...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-state">
+        <AlertCircle size={48} />
+        <h3>Błąd podczas ładowania pokoi</h3>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (rooms.length === 0) {
     return (
       <div className="no-results">
         <Trophy className="no-results-icon" />
@@ -111,7 +106,7 @@ const MyRooms: React.FC<MyRoomsProps> = () => {
 
   return (
     <div className="rooms-grid">
-      {myRooms.map((room) => (
+      {rooms.map((room) => (
         <div
           key={room.id}
           className={`room-card ${room.status}`}
@@ -181,9 +176,11 @@ const MyRooms: React.FC<MyRoomsProps> = () => {
 
           <div className="room-creator">
             <div className="creator-avatar">
-              {room.creator.charAt(0).toUpperCase()}
+              {room.creator?.charAt(0).toUpperCase() || "?"}
             </div>
-            <span className="creator-name">Organizator: {room.creator}</span>
+            <span className="creator-name">
+              Organizator: {room.creator || "Unknown"}
+            </span>
           </div>
 
           <div className="room-card-footer">
@@ -205,6 +202,26 @@ const MyRooms: React.FC<MyRoomsProps> = () => {
               }}
             />
           </div>
+
+          {!isCreator(room) && room.status === "open" && (
+            <button
+              className="leave-room-button"
+              onClick={(e) => handleLeaveRoom(e, room.id)}
+              disabled={leavingRoomId === room.id}
+            >
+              {leavingRoomId === room.id ? (
+                <>
+                  <Loader2 className="spinner-small" size={16} />
+                  Opuszczanie...
+                </>
+              ) : (
+                <>
+                  <UserMinus size={16} />
+                  Opuść pokój
+                </>
+              )}
+            </button>
+          )}
         </div>
       ))}
     </div>

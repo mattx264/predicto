@@ -1,0 +1,24 @@
+.animated-ticker {
+  font: inherit;
+  line-height: 1;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  height: 1.2em;
+}
+
+.animated-ticker .ticker-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 1s ease-in-out;
+  transform: translateY(0);
+}
+
+.animated-ticker .ticker-digit {
+  flex: 0 0 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

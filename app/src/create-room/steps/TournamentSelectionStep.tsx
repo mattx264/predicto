@@ -9,15 +9,17 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowLeft,
+  Loader2,
 } from "lucide-react";
-import type { TournamentTemplate } from "../CreateRoomPage";
+import type { TournamentDto } from "../../types/types";
 
 interface Props {
-  tournamentTemplates: TournamentTemplate[];
+  tournamentTemplates: TournamentDto[];
   selectedTemplateId: string;
   onTemplateSelect: (id: string) => void;
   error?: string;
   onNext: () => void;
+  isLoading?: boolean;
 }
 
 const TournamentSelectionStep: React.FC<Props> = ({
@@ -26,6 +28,7 @@ const TournamentSelectionStep: React.FC<Props> = ({
   onTemplateSelect,
   error,
   onNext,
+  isLoading = false,
 }) => {
   return (
     <div className="step-content">
@@ -35,80 +38,108 @@ const TournamentSelectionStep: React.FC<Props> = ({
           Wybierz gotowy turniej z meczami przygotowanymi przez administratorów
         </p>
       </div>
+
       {error && (
         <div className="error-message">
           <AlertCircle size={18} />
           <span>{error}</span>
         </div>
       )}
-      <div className="templates-swiper-container">
-        <Swiper
-          modules={[Navigation, Pagination, Keyboard]}
-          spaceBetween={20}
-          slidesPerView={1}
-          navigation={{
-            prevEl: ".swiper-button-prev-custom",
-            nextEl: ".swiper-button-next-custom",
+
+      {isLoading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "300px",
           }}
-          pagination={{ clickable: true, dynamicBullets: true }}
-          keyboard={{ enabled: true, onlyInViewport: true }}
-          className="templates-swiper"
         >
-          {tournamentTemplates.map((template) => (
-            <SwiperSlide key={template.id}>
-              <div
-                className={`template-card ${
-                  selectedTemplateId === template.id ? "selected" : ""
-                }`}
-                onClick={() => onTemplateSelect(template.id)}
-              >
-                {selectedTemplateId === template.id && (
-                  <div className="selected-badge">
-                    <Check size={16} />
+          <Loader2 size={48} className="animate-spin" />
+          <span style={{ marginLeft: "12px", fontSize: "18px" }}>
+            Ładowanie turniejów...
+          </span>
+        </div>
+      ) : tournamentTemplates.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
+          <AlertCircle size={48} style={{ margin: "0 auto 16px" }} />
+          <p>Brak dostępnych turniejów</p>
+        </div>
+      ) : (
+        <div className="templates-swiper-container">
+          <Swiper
+            modules={[Navigation, Pagination, Keyboard]}
+            spaceBetween={20}
+            slidesPerView={1}
+            navigation={{
+              prevEl: ".swiper-button-prev-custom",
+              nextEl: ".swiper-button-next-custom",
+            }}
+            pagination={{ clickable: true, dynamicBullets: true }}
+            keyboard={{ enabled: true, onlyInViewport: true }}
+            className="templates-swiper"
+          >
+            {tournamentTemplates.map((template) => (
+              <SwiperSlide key={template.id}>
+                <div
+                  className={`template-card ${
+                    selectedTemplateId === template.id.toString()
+                      ? "selected"
+                      : ""
+                  }`}
+                  onClick={() => onTemplateSelect(template.id.toString())}
+                >
+                  {selectedTemplateId === template.id.toString() && (
+                    <div className="selected-badge">
+                      <Check size={16} />
+                    </div>
+                  )}
+                  <div className="template-logo-container">
+                    <img
+                      src={template.logoUrl}
+                      alt={template.league}
+                      className="template-logo"
+                    />
                   </div>
-                )}
-                <div className="template-logo-container">
-                  <img
-                    src={template.logoUrl}
-                    alt={template.league}
-                    className="template-logo"
-                  />
-                </div>
-                <h3 className="template-name">{template.name}</h3>
-                <div className="template-league">
-                  <Trophy size={14} />
-                  <span>{template.league}</span>
-                </div>
-                <p className="template-description">{template.description}</p>
-                <div className="template-info">
-                  <div className="info-item">
-                    <Calendar size={14} />
-                    <span>
-                      {new Date(template.startDate).toLocaleDateString("pl-PL")}
-                    </span>
+                  <h3 className="template-name">{template.name}</h3>
+                  <div className="template-league">
+                    <Trophy size={14} />
+                    <span>{template.league}</span>
                   </div>
-                  <div className="info-item">
-                    <span className="matches-count">
-                      {template.matchesCount} meczów
-                    </span>
+                  <p className="template-description">{template.description}</p>
+                  <div className="template-info">
+                    <div className="info-item">
+                      <Calendar size={14} />
+                      <span>
+                        {new Date(template.startDate).toLocaleDateString(
+                          "pl-PL"
+                        )}
+                      </span>
+                    </div>
+                    <div className="info-item">
+                      <span className="matches-count">
+                        {template.matchesCount} meczów
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-        <button className="swiper-button-prev-custom">
-          <ChevronLeft size={24} />
-        </button>
-        <button className="swiper-button-next-custom">
-          <ChevronRight size={24} />
-        </button>
-      </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <button className="swiper-button-prev-custom">
+            <ChevronLeft size={24} />
+          </button>
+          <button className="swiper-button-next-custom">
+            <ChevronRight size={24} />
+          </button>
+        </div>
+      )}
+
       <div className="step-actions">
         <button
           className="btn-next"
           onClick={onNext}
-          disabled={!selectedTemplateId}
+          disabled={!selectedTemplateId || isLoading}
         >
           Dalej <ArrowLeft className="arrow-icon rotated" />
         </button>

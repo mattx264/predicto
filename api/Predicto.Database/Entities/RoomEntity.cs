@@ -20,6 +20,7 @@ namespace Predicto.Database.Entities
         //public  virtual  UserEntity CreatedByUser { get; set; }//todo should be required
         public RoomStatus RoomStatus { get; set; }
 
+
         public virtual ICollection<RoomUserEntity> Participants { get; set; } = new List<RoomUserEntity>();
         public int CreatedById { get; set; } // user id of user that created room
     }

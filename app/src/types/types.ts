@@ -10,6 +10,12 @@ export interface TournamentDto {
   id: number;
   name: string;
   sportCategoryId: number;
+  league: string;
+  description: string;
+  matchesCount: number;
+  startDate: string;
+  endDate: string;
+  logoUrl: string;
 }
 
 export interface ApiError {
@@ -106,12 +112,19 @@ export interface RoomDTO {
   tournamentId: number;
   createdAt: string;
   createdByUserId: number;
+  createdByUserName: string;
+  tournamentName: string;
+  tournamentLeague: string;
+  tournamentStartDate: string;
+  tournamentEndDate: string;
+  isUserInRoom: boolean;
 }
 
 export interface Room {
   id: string;
   name: string;
   creator: string;
+  description?: string;
   participants: number;
   maxParticipants: number;
   entryFee: number;
@@ -121,6 +134,7 @@ export interface Room {
   endDate: string;
   isPrivate: boolean;
   status: "open" | "active" | "ended";
+  isUserInRoom: boolean;
 }
 export const mapFormDataToCreateRequest = (
   formData: RoomFormData
@@ -144,16 +158,18 @@ export const mapRoomDtoToRoom = (dto: RoomDTO): Room => {
   return {
     id: dto.id.toString(),
     name: dto.name,
-    creator: `User${dto.createdByUserId}`,
     participants: dto.users?.length || 0,
     maxParticipants: dto.maxUsers ?? 10,
     entryFee: dto.entryFee,
     prize: dto.entryFee * (dto.users?.length || 0),
-    league: `Tournament ${dto.tournamentId}`,
-    startDate: dto.createdAt,
-    endDate: "Unknown",
+    league: dto.tournamentLeague,
+    startDate: dto.tournamentStartDate,
+    creator: dto.createdByUserName,
+    endDate: dto.tournamentEndDate,
     isPrivate: !dto.isPublic,
     status: statusMap[dto.roomStatus],
+    isUserInRoom: dto.isUserInRoom,
+    description: dto.description,
   };
 };
 
@@ -167,7 +183,18 @@ export interface Participant {
   isPaid: boolean;
   joinedAt?: string;
 }
+export interface UserJoinedEvent {
+  roomId: number;
+  userId: number;
+  userName: string;
+  participantsCount: number;
+}
 
+export interface UserLeftEvent {
+  roomId: number;
+  userId: number;
+  participantsCount: number;
+}
 export interface RoomDetails {
   id: string;
   name: string;

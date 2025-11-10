@@ -1,36 +1,72 @@
 import * as signalR from "@microsoft/signalr";
-import { signalRService } from "../signalr.service";
-import apiService from "../api.service";
 import type { RoomDTO } from "../../../types/types";
+import apiService from "../api.service";
+import { signalRService } from "../signalr.service";
 
 export class RoomsHubService {
   private connection: signalR.HubConnection | null = null;
 
   async connect(
-    onRoomsReceived: (rooms: RoomDTO[]) => void,
-    onRoomCreated: (room: RoomDTO) => void
+    onRoomsUpdate: (rooms: RoomDTO[]) => void,
+    onRoomCreated?: (room: RoomDTO) => void,
+    onUserJoined?: (data: {
+      roomId: number;
+      userId: number;
+      userName: string;
+      participantsCount: number;
+    }) => void,
+    onUserLeft?: (data: {
+      roomId: number;
+      userId: number;
+      participantsCount: number;
+    }) => void
   ): Promise<void> {
     if (
       this.connection &&
       this.connection.state === signalR.HubConnectionState.Connected
     ) {
-      console.log("⚠️ Już połączono z RoomsHub");
       return;
     }
 
     const ROOMS_HUB_URL = `${apiService.getBackendUrl()}/roomsHub`;
-
     this.connection = signalRService.createConnection(ROOMS_HUB_URL);
 
     this.connection.on("GetRooms", (rooms: RoomDTO[]) => {
-      console.log("📥 Otrzymano listę pokoi z backendu:", rooms);
-      onRoomsReceived(rooms);
+      onRoomsUpdate(rooms);
     });
 
-    this.connection.on("RoomCreated", (room: RoomDTO) => {
-      console.log("🆕 Nowy pokój został utworzony:", room);
-      onRoomCreated(room);
-    });
+    if (onRoomCreated) {
+      this.connection.on("RoomCreated", (room: RoomDTO) => {
+        onRoomCreated(room);
+      });
+    }
+
+    if (onUserJoined) {
+      this.connection.on(
+        "UserJoined",
+        (data: {
+          roomId: number;
+          userId: number;
+          userName: string;
+          participantsCount: number;
+        }) => {
+          onUserJoined(data);
+        }
+      );
+    }
+
+    if (onUserLeft) {
+      this.connection.on(
+        "UserLeft",
+        (data: {
+          roomId: number;
+          userId: number;
+          participantsCount: number;
+        }) => {
+          onUserLeft(data);
+        }
+      );
+    }
 
     try {
       await signalRService.startConnection(this.connection, "RoomsHub");
@@ -43,20 +79,24 @@ export class RoomsHubService {
 
   async disconnect(): Promise<void> {
     if (this.connection) {
+      this.connection.off("GetRooms");
+      this.connection.off("RoomCreated");
+      this.connection.off("UserJoined");
+      this.connection.off("UserLeft");
+
       await signalRService.stopConnection(this.connection);
       this.connection = null;
-      console.log("✅ Rozłączono z RoomsHub");
     }
+  }
+
+  getConnection(): signalR.HubConnection | null {
+    return this.connection;
   }
 
   isConnected(): boolean {
     return (
       this.connection?.state === signalR.HubConnectionState.Connected || false
     );
-  }
-
-  getConnectionState(): signalR.HubConnectionState | null {
-    return this.connection?.state || null;
   }
 }
 

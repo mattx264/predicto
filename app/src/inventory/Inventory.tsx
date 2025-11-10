@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Package, Search, Filter, SortAsc, Trash2, Eye } from "lucide-react";
 import "./Inventory.css";
 import InventoryItemModal from "./modal/InventoryItemModal";
-import PackOpeningModal from "./opening/PackOpening";
 import PackOpening from "./opening/PackOpening";
 
 interface InventoryItem {
@@ -140,7 +139,7 @@ const Inventory: React.FC = () => {
   const [items, setItems] = useState<InventoryItem[]>(mockInventoryItems);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPackOpeningModalOpen, setIsPackOpeningModalOpen] = useState(false);
+  const [isPackOeningModalOpen, setIsPackOpeningModalOpen] = useState(false);
   const [packToOpen, setPackToOpen] = useState<InventoryItem | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRarity, setFilterRarity] = useState<string>("all");

@@ -4,10 +4,20 @@ export class SignalRService {
   private connections: Map<string, signalR.HubConnection> = new Map();
 
   createConnection(hubUrl: string): signalR.HubConnection {
+    const token = localStorage.getItem("authToken");
+
+    console.log("🔌 Creating SignalR connection to:", hubUrl);
+    console.log("🔑 Token exists:", !!token);
+
     const connection = new signalR.HubConnectionBuilder()
       .withUrl(hubUrl, {
         skipNegotiation: false,
         transport: signalR.HttpTransportType.WebSockets,
+        accessTokenFactory: () => {
+          const currentToken = localStorage.getItem("authToken");
+          console.log("🎫 Sending token to SignalR:", !!currentToken);
+          return currentToken || "";
+        },
       })
       .withAutomaticReconnect({
         nextRetryDelayInMilliseconds: () => {
@@ -42,8 +52,17 @@ export class SignalRService {
         console.log(`✅ SignalR connected to ${hubName}`);
       }
     } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes("stopped during negotiation")
+      ) {
+        console.warn(
+          `⚠️ Connection negotiation cancelled for ${hubName} (likely React Strict Mode)`
+        );
+        return;
+      }
+
       console.error(`❌ Error connecting to ${hubName}:`, error);
-      throw error;
     }
   }
 

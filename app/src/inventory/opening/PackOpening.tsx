@@ -150,7 +150,7 @@ const PackOpening: React.FC<PackOpeningProps> = ({
         {stage === "complete" && (
           <div className="pack-complete">
             <div className="cards-grid">
-              {revealedCards.map((card, index) => (
+              {revealedCards.map((card) => (
                 <div key={card.id} className={`revealed-card ${card.rarity}`}>
                   <div className="card-glow"></div>
                   <img

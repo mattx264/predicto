@@ -32,6 +32,7 @@ namespace Predicto.Database
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
            
             //make unique column for article slug
             modelBuilder.Entity<ArticleEntity>()

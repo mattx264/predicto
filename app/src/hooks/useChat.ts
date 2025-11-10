@@ -26,10 +26,7 @@ export const useChat = (channel: ChatChannel): UseChatReturn => {
 
     loadMockMessages(channel.id, channel.type);
 
-    console.log(`📡 Joined ${channel.type} channel: ${channel.id}`);
-
     return () => {
-      console.log(`📡 Left ${channel.type} channel: ${channel.id}`);
       setActiveChannel(null);
     };
   }, [channel.id, channel.type]);
