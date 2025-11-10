@@ -2,11 +2,13 @@ name: NodeJS with Webpack
 
 on:
   push:
-    branches: [ "main" ]
-    paths-ignore: 
-      - './api/**'
+    paths:
+      - 'app/**'
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+    paths:
+      - 'app/**'
 
 jobs:
   build:
