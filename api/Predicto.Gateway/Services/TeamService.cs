@@ -1,5 +1,6 @@
 ﻿using Predicto.Database.Interfaces;
 using Predicto.Gateway.DTO.Group;
+using Predicto.Gateway.DTO.Sport;
 
 namespace Predicto.Gateway.Services
 {
@@ -11,13 +12,44 @@ namespace Predicto.Gateway.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<List<GroupDto>> GetAll()
+        public async Task<List<TeamListDto>> GetAll()
         {
-            throw new NotImplementedException();
+            var teams = await _unitOfWork.Team.GetAllAsync();
+            return teams.Select(x => new TeamListDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Slug = x.Slug,
+                ImageUrl = x.ImageUrl
+            }).ToList();
+        }
+
+        public async Task<TeamDetailsDto> GetById(int id)
+        {
+            var team = await _unitOfWork.Team.GetByIdAsync(id);
+
+            return new TeamDetailsDto
+            {
+                Id = team.Id,
+                Name = team.Name,
+                Slug = team.Slug,
+                Coach = team.Coach,
+                FormLastGames = team.FormLastGames,
+                ImageUrl = team.ImageUrl,
+                Players = team.Players.Select(gp => new PlayerBasicInfoDto()
+                {
+                    Id = gp.Id,
+                    Name = gp.Name,
+                    ImageUrl = gp.PhotoUrl,
+                    Position = gp.Position,
+                    ShirtNumber = gp.ShirtNumber
+                }).ToList()
+            };
         }
     }
     public interface ITeamService
     {
-        Task<List<GroupDto>> GetAll();
+        Task<List<TeamListDto>> GetAll();
+        Task<TeamDetailsDto> GetById(int id);
     }
 }
