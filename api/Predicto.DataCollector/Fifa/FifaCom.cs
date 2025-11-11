@@ -83,8 +83,9 @@ namespace Predicto.DataCollector.Fifa
                         var teamHome = teams.First(t => t.Name == teamHomeName);
                         var teamAway = teams.First(t => t.Name == teamAwayName);
 
-                        if (existingsGames.Any(g => g.Teams.Any(x => x.Id == teamHome.Id)
-                        && g.Teams.Any(x => x.Id == teamAway.Id)
+                        if (
+                            existingsGames.Any(g => g.Teams.First().TeamId == teamHome.Id
+                        && g.Teams.Last().TeamId==teamAway.Id
                         && g.StartGame == gameData.Date
                                         ))
                         {
@@ -106,6 +107,9 @@ namespace Predicto.DataCollector.Fifa
 
                         await SeedSubstitutions(gameData.AwayTeam.Substitutions, gamePlayerEvents, unitOfWork);
                         await SeedSubstitutions(gameData.HomeTeam.Substitutions, gamePlayerEvents, unitOfWork);
+
+                        teamAway.Coach = gameData.AwayTeam.Coaches.First().Name.First().Description;
+                        teamHome.Coach = gameData.HomeTeam.Coaches.First().Name.First().Description;
                         var homeTeam = new GameTeamEntity
                         {
                             TeamId = teamHome.Id,

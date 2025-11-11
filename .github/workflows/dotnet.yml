@@ -32,7 +32,7 @@ jobs:
     - name: Deploy to Simply        
       uses: talunzhang/auto-web-deploy@v1.0.1
       with:
-          website-name: mattx2642-001-site22
+          website-name: http://mattx2642-001-site22.rtempurl.com
           server-computer-name: https://win8210.site4now.net:8172/msdeploy.axd?site=mattx2642-001-site22
           server-username: mattx2642-001
           server-password: ${{ secrets.SERVER_PASSWORD }}

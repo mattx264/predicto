@@ -8,36 +8,26 @@ namespace Predicto.Gateway.Controllers
     [Route("api/[controller]")]
     public class TeamBlogController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ITeamService _teamService;
 
-        public TeamBlogController(IUnitOfWork unitOfWork)
+        public TeamBlogController(ITeamService teamService)
         {
-            _unitOfWork = unitOfWork;
+            _teamService = teamService;
         }
         [HttpGet("tournament/{id}")]
         public async Task<IActionResult> GetTeamsByTournamentId(int id)
         {
-            //var tournament = await _unitOfWork.Tournament.GetByIdAsync(id);
-            //if (tournament == null)
-            //{
-            //    return NotFound();
-            //}
-            //return Ok(tournament.Teams);
-            var teams=await _unitOfWork.Team.GetAllAsync();
+           
+            var teams=await _teamService.GetAll();
             return Ok(teams);
         }
-        [HttpGet("all-teams")]
-        public async Task<IActionResult> GetAllTeams()
+        [HttpGet("get-by-id/{id}")]
+        public async Task<IActionResult> GetTeamById(int id)
         {
-            var teams = await _unitOfWork.Team.GetAllAsync();
-            return Ok(teams);
-        }
-        [HttpGet("by-team/{teamId}")]
-        public async Task<IActionResult> GetArticlesByTeamId(int teamId)
-        {
-            var team = await _unitOfWork.Team.FindAsync(a => a.Id == teamId);
+            var team = await _teamService.GetById(id);
             return Ok(team);
         }
+
 
     }
 }

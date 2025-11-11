@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Predicto.Database.Interfaces;
 using Predicto.Gateway.DTO.Blog;
 using Predicto.Gateway.Services;
+using System.Linq;
 
 namespace Predicto.Gateway.Controllers
 {
@@ -20,7 +21,15 @@ namespace Predicto.Gateway.Controllers
         public async Task<IActionResult> GetPlayerById(int playerId)
         {
             var player = await _unitOfWork.Player.FindAsync(a => a.Id == playerId);
-            var team = await _unitOfWork.Team.FindAsync(t => t.Id == player.Id);
+            if (player == null)
+            {
+                return NotFound();
+            }
+            var team = await _unitOfWork.Team.FindAsync(t => t.Players.Contains(player));
+            if (team == null)
+            {
+                return NotFound();
+            }
 
             return Ok(new PlayerBlogDto()
             {
