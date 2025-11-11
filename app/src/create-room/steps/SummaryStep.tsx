@@ -13,12 +13,10 @@ import {
   AlertCircle,
 } from "lucide-react";
 import PrizePoolPreview from "../prize-pool-preview/PrizePoolPreview";
-import type { TournamentTemplate } from "../CreateRoomPage";
-import type { RoomFormData } from "../../types/types";
-
+import type { RoomFormData, TournamentDto } from "../../types/types";
 interface Props {
   formData: RoomFormData;
-  selectedTemplate: TournamentTemplate | undefined;
+  selectedTemplate: TournamentDto | undefined;
   onSubmit: () => void;
   onBack: () => void;
   isSubmitting?: boolean;

@@ -21,7 +21,6 @@ import SplashScreen from "./splash-screen/SplashScreen";
 import { AuthProvider } from "./context/AuthContext";
 import DemoPage from "./how-to-play/demo-page/DemoPage";
 import CardShop from "./card-shop/CardShop";
-import Inventory from "./inventory/Inventory";
 import UserProfileModal from "./user-profile-modal/UserProfileModal";
 import { useAuth } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
@@ -57,7 +56,7 @@ function AppContent() {
         <Route path="/jak-grac" element={<HowToPlay />} />
         <Route path="/demo" element={<DemoPage />} />
         <Route path="/shop" element={<CardShop />} />
-        <Route path="/inventory" element={<Inventory />} />
+        {/* <Route path="/inventory" element={<Inventory />} /> */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <UserProfileModal

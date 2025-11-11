@@ -39,6 +39,7 @@ const RoomsPage: React.FC = () => {
       endDate: "2025-11-30",
       isPrivate: false,
       status: "open",
+      isUserInRoom: false,
     },
   ];
 

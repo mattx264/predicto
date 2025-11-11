@@ -226,7 +226,9 @@ const DemoPage: React.FC = () => {
             index={index}
             isActive={activeSection === index}
             hasBeenVisited={visitedSections.has(index)}
-            ref={(el) => (sectionRefs.current[index] = el)}
+            ref={(el) => {
+              sectionRefs.current[index] = el;
+            }}
           />
         ))}
 
