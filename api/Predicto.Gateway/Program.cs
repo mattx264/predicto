@@ -89,6 +89,7 @@ builder.Services.AddCors(options =>
                 "http://127.0.0.1:5173",
                 "http://blog.predicto.gg",
                 "https://blog.predicto.gg"
+"http://predicto.gg" 
               )
               .AllowAnyHeader()
               .AllowAnyMethod()

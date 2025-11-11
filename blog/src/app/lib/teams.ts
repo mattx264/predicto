@@ -1,16 +1,23 @@
+import playerService, { PlayerFromApi } from "../services/playerService";
 import teamService, { TeamFromApi } from "../services/team.service";
 
 export interface Player {
   id: string;
   slug: string;
   name: string;
+  firstName: string;
+  lastName: string;
   position: "Bramkarz" | "Obrońca" | "Pomocnik" | "Napastnik";
   number: number;
+  age: number;
   club: string;
   image: string;
-  clubLogo: string;
   dateOfBirth: string;
+  birthPlace: string | null;
+  birthCountry: string | null;
+  nationality: string;
   height: string;
+  weight: number | null;
   marketValue: string;
   bio: string;
 }
@@ -107,6 +114,72 @@ function mapTeamFromApi(apiTeam: TeamFromApi): Team {
   };
 }
 
+function mapPlayerFromApi(apiPlayer: PlayerFromApi): Player {
+  return {
+    id: apiPlayer.id.toString(),
+    slug: apiPlayer.slug,
+    name: apiPlayer.name,
+    firstName: apiPlayer.firstName,
+    lastName: apiPlayer.lastName,
+    position: mapPosition(apiPlayer.position),
+    number: apiPlayer.shirtNumber,
+    age: apiPlayer.age,
+    club: apiPlayer.teamName,
+    image: apiPlayer.photoUrl || "/placeholder-player.png",
+    dateOfBirth: formatDate(apiPlayer.birthday),
+    birthPlace: apiPlayer.birthPlace,
+    birthCountry: apiPlayer.birthCountry,
+    nationality: apiPlayer.nationality,
+    height: apiPlayer.height ? `${apiPlayer.height} cm` : "Brak danych",
+    weight: apiPlayer.weight,
+    marketValue: formatMarketValue(apiPlayer.marketValue),
+    bio: apiPlayer.bio || "Brak informacji biograficznych.",
+  };
+}
+
+function mapPosition(position: string): Player["position"] {
+  const positionMap: Record<string, Player["position"]> = {
+    Goalkeeper: "Bramkarz",
+    Defender: "Obrońca",
+    Midfielder: "Pomocnik",
+    Forward: "Napastnik",
+    GK: "Bramkarz",
+    DEF: "Obrońca",
+    MID: "Pomocnik",
+    FWD: "Napastnik",
+  };
+
+  return positionMap[position] || "Pomocnik";
+}
+
+function formatDate(dateString: string): string {
+  if (!dateString) return "Brak danych";
+
+  const date = new Date(dateString);
+  return date.toLocaleDateString("pl-PL", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function formatMarketValue(value: number): string {
+  if (!value || value === 0) return "Brak danych";
+
+  if (value >= 1000000) {
+    return `${(value / 1000000).toFixed(1)}M €`;
+  } else if (value >= 1000) {
+    return `${(value / 1000).toFixed(0)}K €`;
+  }
+
+  return `${value} €`;
+}
+
+function extractIdFromSlug(slug: string): number | null {
+  const match = slug.match(/-(\d+)$/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
 export async function getTeams(tournamentSlug: string): Promise<Team[]> {
   const tournamentId = TOURNAMENT_ID_MAP[tournamentSlug];
 
@@ -137,5 +210,19 @@ export async function getPlayerBySlug(
   teamSlug: string,
   playerSlug: string
 ): Promise<Player | undefined> {
-  return undefined;
+  try {
+    const playerId = extractIdFromSlug(playerSlug);
+
+    if (!playerId) {
+      console.error(`Cannot extract player ID from slug: ${playerSlug}`);
+      return undefined;
+    }
+
+    const apiPlayer = await playerService.getPlayerById(playerId);
+
+    return mapPlayerFromApi(apiPlayer);
+  } catch (error) {
+    console.error("Error fetching player:", error);
+    return undefined;
+  }
 }

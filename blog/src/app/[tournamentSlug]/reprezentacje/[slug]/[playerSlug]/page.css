@@ -446,3 +446,72 @@
     font-size: 1rem;
   }
 }
+.player-details {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.player-full-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #d1d5db;
+  margin: 0;
+}
+
+.player-age {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.club-name-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #3b82f6;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(59, 130, 246, 0.3);
+  border-radius: 50%;
+  border-top-color: #3b82f6;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .profile-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .player-details {
+    text-align: center;
+  }
+}
