@@ -21,32 +21,37 @@ namespace Predicto.DataCollector.Fifa
         }
         public static string TeamNormalization(string teamName)
         {
-            if (teamName == "Bosnia-Herzegovina")
+            if (teamName == "Bosnia-Herzegovina" || teamName== "Bosnia and Herzegovina")
             {
                 teamName = "Bosnia & Herzegovina";
             }
-            if(teamName== "faroe-islands")
+            else if (teamName == "faroe-islands")
             {
                 teamName = "Faroe Islands";
             }
-            else if(teamName== "northern-ireland")
+            else if (teamName == "northern-ireland")
             {
                 return "Northern Ireland";
-            }else if(teamName== "republic-of-ireland")
+            }
+            else if (teamName == "republic-of-ireland")
             {
                 return "Republic of Ireland";
-                 }
+            }
             else if (teamName == "north-macedonia")
             {
                 return "North Macedonia";
-                 }
+            }
             else if (teamName == "san-marino")
             {
                 return "San Marino";
             }
-            else if (teamName == "turkiye")
+            else if (teamName == "turkiye" || teamName == "Türki̇ye")
             {
                 return "Türkiye";
+            }
+            else if (teamName == "Czechia")
+            {
+                return "Czechy";
             }
             
             return teamName;

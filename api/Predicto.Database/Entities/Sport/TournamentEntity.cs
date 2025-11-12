@@ -10,16 +10,15 @@ namespace Predicto.Database.Entities.Sport
         public int SportCategoryId { get; set; }
         public virtual SportCategoryEntity SportCategory { get; set; }
         public required string Name { get; set; }
-    //public virtual IList<TeamEntity> Teams { get; set; } = new List<TeamEntity>();
-    public bool IsActive { get; set; } = true;
- 
+        //public virtual IList<TeamEntity> Teams { get; set; } = new List<TeamEntity>();
+        public bool IsActive { get; set; } = true;
         public string? Description { get; set; }
         public string? League { get; set; }
         public int MatchesCount { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string? LogoUrl { get; set; }
-       
+        public virtual ICollection<GameEntity>? Games { get; set; }
     }
 }
 

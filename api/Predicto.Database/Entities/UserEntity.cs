@@ -1,4 +1,5 @@
-﻿using Predicto.Database.Interfaces;
+﻿using Predicto.Database.Entities.Room;
+using Predicto.Database.Interfaces;
 using System.Collections.Generic;
 
 namespace Predicto.Database.Entities
@@ -22,6 +23,5 @@ namespace Predicto.Database.Entities
         public bool IsActive { get; set; } = true;
         public bool IsLocked { get; set; } = false;
         
-        public virtual ICollection<RoomEntity> JoinedRooms { get; set; } = new List<RoomEntity>();
     }
 }

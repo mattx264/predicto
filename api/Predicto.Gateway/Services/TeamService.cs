@@ -15,27 +15,18 @@ namespace Predicto.Gateway.Services
         public async Task<List<TeamListDto>> GetAll()
         {
             var teams = await _unitOfWork.Team.GetAllAsync();
-            return teams.Select(x => new TeamListDto
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Slug = x.Slug,
-                ImageUrl = x.ImageUrl
-            }).ToList();
+            return teams.Select(x => new TeamListDto(x)).ToList();
         }
 
         public async Task<TeamDetailsDto> GetById(int id)
         {
             var team = await _unitOfWork.Team.GetByIdAsync(id);
 
-            return new TeamDetailsDto
+            return new TeamDetailsDto(team)
             {
-                Id = team.Id,
-                Name = team.Name,
                 Slug = team.Slug,
                 Coach = team.Coach,
                 FormLastGames = team.FormLastGames,
-                ImageUrl = team.ImageUrl,
                 Players = team.Players.Select(gp => new PlayerBasicInfoDto()
                 {
                     Id = gp.Id,

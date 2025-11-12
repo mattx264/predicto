@@ -1,5 +1,6 @@
 ﻿using Predicto.Database.Entities;
 using Predicto.Database.Entities.Blog;
+using Predicto.Database.Entities.Room;
 using Predicto.Database.Entities.Sport;
 using Predicto.Database.Interfaces;
 using Predicto.Database.Interfaces.Repositories;
@@ -33,6 +34,8 @@ namespace Predicto.Database.UnitOfWork
         public IRepository<PlayerTournamentEntity> PlayerTournamentRepository { get; }
 
         public IGameGroupRepository GameGroupRepository { get; }
+        public IRepository<RoomUserBetEntity> RoomUserBetRepository { get; }
+
         public UnitOfWork(PredictoDbContext context)
         {
             _context = context;
@@ -48,6 +51,7 @@ namespace Predicto.Database.UnitOfWork
             GameGroup = new Repository<GameGroupEntity>(_context);
             PlayerTournamentRepository = new Repository<PlayerTournamentEntity>(_context);
             GameGroupRepository = new GameGroupRepository(_context);
+            RoomUserBetRepository=new Repository<RoomUserBetEntity>(_context);
         }
 
         public async Task<int> CompleteAsync()

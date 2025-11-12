@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Predicto.Database.Entities;
+using Predicto.Database.Entities.Room;
 using Predicto.Database.Interfaces;
 using Predicto.Gateway.DTO.Room;
 using Predicto.Gateway.DTO.Rooms;
@@ -75,8 +76,7 @@ namespace Predicto.Gateway.Services.Room
             await _roomsHub.Clients.Group("SignalR Users").SendAsync("RoomCreated", roomDto);
 
             return roomDto;
-        }
-
+        }       
         public async Task<List<RoomDTO>> GetRoomsAsync(int? currentUserId = null)
         {
             var rooms = await _unitOfWork.Rooms.GetAllAsync();
@@ -213,7 +213,8 @@ namespace Predicto.Gateway.Services.Room
                 UserId = userId,
                 RoomId = roomId,
                 UserRoomRole = UserRoomRole.Participant,
-                IsActive = true
+                IsActive = true,
+                
             });
             await _unitOfWork.CompleteAsync();
 

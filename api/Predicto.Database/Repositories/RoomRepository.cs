@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Predicto.Database.Entities;
+using Predicto.Database.Entities.Room;
 
 namespace Predicto.Database.Interfaces.Repositories
 {

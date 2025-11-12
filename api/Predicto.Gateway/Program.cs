@@ -70,6 +70,8 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IGameRoomService, GameRoomService>();
+
 
 
 builder.Services.AddFluentEmail(builder.Configuration);
@@ -88,8 +90,8 @@ builder.Services.AddCors(options =>
                 "http://localhost:5174",
                 "http://127.0.0.1:5173",
                 "http://blog.predicto.gg",
-                "https://blog.predicto.gg"
-"http://predicto.gg" 
+                "https://blog.predicto.gg",
+                "http://predicto.gg"
               )
               .AllowAnyHeader()
               .AllowAnyMethod()

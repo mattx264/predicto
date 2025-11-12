@@ -109,7 +109,7 @@ namespace Predicto.Gateway.Controllers
             }
         }
 
-        [HttpPost("{id}/leave")]
+        [HttpPost("{id}/0")]
         [Authorize]
         public async Task<IActionResult> LeaveRoom(int id)
         {

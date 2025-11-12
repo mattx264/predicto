@@ -23,6 +23,7 @@
     <Folder Include="Context\" />
     <Folder Include="Interfaces\" />
     <Folder Include="EmailTemplates\" />
+    <Folder Include="Services\Game\" />
   </ItemGroup>
 
   <ItemGroup>

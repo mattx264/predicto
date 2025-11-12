@@ -1,7 +1,9 @@
 ﻿using Predicto.Database.Entities;
 using Predicto.Database.Entities.Blog;
+using Predicto.Database.Entities.Room;
 using Predicto.Database.Entities.Sport;
 using Predicto.Database.Interfaces.Repositories;
+using Predicto.Database.Repositories;
 using Predicto.Database.Repositories.Sport;
 
 namespace Predicto.Database.Interfaces
@@ -18,7 +20,10 @@ namespace Predicto.Database.Interfaces
         IRepository<GameEntity> Game { get; }
         IRepository<ArticleEntity> Article { get; }
         IGameGroupRepository GameGroupRepository { get; }
+        IRepository<RoomUserBetEntity> RoomUserBetRepository { get; }
+        IRepository<PlayerTournamentEntity> PlayerTournamentRepository { get; }
 
+        
         Task<int> CompleteAsync(); // SaveChanges
     }
 }

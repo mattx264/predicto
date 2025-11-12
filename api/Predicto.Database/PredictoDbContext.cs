@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Predicto.Database.Entities;
 using Predicto.Database.Entities.Blog;
+using Predicto.Database.Entities.Room;
 using Predicto.Database.Entities.Sport;
 
 namespace Predicto.Database
@@ -19,8 +20,9 @@ namespace Predicto.Database
         public DbSet<GameGroupEntity> GameGroup => Set<GameGroupEntity>();
         public DbSet<GameTeamEntity> GameTeam => Set<GameTeamEntity>();
         public DbSet<PlayerTournamentEntity> PlayerTournament => Set<PlayerTournamentEntity>();
+        public DbSet<RoomUserBetEntity> RoomUserBet => Set<RoomUserBetEntity>();
 
-
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

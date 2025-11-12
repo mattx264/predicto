@@ -20,8 +20,7 @@ namespace Predicto.DataCollector.NewFolder
           //  await SeedTeam(unitOfWork);
            // await unitOfWork.CompleteAsync();
 
-        //    await UefaPlayerSeed(unitOfWork);
-
+            //await UefaTeamSeed(unitOfWork);
             await FifaGamesSeed(unitOfWork);
 
 
@@ -156,7 +155,11 @@ namespace Predicto.DataCollector.NewFolder
                 }
             }
         }
-
+        private async Task UefaTeamSeed(UnitOfWork unitOfWork)
+        {
+            var uefa = new UefaCom();
+            await uefa.SeedTeamAsync(unitOfWork);
+        }
         private async Task UefaPlayerSeed(UnitOfWork unitOfWork)
         {
             var uefa = new UefaCom();

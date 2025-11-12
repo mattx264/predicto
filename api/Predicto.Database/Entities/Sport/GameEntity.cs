@@ -8,24 +8,18 @@ namespace Predicto.Database.Entities.Sport
     {
         public int Id { get; set; }
         public int TournamentId { get; set; }
-
-        public virtual ICollection<GameTeamEntity> Teams { get; set; }//Home and Away teams
-
-        public required string? FinalScore { get; set; }// 1:1 (4:5) //
-        public DateTime StartGame { get; set; }
         public virtual TournamentEntity? Tournament { get; set; }
+        public virtual ICollection<GameTeamEntity> Teams { get; set; }//Home and Away teams
+        public required string? FinalScore { get; set; }// 1:1 (4:5) //
+        public DateTime StartGame { get; set; }      
+        public string? Referee { get; set; }
+        public virtual ICollection<GamePlayerEntity>? GamePlayers { get; set; }
+        public virtual ICollection<GamePlayerEventEntity>? GamePlayerEvents { get; set; }
+        public virtual ICollection<GameScoreEntity>? GameScoreEvents { get; set; }
+        public virtual GameStadiumEntity? Stadium { get; set; }
+        public int? StadiumId { get; set; }
 
         public bool IsActive { get; set; } = true;
-
-        public string? Referee { get; set; }
-        //public string? PlayerData { get; set; }
-        public virtual GameStadiumEntity? Stadium { get; set; }
-
-        public virtual ICollection<GamePlayerEntity> GamePlayers { get; set; }
-        public virtual ICollection<GamePlayerEventEntity> GamePlayerEvents { get; set; }
-        public virtual ICollection<GameScoreEntity> GameScoreEvents { get; set; }
-
-
 
     }
 }

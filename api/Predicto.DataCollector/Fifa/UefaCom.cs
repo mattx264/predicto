@@ -15,6 +15,7 @@ namespace Predicto.DataCollector.Fifa
         public UefaCom() { }
         public void Start()
         {
+            
             Player();
             return;
             using var scraber = new BaseScraber<string>();
@@ -93,7 +94,7 @@ namespace Predicto.DataCollector.Fifa
         }
         internal async Task SeedTeamAsync(UnitOfWork unitOfWork)
         {
-
+            bool add = false;
             string[] fileEntries = Directory.GetFiles($"{path}");
             foreach (var file in fileEntries)
             {
@@ -101,17 +102,34 @@ namespace Predicto.DataCollector.Fifa
                 var doc = new HtmlAgilityPack.HtmlDocument();
                 doc.LoadHtml(html);
                 var name = doc.QuerySelector(".team-name").InnerText;
-                var team = new TeamEntity()
+                //add
+                if (add)
                 {
-                    Name = name,
-                    Slug = name.Replace(" ", ""),
-                    Coach = doc.QuerySelectorAll("[column-key='coach'] span")[2].InnerText.Trim(),
-                    Code = "",
-                    FormLastGames = doc.QuerySelectorAll("#accordion-item-0 pk-accordion-item-title div")[1].InnerText,
-                    ImageUrl = ""
-                };
-                await unitOfWork.Team.AddAsync(team);
+                    var team = new TeamEntity()
+                    {
+                        Name = name,
+                        Slug = name.Replace(" ", ""),
+                        Coach = doc.QuerySelectorAll("[column-key='coach'] span")[2].InnerText.Trim(),
+                        Code = "",
+                        FormLastGames = doc.QuerySelectorAll("#accordion-item-0 pk-accordion-item-title div")[1].InnerText,
+                        ImageUrl = ""
+                    };
+                    await unitOfWork.Team.AddAsync(team);
+                }
+                else
+                {
+                    var teamName = FifacomHelper.TeamNormalization(name);
+                    var team =await unitOfWork.Team.FindAsync(x => x.Name == teamName);
+                    if(team == null)
+                    {
+                        throw new Exception("Team not found: " + teamName);
+                    }
+                    team.Coach = doc.QuerySelectorAll("[column-key='coach'] span")[2].InnerText.Trim();
+                    team.FormLastGames = doc.QuerySelectorAll("#accordion-item-0 pk-accordion-item-title div")[1].InnerText;
+                    
+                }
             }
+            await unitOfWork.CompleteAsync();
         }
 
         internal async Task SeedData(UnitOfWork unitOfWork)

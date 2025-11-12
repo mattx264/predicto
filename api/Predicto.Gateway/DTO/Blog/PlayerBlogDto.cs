@@ -20,5 +20,19 @@
         public int? MarketValue { get; set; }
         public string? Bio { get; set; }
         public string TeamName { get; set; }
-        }
+        public int MatchesPlayed { get; set; }
+        public int Minutesplayed { get; set; }
+        public int Goals { get; set; }
+        public int? Saves { get; set; }
+        public int? Cleansheets { get; set; }
+        public double? PassingAccuracy { get; set; }
+        public double? TopSpeed { get; set; }
+        public double? DistanceCovered { get; set; }
+        public int YellowCards { get; set; }
+        public int RedCards { get; set; }
+        public int? Tackles { get; set; }
+        public int? BallsRecovered { get; set; }
+        public int? Assists { get; set; }
+        public int? TotalAttempts { get; set; }
+    }
 }

@@ -1,4 +1,4 @@
-﻿using Predicto.Database.Entities;
+﻿using Predicto.Database.Entities.Room;
 using Predicto.Gateway.DTO.User;
 
 namespace Predicto.Gateway.DTO.Rooms

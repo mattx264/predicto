@@ -30,6 +30,8 @@ namespace Predicto.Gateway.Controllers
             {
                 return NotFound();
             }
+            var playerTournamentEntity = await _unitOfWork.PlayerTournamentRepository.FindAsync(pt => pt.PlayerId == player.Id && pt.TournamentId == 1);
+
 
             return Ok(new PlayerBlogDto()
             {
@@ -51,6 +53,22 @@ namespace Predicto.Gateway.Controllers
                 PhotoUrl = player.PhotoUrl,
                 MarketValue = player.MarketValue,
                 Bio = player.Bio,
+                Assists = playerTournamentEntity?.Assists,
+                PassingAccuracy = playerTournamentEntity?.PassingAccuracy,
+                BallsRecovered = playerTournamentEntity?.BallsRecovered,
+                Goals = playerTournamentEntity?.Goals ?? 0,
+                Minutesplayed = playerTournamentEntity?.Minutesplayed ?? 0,
+                Tackles = playerTournamentEntity?.Tackles,
+                TotalAttempts = playerTournamentEntity?.TotalAttempts,
+                Cleansheets = playerTournamentEntity?.Cleansheets,
+                DistanceCovered = playerTournamentEntity?.DistanceCovered,
+                RedCards = playerTournamentEntity?.RedCards ?? 0,
+                Saves = playerTournamentEntity?.Saves,
+                YellowCards = playerTournamentEntity?.YellowCards ?? 0,
+                TopSpeed = playerTournamentEntity?.TopSpeed,
+                MatchesPlayed = playerTournamentEntity?.MatchesPlayed ?? 0
+
+
             });
         }
 

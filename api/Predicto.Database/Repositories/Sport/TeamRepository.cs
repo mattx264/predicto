@@ -13,6 +13,10 @@ namespace Predicto.Database.Repositories.Sport
             _context = context;
             _dbSet = _context.Set<TeamEntity>();
         }
+        public async Task<IEnumerable<TeamEntity>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
 
     }
 }
