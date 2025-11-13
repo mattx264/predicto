@@ -61,6 +61,8 @@ export interface Match {
   id: string;
   homeTeam: string;
   awayTeam: string;
+  homeTeamLogo?: string;
+  awayTeamLogo?: string;
   date: string;
   status: "upcoming" | "live" | "finished";
   actualScore?: {
@@ -76,6 +78,118 @@ export interface Match {
   points?: number;
 }
 
+// match api
+export interface GameTeamApiDTO {
+  id: number;
+  name: string;
+  logoUrl: string;
+}
+
+export interface GameTeamDTO {
+  id: number;
+  gameId: number;
+  teamId: number;
+  teamName: string;
+  isHome: boolean;
+}
+
+export interface GamePlayerDTO {
+  id: number;
+  gameId: number;
+  playerId: number;
+  playerName: string;
+  teamId: number;
+}
+
+export interface GamePlayerEventDTO {
+  id: number;
+  gameId: number;
+  playerId: number;
+  eventType: string;
+  minute: number;
+  description?: string;
+}
+
+export interface GameScoreEventDTO {
+  id: number;
+  gameId: number;
+  teamId: number;
+  playerId?: number;
+  minute: number;
+  scoreType: string;
+}
+
+export interface StadiumDTO {
+  id: number;
+  name: string;
+  city: string;
+  capacity?: number;
+}
+
+export interface GameApiDTO {
+  id: number;
+  startTime: string;
+  teams: GameTeamApiDTO[];
+  finalScore: string | null;
+}
+
+export interface GameDTO {
+  id: number;
+  tournamentId: number;
+  teams: GameTeamDTO[];
+  finalScore: string | null;
+  startGame: string;
+  referee: string | null;
+  stadiumId: number | null;
+  isActive: boolean;
+}
+
+export interface GameDetailsDTO extends GameDTO {
+  stadium?: StadiumDTO;
+  gamePlayers?: GamePlayerDTO[];
+  gamePlayerEvents?: GamePlayerEventDTO[];
+  gameScoreEvents?: GameScoreEventDTO[];
+}
+
+export const mapGameApiDtoToMatch = (game: GameApiDTO): Match => {
+  const homeTeam = game.teams[0];
+  const awayTeam = game.teams[1];
+
+  let actualScore: { home: number; away: number } | undefined;
+  if (game.finalScore) {
+    const scoreMatch = game.finalScore.match(/(\d+)[-:](\d+)/);
+    if (scoreMatch) {
+      actualScore = {
+        home: parseInt(scoreMatch[1]),
+        away: parseInt(scoreMatch[2]),
+      };
+    }
+  }
+
+  const now = new Date();
+  const gameStart = new Date(game.startTime);
+  const gameEnd = new Date(gameStart.getTime() + 2 * 60 * 60 * 1000);
+
+  let status: "upcoming" | "live" | "finished";
+  if (now < gameStart) {
+    status = "upcoming";
+  } else if (now >= gameStart && now <= gameEnd && !game.finalScore) {
+    status = "live";
+  } else {
+    status = "finished";
+  }
+
+  return {
+    id: game.id.toString(),
+    homeTeam: homeTeam?.name || "Unknown",
+    awayTeam: awayTeam?.name || "Unknown",
+    homeTeamLogo: homeTeam?.logoUrl,
+    awayTeamLogo: awayTeam?.logoUrl,
+    date: game.startTime,
+    status,
+    actualScore,
+  };
+};
 // ===== auth types =====
 
 export interface LoginRequest {
@@ -135,6 +249,7 @@ export interface Room {
   isPrivate: boolean;
   status: "open" | "active" | "ended";
   isUserInRoom: boolean;
+  tournamentId: number;
 }
 export const mapFormDataToCreateRequest = (
   formData: RoomFormData
@@ -158,6 +273,7 @@ export const mapRoomDtoToRoom = (dto: RoomDTO): Room => {
   return {
     id: dto.id.toString(),
     name: dto.name,
+    tournamentId: dto.tournamentId,
     participants: dto.users?.length || 0,
     maxParticipants: dto.maxUsers ?? 10,
     entryFee: dto.entryFee,

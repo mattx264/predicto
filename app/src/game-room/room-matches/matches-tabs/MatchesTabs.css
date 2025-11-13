@@ -1,0 +1,151 @@
+.matches-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.matches-tabs .tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: #94a3b8;
+  transition: all 0.3s ease;
+  position: relative;
+  flex: 1;
+  justify-content: center;
+}
+
+.matches-tabs .tab:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(34, 197, 94, 0.3);
+  transform: translateY(-2px);
+}
+
+.matches-tabs .tab.active {
+  color: white;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border-color: #22c55e;
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+  transform: translateY(-2px);
+}
+
+.matches-tabs .tab svg {
+  flex-shrink: 0;
+}
+
+.matches-tabs .tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #f8fafc;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.matches-tabs .tab.active .tab-badge {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.matches-tabs .tab-badge.live-badge {
+  background: #ef4444;
+  color: white;
+  animation: pulse-badge 2s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.matches-tabs .tab.active .tab-badge.live-badge {
+  background: #dc2626;
+  box-shadow: 0 0 15px rgba(220, 38, 38, 0.6);
+}
+
+@keyframes pulse-badge {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+  .matches-tabs {
+    gap: 8px;
+    padding: 6px;
+    max-width: 100%;
+  }
+
+  .matches-tabs .tab {
+    padding: 12px 16px;
+    font-size: 14px;
+    gap: 6px;
+  }
+
+  .matches-tabs .tab-badge {
+    min-width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 640px) {
+  .matches-tabs {
+    gap: 6px;
+    padding: 5px;
+  }
+
+  .matches-tabs .tab {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .matches-tabs .tab span:first-of-type {
+    display: none;
+  }
+
+  .matches-tabs .tab svg {
+    margin: 0;
+  }
+
+  .matches-tabs .tab-badge {
+    margin-left: 0;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .matches-tabs .tab {
+    padding: 10px;
+  }
+}

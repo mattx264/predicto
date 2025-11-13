@@ -39,6 +39,25 @@ export class RoomHubService {
 
     try {
       await signalRService.startConnection(connection, `RoomHub/${roomId}`);
+
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${apiService.getBackendUrl()}/api/room/${roomId}`,
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const room: RoomDTO = await response.json();
+
+        onRoomDataReceived(room);
+      } else {
+        throw new Error(`Failed to fetch room: ${response.statusText}`);
+      }
     } catch (error) {
       console.error(`❌ Błąd połączenia z pokojem ${roomId}:`, error);
       this.connections.delete(connectionKey);

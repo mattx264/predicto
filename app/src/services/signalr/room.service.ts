@@ -198,7 +198,7 @@ export const roomService = {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
 
         if (response.status === 401) {
           throw new Error("Sesja wygasła. Zaloguj się ponownie");
@@ -215,7 +215,10 @@ export const roomService = {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
+      const text = await response.text();
+      const result = text
+        ? JSON.parse(text)
+        : { message: "Pomyślnie opuszczono pokój" };
       return result;
     } catch (error) {
       console.error("❌ Error leaving room:", error);

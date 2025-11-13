@@ -513,7 +513,8 @@ const RoomPage: React.FC = () => {
         <div className="my-tab-content">
           {activeTab === "matches" && (
             <RoomMatches
-              matches={mockMatches}
+              tournamentId={displayRoom.tournamentId}
+              roomId={displayRoom.id}
               isParticipant={true}
               currentUserId={currentUserId}
             />
