@@ -11,12 +11,29 @@ export interface TeamFromApi {
   isActive: boolean;
 }
 
+export interface PlayerBasicFromApi {
+  id: number;
+  name: string;
+  position: string;
+  imageUrl: string | null;
+  shirtNumber: number | null;
+}
+
+export interface TeamDetailFromApi {
+  id: number;
+  name: string;
+  slug: string;
+  imageUrl: string;
+  coach: string;
+  players: PlayerBasicFromApi[];
+  formLastGames: string;
+}
+
 const teamService = {
   getTeamsByTournament: async (
     tournamentId: number
   ): Promise<TeamFromApi[]> => {
     const baseUrl = apiService.getBackendUrl();
-    console.log("🔗 Connecting to:", baseUrl);
     const response = await fetch(
       `${baseUrl}/api/TeamBlog/tournament/${tournamentId}`
     );
@@ -28,20 +45,9 @@ const teamService = {
     return response.json();
   },
 
-  getAllTeams: async (): Promise<TeamFromApi[]> => {
+  getTeamById: async (teamId: number): Promise<TeamDetailFromApi> => {
     const baseUrl = apiService.getBackendUrl();
-    const response = await fetch(`${baseUrl}/api/TeamBlog/all-teams`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch all teams: ${response.statusText}`);
-    }
-
-    return response.json();
-  },
-
-  getTeamById: async (teamId: number): Promise<TeamFromApi> => {
-    const baseUrl = apiService.getBackendUrl();
-    const response = await fetch(`${baseUrl}/api/TeamBlog/by-team/${teamId}`);
+    const response = await fetch(`${baseUrl}/api/TeamBlog/get-by-id/${teamId}`);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch team: ${response.statusText}`);

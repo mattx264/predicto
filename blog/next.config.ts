@@ -12,6 +12,21 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "media.api-sports.io",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn-icons-png.flaticon.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "b.fssta.com",
         port: "",
         pathname: "/**",

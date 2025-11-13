@@ -13,6 +13,7 @@ import * as flags from "country-flag-icons/react/3x2";
 import { TOURNAMENTS } from "@/app/lib/tournaments";
 import { getTeamBySlug, getTeams, Player } from "@/app/lib/teams";
 import Image from "next/image";
+
 interface TeamProfilePageProps {
   params: Promise<{
     slug: string;
@@ -100,10 +101,12 @@ export default async function TeamProfilePage({
       <main className="team-profile-main">
         <div className="main-grid">
           <div className="main-content">
-            <section className="team-description-section">
+            {/* <section className="team-description-section">
               <h2>Opis Reprezentacji</h2>
-              <p className="description-content">{team.description}</p>
-            </section>
+              <p className="description-content">
+                {team.description || "Brak opisu reprezentacji."}
+              </p>
+            </section> */}
 
             <section className="team-squad-section">
               <h2>Aktualny Skład</h2>
@@ -124,13 +127,17 @@ export default async function TeamProfilePage({
                             height={64}
                             width={64}
                           />
-                          <div className="player-number-badge">
-                            {player.number}
-                          </div>
+                          {player.number > 0 && (
+                            <div className="player-number-badge">
+                              {player.number}
+                            </div>
+                          )}
                         </div>
                         <div className="player-info">
                           <p className="player-name">{player.name}</p>
-                          <p className="player-club">{player.club}</p>
+                          <p className="player-club">
+                            {player.club || "Brak informacji"}
+                          </p>
                         </div>
                         <div className="player-position">
                           {getPositionIcon(player.position)}
@@ -150,24 +157,26 @@ export default async function TeamProfilePage({
               <h3>
                 <User size={18} /> Trener
               </h3>
-              <p>{team.coach}</p>
+              <p>{team.coach || "Brak informacji"}</p>
             </div>
-            <div className="sidebar-widget">
+            {/* <div className="sidebar-widget">
               <h3>
                 <Target size={18} /> Kluczowy zawodnik
               </h3>
-              <p>{team.keyPlayer}</p>
-            </div>
-            <div className="sidebar-widget">
-              <h3>
-                <TrendingUp size={18} /> Ostatnia forma
-              </h3>
-              <div className="form-container">
-                {team.recentForm.map((result, index) => (
-                  <ResultBadge key={index} result={result} />
-                ))}
+              <p>{team.keyPlayer || "Brak informacji"}</p>
+            </div> */}
+            {team.recentForm.length > 0 && (
+              <div className="sidebar-widget">
+                <h3>
+                  <TrendingUp size={18} /> Ostatnia forma
+                </h3>
+                <div className="form-container">
+                  {team.recentForm.map((result, index) => (
+                    <ResultBadge key={index} result={result} />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </aside>
         </div>
       </main>

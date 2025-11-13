@@ -81,6 +81,20 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
     }
   };
 
+  const getCreatorAvatar = (creator: string | null | undefined) => {
+    if (!creator || creator.trim() === "") {
+      return "?";
+    }
+    return creator.charAt(0).toUpperCase();
+  };
+
+  const getCreatorName = (creator: string | null | undefined) => {
+    if (!creator || creator.trim() === "") {
+      return "Nieznany";
+    }
+    return creator;
+  };
+
   if (rooms.length === 0) {
     return (
       <div className="no-results">
@@ -141,9 +155,11 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
 
           <div className="room-creator">
             <div className="creator-avatar">
-              {room.creator.charAt(0).toUpperCase()}
+              {getCreatorAvatar(room.creator)}
             </div>
-            <span className="creator-name">Organizator: {room.creator}</span>
+            <span className="creator-name">
+              Organizator: {getCreatorName(room.creator)}
+            </span>
           </div>
 
           <div className="room-card-footer">

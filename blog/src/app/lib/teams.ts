@@ -1,5 +1,9 @@
 import playerService, { PlayerFromApi } from "../services/playerService";
-import teamService, { TeamFromApi } from "../services/team.service";
+import teamService, {
+  TeamFromApi,
+  PlayerBasicFromApi,
+  TeamDetailFromApi,
+} from "../services/team.service";
 
 export interface Player {
   id: string;
@@ -20,6 +24,20 @@ export interface Player {
   weight: number | null;
   marketValue: string;
   bio: string;
+  matchesPlayed: number;
+  minutesPlayed: number;
+  goals: number;
+  saves: number | null;
+  cleansheets: number | null;
+  passingAccuracy: number | null;
+  topSpeed: number | null;
+  distanceCovered: number | null;
+  yellowCards: number;
+  redCards: number;
+  tackles: number;
+  ballsRecovered: number;
+  assists: number | null;
+  totalAttempts: number | null;
 }
 
 export interface Team {
@@ -54,6 +72,7 @@ const COUNTRY_FLAG_MAP: Record<string, string> = {
   Croatia: "HR",
   Cyprus: "CY",
   "Czech Republic": "CZ",
+  Czechy: "CZ",
   Denmark: "DK",
   England: "GB-ENG",
   Estonia: "EE",
@@ -61,6 +80,7 @@ const COUNTRY_FLAG_MAP: Record<string, string> = {
   Finland: "FI",
   France: "FR",
   "FYR Macedonia": "MK",
+  "North Macedonia": "MK",
   Georgia: "GE",
   Germany: "DE",
   Gibraltar: "GI",
@@ -84,6 +104,7 @@ const COUNTRY_FLAG_MAP: Record<string, string> = {
   Poland: "PL",
   Portugal: "PT",
   "Rep. Of Ireland": "IE",
+  "Republic of Ireland": "IE",
   Romania: "RO",
   Russia: "RU",
   "San Marino": "SM",
@@ -102,7 +123,7 @@ const COUNTRY_FLAG_MAP: Record<string, string> = {
 function mapTeamFromApi(apiTeam: TeamFromApi): Team {
   return {
     id: apiTeam.id.toString(),
-    slug: apiTeam.slug,
+    slug: `${apiTeam.slug}-${apiTeam.id}`,
     name: apiTeam.name,
     flag: COUNTRY_FLAG_MAP[apiTeam.name] || "UN",
     imageUrl: apiTeam.imageUrl,
@@ -111,6 +132,67 @@ function mapTeamFromApi(apiTeam: TeamFromApi): Team {
     keyPlayer: "",
     recentForm: [],
     squad: [],
+  };
+}
+
+function mapTeamDetailFromApi(apiTeam: TeamDetailFromApi): Team {
+  return {
+    id: apiTeam.id.toString(),
+    slug: apiTeam.slug,
+    name: apiTeam.name,
+    flag: COUNTRY_FLAG_MAP[apiTeam.name] || "UN",
+    imageUrl: apiTeam.imageUrl,
+    description: "",
+    coach: apiTeam.coach || "",
+    keyPlayer: "",
+    recentForm: parseFormString(apiTeam.formLastGames),
+    squad: apiTeam.players.map(mapBasicPlayerToPlayer),
+  };
+}
+
+function mapBasicPlayerToPlayer(apiPlayer: PlayerBasicFromApi): Player {
+  const normalizedName = apiPlayer.name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+
+  return {
+    id: apiPlayer.id.toString(),
+    slug: `${normalizedName}-${apiPlayer.id}`,
+    name: apiPlayer.name,
+    firstName: apiPlayer.name.split(" ")[0] || "",
+    lastName: apiPlayer.name.split(" ").slice(1).join(" ") || "",
+    position: mapPosition(apiPlayer.position),
+    number: apiPlayer.shirtNumber || 0,
+    age: 0,
+    club: "",
+    image:
+      apiPlayer.imageUrl ||
+      "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+    dateOfBirth: "Brak danych",
+    birthPlace: null,
+    birthCountry: null,
+    nationality: "",
+    height: "Brak danych",
+    weight: null,
+    marketValue: "Brak danych",
+    bio: "Brak informacji biograficznych.",
+    matchesPlayed: 0,
+    minutesPlayed: 0,
+    goals: 0,
+    saves: null,
+    cleansheets: null,
+    passingAccuracy: null,
+    topSpeed: null,
+    distanceCovered: null,
+    yellowCards: 0,
+    redCards: 0,
+    tackles: 0,
+    ballsRecovered: 0,
+    assists: null,
+    totalAttempts: null,
   };
 }
 
@@ -125,7 +207,9 @@ function mapPlayerFromApi(apiPlayer: PlayerFromApi): Player {
     number: apiPlayer.shirtNumber,
     age: apiPlayer.age,
     club: apiPlayer.teamName,
-    image: apiPlayer.photoUrl || "/placeholder-player.png",
+    image:
+      apiPlayer.photoUrl ||
+      "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
     dateOfBirth: formatDate(apiPlayer.birthday),
     birthPlace: apiPlayer.birthPlace,
     birthCountry: apiPlayer.birthCountry,
@@ -134,6 +218,20 @@ function mapPlayerFromApi(apiPlayer: PlayerFromApi): Player {
     weight: apiPlayer.weight,
     marketValue: formatMarketValue(apiPlayer.marketValue),
     bio: apiPlayer.bio || "Brak informacji biograficznych.",
+    matchesPlayed: apiPlayer.matchesPlayed || 0,
+    minutesPlayed: apiPlayer.minutesplayed || 0,
+    goals: apiPlayer.goals || 0,
+    saves: apiPlayer.saves,
+    cleansheets: apiPlayer.cleansheets,
+    passingAccuracy: apiPlayer.passingAccuracy,
+    topSpeed: apiPlayer.topSpeed,
+    distanceCovered: apiPlayer.distanceCovered,
+    yellowCards: apiPlayer.yellowCards || 0,
+    redCards: apiPlayer.redCards || 0,
+    tackles: apiPlayer.tackles || 0,
+    ballsRecovered: apiPlayer.ballsRecovered || 0,
+    assists: apiPlayer.assists,
+    totalAttempts: apiPlayer.totalAttempts,
   };
 }
 
@@ -150,6 +248,17 @@ function mapPosition(position: string): Player["position"] {
   };
 
   return positionMap[position] || "Pomocnik";
+}
+
+function parseFormString(formString: string): ("W" | "D" | "L")[] {
+  if (!formString) return [];
+
+  return formString.split("").map((char) => {
+    if (char === "W" || char === "D" || char === "L") {
+      return char;
+    }
+    return "D";
+  });
 }
 
 function formatDate(dateString: string): string {
@@ -201,8 +310,33 @@ export async function getTeamBySlug(
   tournamentSlug: string,
   slug: string
 ): Promise<Team | undefined> {
-  const teams = await getTeams(tournamentSlug);
-  return teams.find((team) => team.slug === slug);
+  try {
+    let teamId = extractIdFromSlug(slug);
+
+    if (!teamId) {
+      console.warn(`No ID in slug: ${slug}, searching by slug name...`);
+      const teams = await getTeams(tournamentSlug);
+
+      const basicTeam = teams.find((t) => {
+        const slugWithoutId = t.slug.substring(0, t.slug.lastIndexOf("-"));
+        return slugWithoutId === slug;
+      });
+
+      if (!basicTeam) {
+        console.error(`Team not found with slug: ${slug}`);
+        return undefined;
+      }
+
+      teamId = parseInt(basicTeam.id, 10);
+    }
+
+    const apiTeam = await teamService.getTeamById(teamId);
+
+    return mapTeamDetailFromApi(apiTeam);
+  } catch (error) {
+    console.error("Error fetching team:", error);
+    return undefined;
+  }
 }
 
 export async function getPlayerBySlug(

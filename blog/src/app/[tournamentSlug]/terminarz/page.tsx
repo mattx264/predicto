@@ -6,19 +6,7 @@ import "./page.css";
 import { useEffect, useState } from "react";
 import { TOURNAMENTS } from "@/app/lib/tournaments";
 import Image from "next/image";
-
-type Match = {
-  id: string;
-  teamA: string;
-  teamB: string;
-  teamALogo: string;
-  teamBLogo: string;
-  score?: string;
-  time?: string;
-  status: "LIVE" | "Zakończony" | "Zaplanowany";
-  league: string;
-  date: string;
-};
+import { getMatches, Match } from "@/app/lib/schedule";
 
 const MatchCard = ({
   match,
@@ -113,76 +101,49 @@ const MatchCard = ({
 
       <div className="league-badge">
         <Trophy size={12} />
-
         <span>{match.league}</span>
       </div>
     </div>
   );
 };
 
-const allDemoMatches: Match[] = [
-  {
-    id: "1",
-    teamA: "Polska",
-    teamB: "Niemcy",
-    teamALogo: "https://flagcdn.com/w320/pl.png",
-    teamBLogo: "https://flagcdn.com/w320/de.png",
-    score: "2 - 1",
-    status: "Zakończony",
-    league: "el-ms-2026",
-    date: "2025-10-16",
-  },
-  {
-    id: "2",
-    teamA: "Szkocja",
-    teamB: "Węgry",
-    teamALogo: "https://flagcdn.com/w320/gb-sct.png",
-    teamBLogo: "https://flagcdn.com/w320/hu.png",
-    status: "LIVE",
-    league: "euro-2024",
-    date: "2025-10-16",
-  },
-  {
-    id: "3",
-    teamA: "Włochy",
-    teamB: "Anglia",
-    teamALogo: "https://flagcdn.com/w320/it.png",
-    teamBLogo: "https://flagcdn.com/w320/gb-eng.png",
-    time: "20:45",
-    status: "Zaplanowany",
-    league: "el-ms-2026",
-    date: "2025-10-16",
-  },
-  {
-    id: "4",
-    teamA: "Argentyna",
-    teamB: "Francja",
-    teamALogo: "https://flagcdn.com/w320/ar.png",
-    teamBLogo: "https://flagcdn.com/w320/fr.png",
-    score: "3 - 3 (4-2 p.)",
-    status: "Zakończony",
-    league: "mundial-2022",
-    date: "2022-12-18",
-  },
-  {
-    id: "5",
-    teamA: "Hiszpania",
-    teamB: "Chorwacja",
-    teamALogo: "https://flagcdn.com/w320/es.png",
-    teamBLogo: "https://flagcdn.com/w320/hr.png",
-    time: "18:00",
-    status: "Zaplanowany",
-    league: "euro-2024",
-    date: "2025-10-17",
-  },
-];
+// Grupowanie meczy po datach
+function groupMatchesByDate(matches: Match[]): Map<string, Match[]> {
+  const grouped = new Map<string, Match[]>();
 
-async function getMatchesForTournament(slug: string): Promise<Match[]> {
-  console.log("Pobieranie meczy dla turnieju:", slug);
+  matches.forEach((match) => {
+    const dateKey = match.date;
+    if (!grouped.has(dateKey)) {
+      grouped.set(dateKey, []);
+    }
+    grouped.get(dateKey)!.push(match);
+  });
 
-  const matches = allDemoMatches.filter((match) => match.league === slug);
+  return grouped;
+}
 
-  return new Promise((resolve) => setTimeout(() => resolve(matches), 300));
+// Formatowanie daty po polsku
+function formatPolishDate(dateString: string): string {
+  const date = new Date(dateString);
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // Sprawdź czy to dzisiaj lub jutro
+  if (date.toDateString() === today.toDateString()) {
+    return "Dzisiaj";
+  }
+  if (date.toDateString() === tomorrow.toDateString()) {
+    return "Jutro";
+  }
+
+  // Formatuj datę po polsku
+  return date.toLocaleDateString("pl-PL", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 export default function SchedulePage() {
@@ -191,6 +152,7 @@ export default function SchedulePage() {
 
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const tournament = TOURNAMENTS.find((t) => t.slug === tournamentSlug);
   const tournamentName = tournament ? tournament.name : "Turniej";
@@ -198,13 +160,40 @@ export default function SchedulePage() {
   useEffect(() => {
     if (tournamentSlug) {
       setLoading(true);
-      getMatchesForTournament(tournamentSlug).then((data) => {
-        setMatches(data);
-        setLoading(false);
-      });
+      setError(null);
+
+      getMatches(tournamentSlug)
+        .then((data) => {
+          setMatches(data);
+        })
+        .catch((err) => {
+          console.error("Error loading matches:", err);
+          setError("Nie udało się załadować meczów");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [tournamentSlug]);
 
+  const groupedMatches = groupMatchesByDate(matches);
+  const sortedDates = Array.from(groupedMatches.keys()).sort((a, b) => {
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+    const now = new Date();
+
+    const aIsFuture = dateA >= now;
+    const bIsFuture = dateB >= now;
+
+    if (aIsFuture && !bIsFuture) return -1;
+    if (!aIsFuture && bIsFuture) return 1;
+
+    if (aIsFuture && bIsFuture) {
+      return dateA.getTime() - dateB.getTime();
+    }
+
+    return dateB.getTime() - dateA.getTime();
+  });
   return (
     <div className="schedule-page-container">
       <header className="schedule-page-header">
@@ -216,36 +205,42 @@ export default function SchedulePage() {
       </header>
 
       <main className="schedule-main">
-        <section className="date-group">
-          <div className="date-header">
-            <Calendar size={20} />
-            <span>Wszystkie mecze</span>
-            <div className="date-line"></div>
+        {loading ? (
+          <div className="loading-container">
+            <div className="spinner"></div>
+            <p>Ładowanie meczy...</p>
           </div>
-          <div className="matches-list">
-            {loading ? (
-              <p
-                style={{ textAlign: "center", color: "white", padding: "2rem" }}
-              >
-                Ładowanie meczy...
-              </p>
-            ) : matches.length > 0 ? (
-              matches.map((match) => (
-                <MatchCard
-                  key={match.id}
-                  match={match}
-                  tournamentSlug={tournamentSlug}
-                />
-              ))
-            ) : (
-              <p
-                style={{ textAlign: "center", color: "white", padding: "2rem" }}
-              >
-                Brak zaplanowanych meczy dla tego turnieju.
-              </p>
-            )}
-          </div>
-        </section>
+        ) : error ? (
+          <p style={{ textAlign: "center", color: "#ef4444", padding: "2rem" }}>
+            {error}
+          </p>
+        ) : matches.length > 0 ? (
+          sortedDates.map((date) => {
+            const matchesForDate = groupedMatches.get(date) || [];
+            return (
+              <section key={date} className="date-group">
+                <div className="date-header">
+                  <Calendar size={20} />
+                  <span>{formatPolishDate(date)}</span>
+                  <div className="date-line"></div>
+                </div>
+                <div className="matches-list">
+                  {matchesForDate.map((match) => (
+                    <MatchCard
+                      key={match.id}
+                      match={match}
+                      tournamentSlug={tournamentSlug}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })
+        ) : (
+          <p style={{ textAlign: "center", color: "white", padding: "2rem" }}>
+            Brak zaplanowanych meczy dla tego turnieju.
+          </p>
+        )}
       </main>
     </div>
   );

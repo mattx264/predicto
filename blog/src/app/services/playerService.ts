@@ -19,6 +19,20 @@ export interface PlayerFromApi {
   photoUrl: string;
   marketValue: number;
   bio: string;
+  matchesPlayed: number;
+  minutesplayed: number;
+  goals: number;
+  saves: number | null;
+  cleansheets: number | null;
+  passingAccuracy: number;
+  topSpeed: number;
+  distanceCovered: number;
+  yellowCards: number;
+  redCards: number;
+  tackles: number;
+  ballsRecovered: number;
+  assists: number | null;
+  totalAttempts: number | null;
 }
 
 const playerService = {

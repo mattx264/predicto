@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Trophy } from "lucide-react";
 import "./page.css";
+import { getPosts } from "./lib/posts";
 
 interface Post {
   slug: string;
@@ -8,41 +9,6 @@ interface Post {
   excerpt: string;
   date: string;
   league: string;
-  image: string;
-}
-
-async function getPosts(): Promise<Post[]> {
-  await new Promise((resolve) => setTimeout(resolve, 100));
-
-  return [
-    {
-      slug: "eliminacje-mundial-2026",
-      title: "Droga na Mundial: Kto Jedzie do USA, Kanady i Meksyku?",
-      excerpt:
-        "Podsumowanie najważniejszych momentów eliminacji do Mistrzostw Świata 2026 – europejskie zmagania, południowoamerykańskie sensacje i walka o marzenia mniejszych reprezentacji.",
-      date: "2025-10-14",
-      league: "Eliminacje MŚ 2026",
-      image: "/images/worldcup-qualifiers.jpg",
-    },
-    {
-      slug: "polska-droga-na-mundial",
-      title: "Polska Walka o Mundial: Czy Biało-Czerwoni Awansują?",
-      excerpt:
-        "Analiza sytuacji reprezentacji Polski w eliminacjach do Mistrzostw Świata 2026 – kluczowe mecze, szanse na awans i forma liderów drużyny.",
-      date: "2025-10-12",
-      league: "Eliminacje MŚ 2026",
-      image: "/images/poland-worldcup.jpg",
-    },
-    {
-      slug: "faworyci-mundialu-2026",
-      title: "Faworyci Mundialu 2026: Kto Sięgnie po Złoto?",
-      excerpt:
-        "Przegląd reprezentacji, które uchodzą za głównych faworytów Mistrzostw Świata 2026 – od Francji i Argentyny po rosnące potęgi jak Anglia czy Brazylia.",
-      date: "2025-10-10",
-      league: "Mundial 2026",
-      image: "/images/worldcup-favorites.jpg",
-    },
-  ];
 }
 
 const PostCard = ({ post }: { post: Post }) => (
@@ -66,8 +32,26 @@ const PostCard = ({ post }: { post: Post }) => (
 export default async function Home() {
   const posts = await getPosts();
 
+  if (posts.length === 0) {
+    return (
+      <div className="home-container">
+        <main className="home-main">
+          <section className="featured-section">
+            <p className="featured-label">Brak artykułów</p>
+            <h1 className="featured-title">
+              Wkrótce pojawią się nowe artykuły!
+            </h1>
+            <p className="featured-excerpt">
+              Aktualnie trwają prace nad zawartością bloga. Wróć wkrótce!
+            </p>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
   const featuredPost = posts[0];
-  const latestPosts = posts.slice(1);
+  const latestPosts = posts.slice(1, 4);
 
   return (
     <div className="home-container">
@@ -105,19 +89,21 @@ export default async function Home() {
           </Link>
         </section>
 
-        <section className="posts-section">
-          <h2 className="section-title">Ostatnie Wiadomości i Analizy 🗞️</h2>
-          <div className="posts-grid">
-            {latestPosts.map((post) => (
-              <PostCard key={post.slug} post={post} />
-            ))}
-          </div>
-          <div className="posts-view-all">
-            <Link href="/blog" className="view-all-button">
-              Zobacz Wszystkie Posty
-            </Link>
-          </div>
-        </section>
+        {latestPosts.length > 0 && (
+          <section className="posts-section">
+            <h2 className="section-title">Ostatnie Wiadomości i Analizy 🗞️</h2>
+            <div className="posts-grid">
+              {latestPosts.map((post) => (
+                <PostCard key={post.slug} post={post} />
+              ))}
+            </div>
+            <div className="posts-view-all">
+              <Link href="/blog" className="view-all-button">
+                Zobacz Wszystkie Posty
+              </Link>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );
