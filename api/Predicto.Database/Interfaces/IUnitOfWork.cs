@@ -10,6 +10,7 @@ namespace Predicto.Database.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
+        PredictoDbContext Context { get; }
         IRepository<UserEntity> Users { get; }
         IRepository<RoomEntity> Rooms { get; }
         IRepository<SportCategoryEntity> SportCategory { get; }

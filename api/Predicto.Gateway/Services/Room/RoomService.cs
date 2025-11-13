@@ -178,93 +178,94 @@ namespace Predicto.Gateway.Services.Room
             }).ToList();
         }
 
-        public async Task JoinRoomAsync(int roomId, int userId)
-        {
-            var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
+    public async Task JoinRoomAsync(int roomId, int userId)
+{
+    var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
 
-            if (room == null)
-            {
-                throw new ArgumentException("Pokój nie istnieje");
-            }
+    if (room == null)
+    {
+        throw new ArgumentException("Pokój nie istnieje");
+    }
 
-            if (!room.IsActive)
-            {
-                throw new InvalidOperationException("Pokój nie jest aktywny");
-            }
+    if (!room.IsActive)
+    {
+        throw new InvalidOperationException("Pokój nie jest aktywny");
+    }
 
-            if (room.Participants.Count >= room.MaxUsers)
-            {
-                throw new InvalidOperationException("Pokój jest pełny");
-            }
+    if (room.Participants.Count >= room.MaxUsers)
+    {
+        throw new InvalidOperationException("Pokój jest pełny");
+    }
 
-            if (room.Participants.Any(p => p.Id == userId))
-            {
-                throw new InvalidOperationException("Już jesteś w tym pokoju");
-            }
+    if (room.Participants.Any(p => p.UserId == userId))
+    {
+        throw new InvalidOperationException("Już jesteś w tym pokoju");
+    }
 
-            var user = await _unitOfWork.Users.GetByIdAsync(userId);
-            if (user == null)
-            {
-                throw new ArgumentException("Użytkownik nie istnieje");
-            }
+    var user = await _unitOfWork.Users.GetByIdAsync(userId);
+    if (user == null)
+    {
+        throw new ArgumentException("Użytkownik nie istnieje");
+    }
 
-            room.Participants.Add(new RoomUserEntity()
-            {
-                UserId = userId,
-                RoomId = roomId,
-                UserRoomRole = UserRoomRole.Participant,
-                IsActive = true,
-                
-            });
-            await _unitOfWork.CompleteAsync();
+    var roomUser = new RoomUserEntity()
+    {
+        UserId = userId,
+        RoomId = roomId,
+        UserRoomRole = UserRoomRole.Participant,
+        IsActive = true,
+    };
 
+    await _unitOfWork.Context.Set<RoomUserEntity>().AddAsync(roomUser);
+    await _unitOfWork.CompleteAsync();
 
-            var updatedRoom = await GetRoomByIdAsync(roomId);
+    var updatedRoom = await GetRoomByIdAsync(roomId);
 
-            await _roomHub.Clients.Group($"Room_{roomId}").SendAsync("RoomUpdated", updatedRoom);
+    await _roomHub.Clients.Group($"Room_{roomId}").SendAsync("RoomUpdated", updatedRoom);
 
-            await _roomsHub.Clients.Group("SignalR Users").SendAsync("UserJoined", new
-            {
-                roomId = roomId,
-                userId = userId,
-                userName = user.Name,
-                participantsCount = room.Participants.Count
-            });
-        }
+    await _roomsHub.Clients.Group("SignalR Users").SendAsync("RoomUpdated", updatedRoom);
 
-        public async Task LeaveRoomAsync(int roomId, int userId)
-        {
-            var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
+    await _roomsHub.Clients.Group("SignalR Users").SendAsync("UserJoined", new
+    {
+        roomId = roomId,
+        userId = userId,
+        userName = user.Name,
+        participantsCount = updatedRoom.Users.Count
+    });
+}
 
-            if (room == null)
-            {
-                throw new ArgumentException("Pokój nie istnieje");
-            }
+public async Task LeaveRoomAsync(int roomId, int userId)
+{
+    var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
 
-            var participant = room.Participants.FirstOrDefault(p => p.Id == userId);
-            if (participant == null)
-            {
-                throw new InvalidOperationException("Nie jesteś członkiem tego pokoju");
-            }
+    if (room == null)
+    {
+        throw new ArgumentException("Pokój nie istnieje");
+    }
 
-            //if (room.CreatedByUserId == userId)
-            //{
-            //    throw new InvalidOperationException("Twórca pokoju nie może go opuścić. Możesz go usunąć.");
-            //}
+    var participant = room.Participants.FirstOrDefault(p => p.UserId == userId);
+    
+    if (participant == null)
+    {
+        throw new InvalidOperationException("Nie jesteś członkiem tego pokoju");
+    }
 
-            room.Participants.Remove(participant);
-            await _unitOfWork.CompleteAsync();
+    _unitOfWork.Context.Set<RoomUserEntity>().Remove(participant);
+    await _unitOfWork.CompleteAsync();
 
-            var updatedRoom = await GetRoomByIdAsync(roomId);
-            await _roomHub.Clients.Group($"Room_{roomId}").SendAsync("RoomUpdated", updatedRoom);
+    var updatedRoom = await GetRoomByIdAsync(roomId);
+    
+    await _roomHub.Clients.Group($"Room_{roomId}").SendAsync("RoomUpdated", updatedRoom);
 
-            await _roomsHub.Clients.Group("SignalR Users").SendAsync("UserLeft", new
-            {
-                roomId = roomId,
-                userId = userId,
-                participantsCount = room.Participants.Count
-            });
-        }
+    await _roomsHub.Clients.Group("SignalR Users").SendAsync("RoomUpdated", updatedRoom);
+
+    await _roomsHub.Clients.Group("SignalR Users").SendAsync("UserLeft", new
+    {
+        roomId = roomId,
+        userId = userId,
+        participantsCount = updatedRoom.Users.Count
+    });
+}
     }
 
     public interface IRoomService

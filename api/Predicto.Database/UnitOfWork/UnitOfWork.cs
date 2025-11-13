@@ -11,6 +11,8 @@ namespace Predicto.Database.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
+            public PredictoDbContext Context => _context;
+
         private readonly PredictoDbContext _context;
         public IRepository<UserEntity> Users { get; }
 

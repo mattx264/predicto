@@ -93,7 +93,7 @@ namespace Predicto.Gateway.Controllers
             {
                 var userId = User.GetUserId();
                 await _roomService.JoinRoomAsync(id, userId);
-                return Ok(new { message = "succesfully joined room" });
+                return Ok(new { message = "Pomyślnie dołączono do pokoju!" });
             }
             catch (ArgumentException ex)
             {
@@ -109,7 +109,7 @@ namespace Predicto.Gateway.Controllers
             }
         }
 
-        [HttpPost("{id}/0")]
+        [HttpPost("{id}/leave")]
         [Authorize]
         public async Task<IActionResult> LeaveRoom(int id)
         {
@@ -117,7 +117,7 @@ namespace Predicto.Gateway.Controllers
             {
                 var userId = User.GetUserId();
                 await _roomService.LeaveRoomAsync(id, userId);
-                return Ok(new { message = "succesfully left room" });
+                return Ok(new { message = "Pomyślnie opuszczono pokój." });
             }
             catch (ArgumentException ex)
             {

@@ -13,8 +13,8 @@ namespace Predicto.Database.Interfaces.Repositories
         {
             return await _dbSet
                 .Include(r => r.Tournament)
-                // .Include(r => r.CreatedByUser)
                 .Include(r => r.Participants)
+                    .ThenInclude(p => p.User) 
                 .ToListAsync();
         }
 
@@ -22,8 +22,8 @@ namespace Predicto.Database.Interfaces.Repositories
         {
             return await _dbSet
                 .Include(r => r.Tournament)
-                   // .Include(r => r.CreatedByUser)
-                   .Include(r => r.Participants)
+                .Include(r => r.Participants)
+                    .ThenInclude(p => p.User)  
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
     }
