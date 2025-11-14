@@ -10,7 +10,6 @@ namespace Predicto.Database.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        PredictoDbContext Context { get; }
         IRepository<UserEntity> Users { get; }
         IRepository<RoomEntity> Rooms { get; }
         IRepository<SportCategoryEntity> SportCategory { get; }
@@ -23,6 +22,7 @@ namespace Predicto.Database.Interfaces
         IGameGroupRepository GameGroupRepository { get; }
         IRepository<RoomUserBetEntity> RoomUserBetRepository { get; }
         IRepository<PlayerTournamentEntity> PlayerTournamentRepository { get; }
+        IRepository<RoomUserEntity> RoomUserRepository { get; }
 
         
         Task<int> CompleteAsync(); // SaveChanges

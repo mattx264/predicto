@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Predicto.Database;
+using Predicto.Database.Interfaces;
 
-public class Repository<T> : IRepository<T> where T : class
+public class Repository<T> : IRepository<T> where T : class, IEntity
 {
     protected readonly PredictoDbContext _context;
     protected readonly DbSet<T> _dbSet;
@@ -12,12 +13,12 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet = _context.Set<T>();
     }
 
-    public virtual async Task<T?> GetByIdAsync(int id)  
+    public virtual async Task<T?> GetByIdAsync(int id)
     {
         return await _dbSet.FindAsync(id);
     }
 
-    public virtual async Task<IEnumerable<T>> GetAllAsync()  
+    public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
         return await _dbSet.ToListAsync();
     }
@@ -47,7 +48,7 @@ public class Repository<T> : IRepository<T> where T : class
     }
 }
 
-public interface IRepository<T> where T : class
+public interface IRepository<T> where T : IEntity
 {
     Task<T?> GetByIdAsync(int id);
     Task<IEnumerable<T>> GetAllAsync();

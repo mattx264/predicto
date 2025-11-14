@@ -1,10 +1,11 @@
 ﻿using Predicto.Database.Entities.Sport;
+using Predicto.Database.Interfaces;
 using System;
 using System.Collections.Generic;
 
 namespace Predicto.Database.Entities.Room
 {
-    public class RoomEntity
+    public class RoomEntity:IEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,7 +16,6 @@ namespace Predicto.Database.Entities.Room
         public int MaxUsers { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int CreatedByUserId { get; set; }
-        //public  virtual  UserEntity CreatedByUser { get; set; }//todo should be required
         public RoomStatus RoomStatus { get; set; }
         public virtual ICollection<RoomUserEntity> Participants { get; set; } = new List<RoomUserEntity>();
         public int CreatedById { get; set; } // user id of user that created room

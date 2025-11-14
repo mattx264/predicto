@@ -11,7 +11,6 @@ namespace Predicto.Database.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-            public PredictoDbContext Context => _context;
 
         private readonly PredictoDbContext _context;
         public IRepository<UserEntity> Users { get; }
@@ -37,6 +36,7 @@ namespace Predicto.Database.UnitOfWork
 
         public IGameGroupRepository GameGroupRepository { get; }
         public IRepository<RoomUserBetEntity> RoomUserBetRepository { get; }
+        public IRepository<RoomUserEntity> RoomUserRepository { get; }
 
         public UnitOfWork(PredictoDbContext context)
         {
@@ -53,7 +53,8 @@ namespace Predicto.Database.UnitOfWork
             GameGroup = new Repository<GameGroupEntity>(_context);
             PlayerTournamentRepository = new Repository<PlayerTournamentEntity>(_context);
             GameGroupRepository = new GameGroupRepository(_context);
-            RoomUserBetRepository=new Repository<RoomUserBetEntity>(_context);
+            RoomUserBetRepository = new Repository<RoomUserBetEntity>(_context);
+            RoomUserRepository = new Repository<RoomUserEntity>(_context);
         }
 
         public async Task<int> CompleteAsync()

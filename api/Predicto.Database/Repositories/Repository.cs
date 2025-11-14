@@ -1,13 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Predicto.Database.Interfaces;
 
 namespace Predicto.Database.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class, IEntity
     {
         protected readonly PredictoDbContext _context;
         protected readonly DbSet<T> _dbSet;
@@ -31,6 +27,7 @@ namespace Predicto.Database.Repositories
 
         public async Task AddAsync(T entity)
         {
+            entity.IsActive = true;
             await _dbSet.AddAsync(entity);
         }
 
@@ -41,16 +38,20 @@ namespace Predicto.Database.Repositories
 
         public void Remove(T entity)
         {
+            //entity.IsActive = false;
+            //_dbSet.Update(entity);
             _dbSet.Remove(entity);
         }
 
         public Task<T?> FindAsync(Func<T, bool> value)
         {
+            //isActive check
             return Task.FromResult(_dbSet.FirstOrDefault(value));
         }
 
         public Task<IEnumerable<T>> WhereAsync(Func<T, bool> predicate)
         {
+            //isActive check
             return Task.FromResult(_dbSet.Where(predicate));
         }
     }

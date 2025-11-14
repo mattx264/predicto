@@ -1,6 +1,7 @@
 ﻿using FluentEmail.Core;
 using Predicto.Database.Entities;
 using Predicto.Database.Interfaces;
+using Predicto.Database.Migrations;
 using Predicto.Gateway.DTO.Room;
 
 namespace Predicto.Gateway.Services.Room
@@ -26,9 +27,13 @@ namespace Predicto.Gateway.Services.Room
             {
                 throw new UnauthorizedAccessException();
             }
-
+            foreach (var item in userRoom.RoomUserBets.Where(x => x.GameId == roomGameBets.GameId))
+            {
+                item.IsActive = false;
+            }
             foreach (var item in roomGameBets.RoomGameBetTeam)
             {
+                var isWinnerSide = item.Bet == "W" || item.Bet == "D" || item.Bet == "L";
                 userRoom.RoomUserBets.Add(
                new RoomUserBetEntity()
                {
@@ -36,6 +41,8 @@ namespace Predicto.Gateway.Services.Room
                    GameId = roomGameBets.GameId,
                    TeamId = item.TeamId,
                    Bet = item.Bet,
+                   BetType = isWinnerSide ? BetTypeEnum.WinnerSide : BetTypeEnum.PointSide,
+                   IsActive = true
                });
             }
             await _unitOfWork.CompleteAsync();
@@ -87,11 +94,94 @@ namespace Predicto.Gateway.Services.Room
 
             return roomGame;
         }
+        public async Task<List<OtherGameBetSimpleDto>> GetOtherBet(int roomId, int gameId, int userId)
+        {
+            var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
+            if (room == null)
+            {
+                throw new Exception("Room not exists: " + roomId);
+            }
+            var userRoom = room.Participants.FirstOrDefault(x => x.UserId == userId);
+            userRoom.RoomUserBets?.ToList();
+            if (userRoom == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+            var participants = room.Participants.ToList();
+            var otherGameBetSimpleDto = (await _unitOfWork.Game.GetByIdAsync(gameId))?.Teams.Select(x => new OtherGameBetSimpleDto()
+            {
+                TeamId = x.TeamId
+            }).ToList();
+            if (otherGameBetSimpleDto == null)
+            {
+                throw new Exception("Teams not found");
+            }
+            var betList = new List<RoomUserBetEntity>() { };
+
+            var totalCount = 0;
+            foreach (var item in participants)
+            {
+
+                var roomUserBet = item.RoomUserBets.Where(x => x.GameId == gameId && x.IsActive).ToList();
+                var first = roomUserBet.FirstOrDefault();
+
+                if (first == null)
+                {
+                    continue;
+                }
+                var otherBet = otherGameBetSimpleDto.First(x => x.TeamId == first.TeamId);
+                if (first.BetType == BetTypeEnum.WinnerSide)
+                {
+
+                    if (first.Bet == "W")
+                    {
+                        otherBet.Win += 1;
+                        totalCount++;
+
+                    }
+                    else if (first.Bet == "D")
+                    {
+                        otherBet.Draw += 1;
+                        totalCount++;
+                    }
+                }
+                if (first.BetType == BetTypeEnum.PointSide)
+                {
+                    var second = roomUserBet.LastOrDefault();
+                    if (int.Parse(first.Bet) > int.Parse(second.Bet))
+                    {
+                        otherBet.Win += 1;
+                        totalCount++;
+                    }
+                    else if (int.Parse(first.Bet) == int.Parse(second.Bet))
+                    {
+                        otherBet.Draw += 1;
+                        totalCount++;
+                    }
+                    else
+                    {
+                        var otherBetSecond = otherGameBetSimpleDto.First(x => x.TeamId == second.TeamId);
+
+                        otherBetSecond.Win += 1;
+                        totalCount++;
+                    }
+
+
+                }
+            }
+            foreach (var item in otherGameBetSimpleDto)
+            {
+                item.TotalCount = totalCount;
+            }
+            return otherGameBetSimpleDto;
+
+        }
     }
     public interface IGameRoomService
     {
         Task BetGame(RoomGameBetDto roomGameBets, int userId);
         Task<List<RoomGameDto>> GetGames(int roomId, int userId);
+        Task<List<OtherGameBetSimpleDto>> GetOtherBet(int roomId, int gameId, int userId);
     }
 
 }

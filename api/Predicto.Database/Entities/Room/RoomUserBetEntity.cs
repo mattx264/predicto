@@ -1,9 +1,10 @@
 ﻿using Predicto.Database.Entities.Room;
 using Predicto.Database.Entities.Sport;
+using Predicto.Database.Interfaces;
 
 namespace Predicto.Database.Entities
 {
-    public class RoomUserBetEntity
+    public class RoomUserBetEntity : IEntity
     {
         public int Id { get; set; }
         //public int RoomUserId { get; set; }
@@ -14,6 +15,7 @@ namespace Predicto.Database.Entities
         public virtual GameEntity Game { get; set; }
         public required string Bet { get; set; }
         public BetTypeEnum BetType { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public enum BetTypeEnum

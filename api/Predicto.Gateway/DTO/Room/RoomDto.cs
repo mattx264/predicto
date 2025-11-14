@@ -22,7 +22,6 @@ namespace Predicto.Gateway.DTO.Rooms
         
         public DateTime CreatedAt { get; set; }
         public int CreatedByUserId { get; set; }
-        public string CreatedByUserName { get; set; }
         
         public bool IsUserInRoom { get; set; } 
     }

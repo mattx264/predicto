@@ -69,14 +69,13 @@ namespace Predicto.Gateway.Services.Room
                 TournamentEndDate = tournament.EndDate,
                 CreatedAt = roomEntity.CreatedAt,
                 CreatedByUserId = roomEntity.CreatedByUserId,
-                CreatedByUserName = user.Name,
                 IsUserInRoom = true
             };
 
             await _roomsHub.Clients.Group("SignalR Users").SendAsync("RoomCreated", roomDto);
 
             return roomDto;
-        }       
+        }
         public async Task<List<RoomDTO>> GetRoomsAsync(int? currentUserId = null)
         {
             var rooms = await _unitOfWork.Rooms.GetAllAsync();
@@ -136,7 +135,7 @@ namespace Predicto.Gateway.Services.Room
                 TournamentStartDate = room.Tournament?.StartDate ?? DateTime.MinValue,
                 TournamentEndDate = room.Tournament?.EndDate ?? DateTime.MinValue,
                 CreatedAt = room.CreatedAt,
-                //  CreatedByUserId = room.CreatedByUserId,
+                CreatedByUserId = room.CreatedByUserId,
                 //CreatedByUserName = room.CreatedByUser?.Name ?? "Unknown User",
                 IsUserInRoom = false
             };
@@ -147,7 +146,7 @@ namespace Predicto.Gateway.Services.Room
             var rooms = await _unitOfWork.Rooms.GetAllAsync();
 
             var myRooms = rooms.Where(r =>
-            //    r.CreatedByUserId == userId ||
+               r.CreatedByUserId == userId ||
                 r.Participants.Any(p => p.Id == userId)
             ).ToList();
 
@@ -172,100 +171,100 @@ namespace Predicto.Gateway.Services.Room
                 TournamentStartDate = r.Tournament?.StartDate ?? DateTime.MinValue,
                 TournamentEndDate = r.Tournament?.EndDate ?? DateTime.MinValue,
                 CreatedAt = r.CreatedAt,
-                // CreatedByUserId = r.CreatedByUserId,
-                //CreatedByUserName = r.CreatedByUser?.Name ?? "Unknown User",
+                CreatedByUserId = r.CreatedByUserId,
+               // CreatedByUserName = r.CreatedByUserName ?? "Unknown User",
                 IsUserInRoom = true
             }).ToList();
         }
 
-    public async Task JoinRoomAsync(int roomId, int userId)
-{
-    var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
+        public async Task JoinRoomAsync(int roomId, int userId)
+        {
+            var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
 
-    if (room == null)
-    {
-        throw new ArgumentException("Pokój nie istnieje");
-    }
+            if (room == null)
+            {
+                throw new ArgumentException("Pokój nie istnieje");
+            }
 
-    if (!room.IsActive)
-    {
-        throw new InvalidOperationException("Pokój nie jest aktywny");
-    }
+            if (!room.IsActive)
+            {
+                throw new InvalidOperationException("Pokój nie jest aktywny");
+            }
 
-    if (room.Participants.Count >= room.MaxUsers)
-    {
-        throw new InvalidOperationException("Pokój jest pełny");
-    }
+            if (room.Participants.Count >= room.MaxUsers)
+            {
+                throw new InvalidOperationException("Pokój jest pełny");
+            }
 
-    if (room.Participants.Any(p => p.UserId == userId))
-    {
-        throw new InvalidOperationException("Już jesteś w tym pokoju");
-    }
+            if (room.Participants.Any(p => p.UserId == userId))
+            {
+                throw new InvalidOperationException("Już jesteś w tym pokoju");
+            }
 
-    var user = await _unitOfWork.Users.GetByIdAsync(userId);
-    if (user == null)
-    {
-        throw new ArgumentException("Użytkownik nie istnieje");
-    }
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new ArgumentException("Użytkownik nie istnieje");
+            }
 
-    var roomUser = new RoomUserEntity()
-    {
-        UserId = userId,
-        RoomId = roomId,
-        UserRoomRole = UserRoomRole.Participant,
-        IsActive = true,
-    };
+            var roomUser = new RoomUserEntity()
+            {
+                UserId = userId,
+                RoomId = roomId,
+                UserRoomRole = UserRoomRole.Participant,
+                IsActive = true,
+            };
 
-    await _unitOfWork.Context.Set<RoomUserEntity>().AddAsync(roomUser);
-    await _unitOfWork.CompleteAsync();
+            await _unitOfWork.RoomUserRepository.AddAsync(roomUser);
+            await _unitOfWork.CompleteAsync();
 
-    var updatedRoom = await GetRoomByIdAsync(roomId);
+            var updatedRoom = await GetRoomByIdAsync(roomId);
 
-    await _roomHub.Clients.Group($"Room_{roomId}").SendAsync("RoomUpdated", updatedRoom);
+            await _roomHub.Clients.Group($"Room_{roomId}").SendAsync("RoomUpdated", updatedRoom);
 
-    await _roomsHub.Clients.Group("SignalR Users").SendAsync("RoomUpdated", updatedRoom);
+            await _roomsHub.Clients.Group("SignalR Users").SendAsync("RoomUpdated", updatedRoom);
 
-    await _roomsHub.Clients.Group("SignalR Users").SendAsync("UserJoined", new
-    {
-        roomId = roomId,
-        userId = userId,
-        userName = user.Name,
-        participantsCount = updatedRoom.Users.Count
-    });
-}
+            await _roomsHub.Clients.Group("SignalR Users").SendAsync("UserJoined", new
+            {
+                roomId = roomId,
+                userId = userId,
+                userName = user.Name,
+                participantsCount = updatedRoom.Users.Count
+            });
+        }
 
-public async Task LeaveRoomAsync(int roomId, int userId)
-{
-    var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
+        public async Task LeaveRoomAsync(int roomId, int userId)
+        {
+            var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
 
-    if (room == null)
-    {
-        throw new ArgumentException("Pokój nie istnieje");
-    }
+            if (room == null)
+            {
+                throw new ArgumentException("Pokój nie istnieje");
+            }
 
-    var participant = room.Participants.FirstOrDefault(p => p.UserId == userId);
-    
-    if (participant == null)
-    {
-        throw new InvalidOperationException("Nie jesteś członkiem tego pokoju");
-    }
+            var participant = room.Participants.FirstOrDefault(p => p.UserId == userId);
 
-    _unitOfWork.Context.Set<RoomUserEntity>().Remove(participant);
-    await _unitOfWork.CompleteAsync();
+            if (participant == null)
+            {
+                throw new InvalidOperationException("Nie jesteś członkiem tego pokoju");
+            }
 
-    var updatedRoom = await GetRoomByIdAsync(roomId);
-    
-    await _roomHub.Clients.Group($"Room_{roomId}").SendAsync("RoomUpdated", updatedRoom);
+            _unitOfWork.RoomUserRepository.Remove(participant);
+            await _unitOfWork.CompleteAsync();
 
-    await _roomsHub.Clients.Group("SignalR Users").SendAsync("RoomUpdated", updatedRoom);
+            var updatedRoom = await GetRoomByIdAsync(roomId);
 
-    await _roomsHub.Clients.Group("SignalR Users").SendAsync("UserLeft", new
-    {
-        roomId = roomId,
-        userId = userId,
-        participantsCount = updatedRoom.Users.Count
-    });
-}
+            await _roomHub.Clients.Group($"Room_{roomId}").SendAsync("RoomUpdated", updatedRoom);
+
+            await _roomsHub.Clients.Group("SignalR Users").SendAsync("RoomUpdated", updatedRoom);
+
+            await _roomsHub.Clients.Group("SignalR Users").SendAsync("UserLeft", new
+            {
+                roomId = roomId,
+                userId = userId,
+                participantsCount = updatedRoom.Users.Count
+            });
+        }
     }
 
     public interface IRoomService
