@@ -31,4 +31,4 @@ jobs:
     - name: Deploy using WebDeploy (msdeploy)
       run: |
         $publish = "${{ github.workspace }}\publish"
-        & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -source:contentPath="$publish" -dest:contentPath=mattx2642-001-site26,ComputerName=https://win8210.site4now.net:8172/msdeploy.axd?site=mattx2642-001-site26,UserName=${{ secrets.WEBDEPLOY_USERNAME }},Password=${{ secrets.WEBDEPLOY_PASSWORD }},AuthType=Basic,IncludeAcls=False -enableRule:AppOffline -verb:sync -allowUntrusted   
+        & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -source:contentPath="$publish" -dest:contentPath=mattx2642-001-site22,ComputerName=https://win8210.site4now.net:8172/MsDeploy.axd?site=mattx2642-001-site22,UserName=${{ secrets.WEBDEPLOY_USERNAME }},Password=${{ secrets.WEBDEPLOY_PASSWORD }},AuthType=Basic,IncludeAcls=False -enableRule:AppOffline -verb:sync -allowUntrusted   
