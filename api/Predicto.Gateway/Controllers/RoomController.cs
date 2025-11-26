@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Predicto.Gateway.DTO.Room;
+using Predicto.Gateway.DTO.Rooms;
 using Predicto.Gateway.Extensions;
 using Predicto.Gateway.Services.Room;
 
@@ -41,7 +42,7 @@ namespace Predicto.Gateway.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRooms()
+        public async Task<ActionResult<List<RoomDTO>>> GetRooms()
         {
             try
             {
@@ -61,7 +62,7 @@ namespace Predicto.Gateway.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRoom(int id)
+        public async Task<ActionResult<RoomDTO>> GetRoom(int id)
         {
             var room = await _roomService.GetRoomByIdAsync(id);
             if (room == null)
@@ -71,7 +72,7 @@ namespace Predicto.Gateway.Controllers
 
         [HttpGet("my")]
         [Authorize]
-        public async Task<IActionResult> GetMyRooms()
+        public async Task<ActionResult<List<RoomDTO>>> GetMyRooms()
         {
             try
             {

@@ -22,7 +22,7 @@ namespace Predicto.Gateway.Controllers
 
         [HttpGet("all")]
         [Authorize]
-        public async Task<IActionResult> GetAllGames(int roomId)
+        public async Task<ActionResult<List<RoomGameDto>>> GetAllGames(int roomId)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Predicto.Gateway.Controllers
 
         [HttpGet("other")]
         [Authorize]
-        public async Task<IActionResult> GetOtherBet(int roomId,int gameId)
+        public async Task<ActionResult<List<OtherGameBetSimpleDto>>> GetOtherBet(int roomId,int gameId)
         {
             try
             {

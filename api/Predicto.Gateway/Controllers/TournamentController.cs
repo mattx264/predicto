@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Predicto.Gateway.DTO.Sport;
 using Predicto.Gateway.Services;
 
 namespace Predicto.Gateway.Controllers
@@ -14,7 +15,7 @@ namespace Predicto.Gateway.Controllers
             _tournamentService = tournamentService;
         }
         [HttpGet]   
-        public async Task<IActionResult> GetTournamentsAsync()
+        public async Task<ActionResult<IEnumerable<TournamentDto>>> GetTournamentsAsync()
         {
             return Ok(await _tournamentService.GetAllAsync());
         }

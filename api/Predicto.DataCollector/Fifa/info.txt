@@ -6,3 +6,11 @@ To get group
 http://api.fifa.com/api/v3/calendar/520/288329/288330/standing?language=en&count=200
 source from 
 https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/qualifiers/uefa/standings
+
+//Live data
+1h before game
+https://api.fifa.com/api/v3/live/football/520/288329/288330/400019321?language=en
+	starting line up
+
+https://api.fifa.com/api/v3/timelines/520/288329/288330/400019321?language=en
+{"IdStage":"288330","IdMatch":"400019321","IdCompetition":"520","IdSeason":"288329","IdGroup":"288338","Event":[{"EventId":"2","IdTeam":"43962","Timestamp":"2025-11-14T19:48:40.407Z","MatchMinute":"0'","Period":3,"HomeGoals":0,"AwayGoals":0,"Type":7,"Qualifiers":[],"TypeLocalized":[{"Locale":"en-GB","Description":"Start Time"}],"PositionX":0.0,"PositionY":0.0,"HomePenaltyGoals":0,"AwayPenaltyGoals":0,"EventDescription":[{"Locale":"en-GB","Description":"The referee signals the start of the first period."}]},{"EventId":"12","IdTeam":"43962","IdPlayer":"418687","Timestamp":"2025-11-14T19:49:51.007Z","MatchMinute":"2'","Period":3,"HomeGoals":0,"AwayGoals":0,"Type":12,"Qualifiers":[{"Id":"6053676519","QualifierId":20},{"Id":"6053677049","QualifierId":87},{"Id":"6053677063","QualifierId":214},{"Id":"6053677053","QualifierId":154},{"Id":"6053677051","QualifierId":29},{"Id":"6053676427","QualifierId":16},{"Id":"6053677069","QualifierId":231,"GkYCoordinate":"50.2"},{"Id":"6053677065","QualifierId":328},{"Id":"6053676429","QualifierId":56,"PitchZone":3},{"Id":"6053677067","QualifierId":230,"GkXCoordinate":"99.7"},{"Id":"6053677061","QualifierId":103,"GoalmouthZCoordinate":"50"},{"Id":"6053676425","QualifierId":22},{"Id":"6053677055","QualifierId":55,"RelatedEventId":"11"},{"Id":"6053677059","QualifierId":102,"GoalmouthYCoordinate":"42.9"}],"TypeLocalized":[{"Locale":"en-GB","Description":"Attempt at Goal"}],"PositionX":95.5,"PositionY":52.8,"HomePenaltyGoals":0,"AwayPenaltyGoals":0,"EventDescription":[{"Locale":"en-GB","Description":"ZALEWSKI (Poland) attempts an effort on goal."}]}],"Properties":{"StatsPerformIfesId":"146430","IdStatsPerform":"j882xh0qdan16ec12oq8crh0"},"IsUpdateable":null}

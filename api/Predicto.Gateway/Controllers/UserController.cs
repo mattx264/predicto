@@ -32,7 +32,7 @@ namespace Predicto.Gateway.Controllers
             return Ok();
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Authenticate(LoginReq loginDto)
+        public async Task<ActionResult<string>> Authenticate(LoginReq loginDto)
         {
             if (!ModelState.IsValid)
             {
