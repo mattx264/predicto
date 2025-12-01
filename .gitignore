@@ -470,6 +470,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-/app/dist/
+/app/dist/*
 /app/public 
 /api/Predicto.DataCollector/Data/

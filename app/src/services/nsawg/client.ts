@@ -89,8 +89,8 @@ export class Client {
     /**
      * @return OK
      */
-    tournament(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/GameBlog/tournament/{id}";
+    getTournamentById(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/GameBlog/get-tournament-by-id/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -103,11 +103,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processTournament(_response);
+            return this.processGetTournamentById(_response);
         });
     }
 
-    protected processTournament(response: Response): Promise<void> {
+    protected processGetTournamentById(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -197,8 +197,8 @@ export class Client {
     /**
      * @return OK
      */
-    tournament2(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/TeamBlog/tournament/{id}";
+    gameByTournament(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/TeamBlog/game-by-tournament/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -211,11 +211,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processTournament2(_response);
+            return this.processGameByTournament(_response);
         });
     }
 
-    protected processTournament2(response: Response): Promise<void> {
+    protected processGameByTournament(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {

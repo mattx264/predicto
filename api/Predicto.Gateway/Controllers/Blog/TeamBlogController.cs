@@ -14,7 +14,7 @@ namespace Predicto.Gateway.Controllers
         {
             _teamService = teamService;
         }
-        [HttpGet("tournament/{id}")]
+        [HttpGet("game-by-tournament/{id}")]
         public async Task<IActionResult> GetTeamsByTournamentId(int id)
         {
            

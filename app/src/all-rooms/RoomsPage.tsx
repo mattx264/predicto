@@ -25,25 +25,7 @@ const RoomsPage: React.FC = () => {
 
   const { rooms, isLoading, error } = useRooms();
 
-  const mockRooms: Room[] = [
-    {
-      id: "mock-1",
-      name: "[MOCK] Premier League Masters",
-      creator: "JanKowalski",
-      participants: 8,
-      maxParticipants: 10,
-      entryFee: 50,
-      prize: 500,
-      league: "Premier League",
-      startDate: "2025-10-05",
-      endDate: "2025-11-30",
-      isPrivate: false,
-      status: "open",
-      isUserInRoom: false,
-    },
-  ];
-
-  const displayRooms = error ? mockRooms : rooms;
+  const displayRooms = rooms;
 
   const myRooms = useMemo(() => {
     return displayRooms.filter((room) => room.isUserInRoom === true);
