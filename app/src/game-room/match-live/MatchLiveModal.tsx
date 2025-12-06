@@ -2,25 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { X, Send, Clock, Users, MessageSquare } from "lucide-react";
 import "./MatchLiveModal.css";
 import { useChat } from "../../hooks/useChat";
-
-export interface Match {
-  id: string;
-  homeTeam: string;
-  awayTeam: string;
-  date: string;
-  status: "upcoming" | "live" | "finished";
-  actualScore?: {
-    home: number;
-    away: number;
-  };
-  userPrediction?: {
-    home?: number;
-    away?: number;
-    winner?: "home" | "draw" | "away";
-    joker?: boolean;
-  };
-  points?: number;
-}
+import type { Match } from "../../types/types";
 
 interface MatchLiveModalProps {
   match: Match;

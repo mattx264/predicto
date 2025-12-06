@@ -4,9 +4,11 @@ import MatchesList from "./MatchesList";
 import PredictionModal from "./PredictionModal";
 import MatchLiveModal from "../match-live/MatchLiveModal";
 import LivePredictionsModal from "../match-live/predictions/LivePredictionsModal";
-import type { Match } from "../../types/types";
+import type { Match, RoomGameBetDto } from "../../types/types";
 import gameService from "../../services/signalr/game.service";
 import MatchesTabs from "./matches-tabs/MatchesTabs";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 interface RoomMatchesProps {
   tournamentId?: number;
@@ -28,6 +30,8 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
   isParticipant,
   currentUserId,
 }) => {
+  const { token } = useAuth();
+
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,8 +48,6 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
 
   useEffect(() => {
     const fetchMatches = async () => {
-      console.log("🔍 Fetching matches for tournamentId:", tournamentId);
-
       if (!tournamentId) {
         console.error("❌ Tournament ID is missing");
         setError("Brak ID turnieju. Nie można pobrać meczów.");
@@ -57,17 +59,14 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
         setLoading(true);
         setError(null);
 
-        console.log("🚀 Calling gameService.getGamesByTournamentId...");
         const fetchedMatches =
           await gameService.getGamesByTournamentId(tournamentId);
-
-        console.log("✅ Fetched matches:", fetchedMatches);
-        console.log("📊 Number of matches:", fetchedMatches.length);
 
         setMatches(fetchedMatches);
       } catch (err) {
         console.error("❌ Error fetching matches:", err);
         setError("Nie udało się pobrać meczów. Spróbuj ponownie.");
+        toast.error("Nie udało się pobrać meczów. Spróbuj ponownie.");
       } finally {
         setLoading(false);
       }
@@ -94,24 +93,88 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
   ) => {
     if (!tournamentId || !roomId) {
       console.error("Tournament ID or Room ID is missing");
+      toast.error("Błąd: brak ID turnieju lub pokoju.");
       return;
     }
 
-    console.log("Submitting prediction for match", matchId, payload);
+    if (!token) {
+      console.error("No auth token found");
+      toast.error("Musisz być zalogowany, aby obstawiać mecze.");
+      return;
+    }
 
     try {
+      const match = matches.find((m) => m.id === matchId);
+      if (!match || !match.homeTeamId || !match.awayTeamId) {
+        throw new Error("Nie znaleziono danych meczu");
+      }
+
+      let homeScore: string;
+      let awayScore: string;
+
+      if (payload.home !== undefined && payload.away !== undefined) {
+        homeScore = payload.home.toString();
+        awayScore = payload.away.toString();
+      } else if (payload.winner) {
+        if (payload.winner === "home") {
+          homeScore = "W";
+          awayScore = "L";
+        } else if (payload.winner === "away") {
+          homeScore = "L";
+          awayScore = "W";
+        } else {
+          homeScore = "D";
+          awayScore = "D";
+        }
+      } else {
+        throw new Error("Nieprawidłowe dane predykcji");
+      }
+
+      const betData: RoomGameBetDto = {
+        gameId: parseInt(matchId),
+        roomId: Number(roomId),
+        roomGameBetTeam: [
+          {
+            teamId: match.homeTeamId,
+            bet: homeScore,
+          },
+          {
+            teamId: match.awayTeamId,
+            bet: awayScore,
+          },
+        ],
+      };
+
+      await gameService.betGame(betData, token);
+
+      setMatches((prevMatches) =>
+        prevMatches.map((m) =>
+          m.id === matchId
+            ? {
+                ...m,
+                userPrediction: {
+                  home: payload.home,
+                  away: payload.away,
+                  winner: payload.winner,
+                  joker: payload.joker,
+                },
+              }
+            : m
+        )
+      );
+
       setSelectedMatchId(null);
-      alert("Predykcja zapisana! (TODO: Implementacja API)");
+      toast.success("Predykcja zapisana pomyślnie!");
     } catch (error) {
       console.error("Error submitting prediction:", error);
-      alert("Nie udało się zapisać predykcji. Spróbuj ponownie.");
+      toast.error("Nie udało się zapisać predykcji. Spróbuj ponownie.");
     }
   };
 
   const selectedMatch = matches.find((m) => m.id === selectedMatchId);
 
   if (loading) {
-    return <div className="matches-section"></div>;
+    return <div className="matches-section">Ładowanie meczów...</div>;
   }
 
   if (error) {

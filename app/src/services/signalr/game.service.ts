@@ -1,11 +1,13 @@
-import type { GameApiDTO, GameDetailsDTO, Match } from "../../types/types";
+import type {
+  GameApiDTO,
+  GameDetailsDTO,
+  Match,
+  RoomGameBetDto,
+} from "../../types/types";
 import { mapGameApiDtoToMatch } from "../../types/types";
 import apiService from "./api.service";
 
 class GameService {
-  /**
-   * Pobiera wszystkie mecze dla danego turnieju
-   */
   async getGamesByTournamentId(tournamentId: number): Promise<Match[]> {
     try {
       const response = await fetch(
@@ -24,10 +26,6 @@ class GameService {
 
       const games: GameApiDTO[] = await response.json();
 
-      console.log("🎮 Games from API:", games);
-      console.log("📊 Number of games:", games.length);
-
-      // Mapowanie GameApiDTO na Match
       return games
         .map(mapGameApiDtoToMatch)
         .sort(
@@ -39,9 +37,6 @@ class GameService {
     }
   }
 
-  /**
-   * Pobiera szczegóły pojedynczego meczu
-   */
   async getGameDetails(gameId: number): Promise<GameDetailsDTO> {
     try {
       const response = await fetch(
@@ -66,60 +61,31 @@ class GameService {
     }
   }
 
-  /**
-   * Pobiera mecze z predykcjami użytkownika dla danego pokoju
-   * TODO: Ten endpoint wymaga implementacji na backendzie
-   */
-  // async getGamesWithPredictions(
-  //   tournamentId: number,
-  //   roomId: number,
-  //   token: string
-  // ): Promise<Match[]> {
-  //   try {
-  //     // Najpierw pobierz mecze
-  //     const matches = await this.getGamesByTournamentId(tournamentId);
+  async betGame(betData: RoomGameBetDto, token: string): Promise<void> {
+    try {
+      const response = await fetch(
+        `${apiService.getBackendUrl()}/api/RoomGame`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(betData),
+        }
+      );
 
-  //     // TODO: Pobierz predykcje użytkownika dla danego pokoju
-  //     // const predictions = await this.getUserPredictions(roomId, token);
-
-  //     // TODO: Połącz mecze z predykcjami
-  //     // return this.mergeMatchesWithPredictions(matches, predictions);
-
-  //     // Na razie zwracamy same mecze
-  //     return matches;
-  //   } catch (error) {
-  //     console.error("Error fetching games with predictions:", error);
-  //     throw error;
-  //   }
-  // }
-
-  /**
-   * Pomocnicza funkcja do łączenia meczów z predykcjami
-   * TODO: Implementacja po dodaniu endpointa dla predykcji
-   */
-  // private mergeMatchesWithPredictions(
-  //   matches: Match[],
-  //   predictions: any[]
-  // ): Match[] {
-  //   return matches.map((match) => {
-  //     const prediction = predictions.find((p) => p.gameId === match.id);
-
-  //     if (prediction) {
-  //       return {
-  //         ...match,
-  //         userPrediction: {
-  //           home: prediction.homeScore,
-  //           away: prediction.awayScore,
-  //           winner: prediction.winner,
-  //           joker: prediction.isJoker,
-  //         },
-  //         points: prediction.points,
-  //       };
-  //     }
-
-  //     return match;
-  //   });
-  // }
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized - musisz być zalogowany");
+        }
+        throw new Error(`Failed to bet on game: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Error placing bet:", error);
+      throw error;
+    }
+  }
 }
 
 export default new GameService();

@@ -25,7 +25,26 @@ const RoomsPage: React.FC = () => {
 
   const { rooms, isLoading, error } = useRooms();
 
-  const displayRooms = rooms;
+  const mockRooms: Room[] = [
+    {
+      id: "mock-1",
+      name: "[MOCK] Premier League Masters",
+      creator: "JanKowalski",
+      participants: 8,
+      maxParticipants: 10,
+      entryFee: 50,
+      prize: 500,
+      league: "Premier League",
+      startDate: "2025-10-05",
+      endDate: "2025-11-30",
+      isPrivate: false,
+      status: "open",
+      isUserInRoom: false,
+      tournamentId: 1,
+    },
+  ];
+
+  const displayRooms = error ? mockRooms : rooms;
 
   const myRooms = useMemo(() => {
     return displayRooms.filter((room) => room.isUserInRoom === true);
@@ -50,7 +69,6 @@ const RoomsPage: React.FC = () => {
   const handleRoomClick = (roomId: string) => {
     const room = displayRooms.find((r) => r.id === roomId);
     if (room && room.status === "open" && !room.isUserInRoom) {
-      // ✅ DODAJ: nie otwieraj płatności jeśli już w pokoju
       setSelectedRoom(room);
       setIsPaymentOpen(true);
     } else {

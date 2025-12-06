@@ -63,6 +63,8 @@ export interface Match {
   awayTeam: string;
   homeTeamLogo?: string;
   awayTeamLogo?: string;
+  homeTeamId?: number;
+  awayTeamId?: number;
   date: string;
   status: "upcoming" | "live" | "finished";
   actualScore?: {
@@ -72,12 +74,21 @@ export interface Match {
   userPrediction?: {
     home?: number;
     away?: number;
-    winner?: "home" | "draw" | "away";
+    winner?: "home" | "draw" | "away" | null;
     joker?: boolean;
   };
   points?: number;
 }
+export interface RoomGameBetDto {
+  gameId: number;
+  roomId: number;
+  roomGameBetTeam: RoomGameBetTeamDto[];
+}
 
+export interface RoomGameBetTeamDto {
+  teamId: number;
+  bet: string;
+}
 // match api
 export interface GameTeamApiDTO {
   id: number;
@@ -185,6 +196,8 @@ export const mapGameApiDtoToMatch = (game: GameApiDTO): Match => {
     awayTeam: awayTeam?.name || "Unknown",
     homeTeamLogo: homeTeam?.logoUrl,
     awayTeamLogo: awayTeam?.logoUrl,
+    homeTeamId: homeTeam?.id,
+    awayTeamId: awayTeam?.id,
     date: game.startTime,
     status,
     actualScore,

@@ -110,21 +110,21 @@ const MatchCard: React.FC<MatchCardProps> = ({
         />
       )}
 
-      {match.status === "live" && (
-        <div className="live-actions-container">
-          <button className="btn-watch-live" onClick={() => onWatchLive(match)}>
-            <MessageSquare size={16} />
-            Komentuj
-          </button>
-          <button
-            className="btn-view-predictions"
-            onClick={() => onViewPredictions(match)}
-          >
-            <BarChart size={16} />
-            Zobacz typy
-          </button>
-        </div>
-      )}
+      {/* {match.status === "live" && ( */}
+      <div className="live-actions-container">
+        <button className="btn-watch-live" onClick={() => onWatchLive(match)}>
+          <MessageSquare size={16} />
+          Komentuj
+        </button>
+        <button
+          className="btn-view-predictions"
+          onClick={() => onViewPredictions(match)}
+        >
+          <BarChart size={16} />
+          Zobacz typy
+        </button>
+      </div>
+      {/* )} */}
 
       {match.status === "upcoming" && isParticipant && (
         <button
