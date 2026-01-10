@@ -18,6 +18,7 @@ namespace Predicto.Database
                 if (!context.Set<TournamentEntity>().Any())
                 {
                     context.Add(new TournamentEntity { Name = "FIFA World Cup", SportCategoryId = 1 });
+                    context.Add(new TournamentEntity { Name = "Champions League", SportCategoryId = 1 });
                 }
                 context.SaveChanges();
                 //   SeedArticles(context);
