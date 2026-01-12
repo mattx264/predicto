@@ -329,27 +329,24 @@ const DashboardPage: React.FC = () => {
                 </h2>
                 <div className="room-tabs">
                   <button
-                    className={`room-tab ${
-                      selectedTab === "active" ? "active" : ""
-                    }`}
+                    className={`room-tab ${selectedTab === "active" ? "active" : ""
+                      }`}
                     onClick={() => setSelectedTab("active")}
                   >
                     {t("dashboard.tabs.active")} (
                     {userRooms.filter((r) => r.status === "active").length})
                   </button>
                   <button
-                    className={`room-tab ${
-                      selectedTab === "pending" ? "active" : ""
-                    }`}
+                    className={`room-tab ${selectedTab === "pending" ? "active" : ""
+                      }`}
                     onClick={() => setSelectedTab("pending")}
                   >
                     {t("dashboard.tabs.pending")} (
                     {userRooms.filter((r) => r.status === "pending").length})
                   </button>
                   <button
-                    className={`room-tab ${
-                      selectedTab === "ended" ? "active" : ""
-                    }`}
+                    className={`room-tab ${selectedTab === "ended" ? "active" : ""
+                      }`}
                     onClick={() => setSelectedTab("ended")}
                   >
                     {t("dashboard.tabs.ended")} (
@@ -380,7 +377,7 @@ const DashboardPage: React.FC = () => {
                         </div>
                         <div className="room-item-prize">
                           <Trophy size={16} />
-                          <span>{room.prize} PLN</span>
+                          <span>{room.prize} Monet</span>
                         </div>
                       </div>
 

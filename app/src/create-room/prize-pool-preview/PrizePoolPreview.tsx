@@ -57,7 +57,7 @@ const PrizePoolPreview: React.FC = () => {
       <div className="prize-pool-content">
         <span className="prize-pool-label">Przewidywana pula nagród</span>
         <span className={`prize-pool-value ${isAnimating ? "animating" : ""}`}>
-          {formatNumber(displayValue)} PLN
+          {formatNumber(displayValue)} Monet
         </span>
         {wowLevel === "mega" && (
           <span className="wow-badge mega-badge">MEGA PULA!</span>

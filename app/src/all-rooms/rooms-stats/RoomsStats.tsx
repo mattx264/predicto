@@ -47,7 +47,7 @@ const RoomsStats: React.FC<RoomsStatsProps> = ({ rooms }) => {
         </div>
         <div className="stat-info">
           <p className="stat-label">Łączna pula nagród</p>
-          <p className="stat-value">{totalPrize} PLN</p>
+          <p className="stat-value">{totalPrize} Monet</p>
         </div>
       </div>
 

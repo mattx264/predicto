@@ -13,7 +13,9 @@ import {
   AlertCircle,
 } from "lucide-react";
 import PrizePoolPreview from "../prize-pool-preview/PrizePoolPreview";
-import type { RoomFormData, TournamentDto } from "../../types/types";
+import { TournamentDto } from "../../services/nsawg/client";
+import type { RoomFormData } from "../../types/types";
+
 interface Props {
   formData: RoomFormData;
   selectedTemplate: TournamentDto | undefined;
@@ -108,11 +110,13 @@ const SummaryStep: React.FC<Props> = ({
             <div className="item-content">
               <span className="item-label">Okres trwania</span>
               <span className="item-value">
-                {`${new Date(selectedTemplate.startDate).toLocaleDateString(
-                  "pl-PL"
-                )} - ${new Date(selectedTemplate.endDate).toLocaleDateString(
-                  "pl-PL"
-                )}`}
+                {selectedTemplate.startDate && selectedTemplate.endDate
+                  ? `${new Date(selectedTemplate.startDate).toLocaleDateString(
+                    "pl-PL"
+                  )} - ${new Date(selectedTemplate.endDate).toLocaleDateString(
+                    "pl-PL"
+                  )}`
+                  : "Brak danych o dacie"}
               </span>
             </div>
           </div>
@@ -142,7 +146,7 @@ const SummaryStep: React.FC<Props> = ({
             <DollarSign className="item-icon-svg" size={20} />
             <div className="item-content">
               <span className="item-label">Wpisowe</span>
-              <span className="item-value">{formData.entryFee} PLN</span>
+              <span className="item-value">{formData.entryFee} Monet</span>
             </div>
           </div>
           <div className="summary-item">

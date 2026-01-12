@@ -165,11 +165,11 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
           <div className="room-card-footer">
             <div className="fee-info">
               <span className="fee-label">Wpisowe:</span>
-              <span className="fee-value">{room.entryFee} PLN</span>
+              <span className="fee-value">{room.entryFee} Monet</span>
             </div>
             <div className="prize-info">
               <Trophy className="prize-icon" size={16} />
-              <span className="prize-value">{room.prize} PLN</span>
+              <span className="prize-value">{room.prize} Monet</span>
             </div>
           </div>
 
@@ -182,7 +182,6 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
             />
           </div>
 
-          {/* ✅ Pokaż przycisk TYLKO jeśli user NIE jest w pokoju */}
           {room.status === "open" && !room.isUserInRoom && (
             <button
               className="join-room-button"
@@ -203,14 +202,14 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
                 <>
                   <UserPlus size={16} />
                   {room.entryFee > 0
-                    ? `Dołącz (${room.entryFee} PLN)`
+                    ? `Dołącz (${room.entryFee} Monet)`
                     : "Dołącz za darmo"}
                 </>
               )}
             </button>
           )}
 
-          {/* ✅ Badge jeśli już należysz do pokoju */}
+
           {room.isUserInRoom && (
             <div className="already-joined-badge">
               <CheckCircle size={16} />

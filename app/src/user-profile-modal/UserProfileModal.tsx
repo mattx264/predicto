@@ -123,36 +123,32 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
         <div className="my-profile-tabs">
           <button
-            className={`my-profile-tab ${
-              activeTab === "profile" ? "active" : ""
-            }`}
+            className={`my-profile-tab ${activeTab === "profile" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("profile")}
           >
             <User size={18} />
             <span className="my-profile-tab-text">Profil</span>
           </button>
           <button
-            className={`my-profile-tab ${
-              activeTab === "wallet" ? "active" : ""
-            }`}
+            className={`my-profile-tab ${activeTab === "wallet" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("wallet")}
           >
             <Wallet size={18} />
             <span className="my-profile-tab-text">Portfel</span>
           </button>
           <button
-            className={`my-profile-tab ${
-              activeTab === "settings" ? "active" : ""
-            }`}
+            className={`my-profile-tab ${activeTab === "settings" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("settings")}
           >
             <Settings size={18} />
             <span className="my-profile-tab-text">Ustawienia</span>
           </button>
           <button
-            className={`my-profile-tab ${
-              activeTab === "security" ? "active" : ""
-            }`}
+            className={`my-profile-tab ${activeTab === "security" ? "active" : ""
+              }`}
             onClick={() => setActiveTab("security")}
           >
             <Shield size={18} />
@@ -280,7 +276,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                       Dostępne saldo
                     </span>
                     <span className="my-profile-balance-amount">
-                      {userData.balance.toFixed(2)} PLN
+                      {userData.balance.toFixed(2)} Monet
                     </span>
                   </div>
                 </div>
@@ -308,7 +304,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                       Łączne wpłaty
                     </span>
                     <span className="my-profile-summary-value positive">
-                      +{userData.totalDeposits.toFixed(2)} PLN
+                      +{userData.totalDeposits.toFixed(2)} Monet
                     </span>
                   </div>
                   <div className="my-profile-summary-item">
@@ -316,7 +312,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                       Łączne wypłaty
                     </span>
                     <span className="my-profile-summary-value negative">
-                      -{userData.totalWithdrawals.toFixed(2)} PLN
+                      -{userData.totalWithdrawals.toFixed(2)} Monet
                     </span>
                   </div>
                 </div>

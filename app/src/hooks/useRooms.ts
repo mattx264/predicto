@@ -15,11 +15,11 @@ import {
 } from "../signals/rooms.signals";
 import {
   mapRoomDtoToRoom,
-  type RoomDTO,
   type Room,
   type UserJoinedEvent,
   type UserLeftEvent,
 } from "../types/types";
+import type { RoomDTO } from "../services/nsawg/client";
 
 interface UseRoomsReturn {
   rooms: Room[];

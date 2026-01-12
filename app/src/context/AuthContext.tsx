@@ -7,12 +7,9 @@ import React, {
   type ReactNode,
 } from "react";
 import authService from "../services/signalr/auth.service";
+import type { UserDto } from "../services/nsawg/client";
 
-interface UserDto {
-  id: number;
-  name: string;
-  email: string;
-}
+
 
 interface AuthContextType {
   user: UserDto | null;
@@ -129,10 +126,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await authService.login(email, password);
-      setToken(response.token);
+      const authToken = await authService.login(email, password);
+      setToken(authToken);
 
-      const userData = await authService.getCurrentUser(response.token);
+      const userData = await authService.getCurrentUser(authToken);
       setUser(userData);
     } finally {
       setIsLoading(false);
@@ -149,10 +146,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await authService.register(username, email, password, lang);
 
-      const response = await authService.login(email, password);
-      setToken(response.token);
+      const authToken = await authService.login(email, password);
+      setToken(authToken);
 
-      const userData = await authService.getCurrentUser(response.token);
+      const userData = await authService.getCurrentUser(authToken);
       setUser(userData);
     } finally {
       setIsLoading(false);

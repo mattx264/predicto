@@ -4,11 +4,13 @@ import MatchesList from "./MatchesList";
 import PredictionModal from "./PredictionModal";
 import MatchLiveModal from "../match-live/MatchLiveModal";
 import LivePredictionsModal from "../match-live/predictions/LivePredictionsModal";
-import type { Match, RoomGameBetDto } from "../../types/types";
 import gameService from "../../services/signalr/game.service";
 import MatchesTabs from "./matches-tabs/MatchesTabs";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import type { Match } from "../../types/types";
+
+import { RoomGameBetDto, RoomGameBetTeamDto } from "../../services/nsawg/client";
 
 interface RoomMatchesProps {
   tournamentId?: number;
@@ -130,35 +132,35 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
         throw new Error("Nieprawidłowe dane predykcji");
       }
 
-      const betData: RoomGameBetDto = {
+      const betData = new RoomGameBetDto({
         gameId: parseInt(matchId),
         roomId: Number(roomId),
         roomGameBetTeam: [
-          {
+          new RoomGameBetTeamDto({
             teamId: match.homeTeamId,
             bet: homeScore,
-          },
-          {
+          }),
+          new RoomGameBetTeamDto({
             teamId: match.awayTeamId,
             bet: awayScore,
-          },
+          }),
         ],
-      };
+      });
 
-      await gameService.betGame(betData, token);
+      await gameService.betGame(betData);
 
       setMatches((prevMatches) =>
         prevMatches.map((m) =>
           m.id === matchId
             ? {
-                ...m,
-                userPrediction: {
-                  home: payload.home,
-                  away: payload.away,
-                  winner: payload.winner,
-                  joker: payload.joker,
-                },
-              }
+              ...m,
+              userPrediction: {
+                home: payload.home,
+                away: payload.away,
+                winner: payload.winner,
+                joker: payload.joker,
+              },
+            }
             : m
         )
       );
