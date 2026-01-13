@@ -44,12 +44,9 @@ namespace Predicto.Gateway.Services.Room
                 MaxUsers = newRoomDto.MaxParticipants,
                 TournamentId = newRoomDto.TournamentId,
                 RoomStatus = RoomStatus.Waiting,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow,
-                CreatedByUserId = createdByUserId
             };
 
-            await _unitOfWork.Rooms.AddAsync(roomEntity);
+            await _unitOfWork.Rooms.AddAsync(roomEntity, createdByUserId);
             await _unitOfWork.CompleteAsync();
 
             var roomDto = new RoomDTO
@@ -67,8 +64,6 @@ namespace Predicto.Gateway.Services.Room
                 TournamentLeague = tournament.League,
                 TournamentStartDate = tournament.StartDate,
                 TournamentEndDate = tournament.EndDate,
-                CreatedAt = roomEntity.CreatedAt,
-                CreatedByUserId = roomEntity.CreatedByUserId,
                 IsUserInRoom = true
             };
 
@@ -100,7 +95,6 @@ namespace Predicto.Gateway.Services.Room
                 TournamentLeague = r.Tournament?.League ?? "Unknown League",
                 TournamentStartDate = r.Tournament?.StartDate ?? DateTime.MinValue,
                 TournamentEndDate = r.Tournament?.EndDate ?? DateTime.MinValue,
-                CreatedAt = r.CreatedAt,
                 //CreatedByUserId = r.CreatedByUserId,
                 //CreatedByUserName = r.CreatedByUser?.Name ?? "Unknown User",
                 //IsUserInRoom = currentUserId.HasValue &&
@@ -134,8 +128,6 @@ namespace Predicto.Gateway.Services.Room
                 TournamentLeague = room.Tournament?.League ?? "Unknown League",
                 TournamentStartDate = room.Tournament?.StartDate ?? DateTime.MinValue,
                 TournamentEndDate = room.Tournament?.EndDate ?? DateTime.MinValue,
-                CreatedAt = room.CreatedAt,
-                CreatedByUserId = room.CreatedByUserId,
                 //CreatedByUserName = room.CreatedByUser?.Name ?? "Unknown User",
                 IsUserInRoom = false
             };
@@ -146,7 +138,7 @@ namespace Predicto.Gateway.Services.Room
             var rooms = await _unitOfWork.Rooms.GetAllAsync();
 
             var myRooms = rooms.Where(r =>
-               r.CreatedByUserId == userId ||
+               r.CreatedBy == userId ||
                 r.Participants.Any(p => p.Id == userId)
             ).ToList();
 
@@ -170,8 +162,6 @@ namespace Predicto.Gateway.Services.Room
                 TournamentLeague = r.Tournament?.League ?? "Unknown League",
                 TournamentStartDate = r.Tournament?.StartDate ?? DateTime.MinValue,
                 TournamentEndDate = r.Tournament?.EndDate ?? DateTime.MinValue,
-                CreatedAt = r.CreatedAt,
-                CreatedByUserId = r.CreatedByUserId,
                // CreatedByUserName = r.CreatedByUserName ?? "Unknown User",
                 IsUserInRoom = true
             }).ToList();
@@ -215,7 +205,7 @@ namespace Predicto.Gateway.Services.Room
                 IsActive = true,
             };
 
-            await _unitOfWork.RoomUserRepository.AddAsync(roomUser);
+            await _unitOfWork.RoomUserRepository.AddAsync(roomUser,userId);
             await _unitOfWork.CompleteAsync();
 
             var updatedRoom = await GetRoomByIdAsync(roomId);

@@ -19,14 +19,18 @@ namespace Predicto.Database.Entities.Sport
         public  string? Nationality { get; set; }
         public  int? Height { get; set; }
         public  int? Weight { get; set; }
-        public int? ShirtNumber { get; set; }
+        public int? ClubNumber { get; set; }
+        public int? NationalTeamNumber { get; set; }
         public string? Position { get; set; } //Goalkeeper, Defender, Midfielder, Forward
         public string? PhotoUrl { get; set; }
         public int? MarketValue { get; set; }
         public string? Bio { get; set; }
         public virtual ICollection<TeamEntity> Teams { get; set; }
         public bool IsActive { get; set; }
-        public DateTime LastModified { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public int CreatedBy { get; set; }
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
+        public int ModifiedBy { get; set; }
 
 
     }

@@ -49,7 +49,7 @@ namespace Predicto.Gateway.Controllers
                 Nationality = player.Nationality,
                 Height = player.Height,
                 Weight = player.Weight,
-                ShirtNumber = player.ShirtNumber,
+                ShirtNumber = player.ClubNumber,
                 PhotoUrl = player.PhotoUrl,
                 MarketValue = player.MarketValue,
                 Bio = player.Bio,

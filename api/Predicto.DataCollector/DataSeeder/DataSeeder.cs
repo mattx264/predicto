@@ -1,4 +1,5 @@
 ﻿using Predicto.Database.Entities.Sport;
+using Predicto.Database.Entities.Sport.Enums;
 using Predicto.Database.UnitOfWork;
 using Predicto.DataCollector.Fifa;
 using Predicto.DataCollector.Models;
@@ -17,11 +18,13 @@ namespace Predicto.DataCollector.NewFolder
             using var unitOfWork = new UnitOfWork(new Database.PredictoDbContext());
 
 
-          //  await SeedTeam(unitOfWork);
-           // await unitOfWork.CompleteAsync();
+            //  await SeedTeam(unitOfWork);
+            // await unitOfWork.CompleteAsync();
 
             //await UefaTeamSeed(unitOfWork);
-            await FifaGamesSeed(unitOfWork);
+            // await FifaGamesSeed(unitOfWork);
+            await new UefaComChanpionship().Start();
+          // await new UefaComChanpionship().SeedDataAsync(unitOfWork);
 
 
 
@@ -30,6 +33,7 @@ namespace Predicto.DataCollector.NewFolder
 
 
         }
+        /*
         private async Task SeedTeam(UnitOfWork unitOfWork)
         {
             string[] fileEntries = Directory.GetFiles("../../../../Predicto.DataCollector/Data/Teams/");
@@ -51,6 +55,7 @@ namespace Predicto.DataCollector.NewFolder
                         team = new TeamEntity
                         {
                             Name = teamData.name,
+                            FullName = teamData.name,
                             Slug = teamData.name.ToLower().Replace(" ", "-"),
                             FootballApiId = teamData.id,
                             ImageUrl = teamData.logo,
@@ -58,7 +63,7 @@ namespace Predicto.DataCollector.NewFolder
 
 
                         };
-                        await unitOfWork.Team.AddAsync(team);
+                        await unitOfWork.Team.AddAsync(team, 1);
                     }
                     var players = data.response[0].players;
                     foreach (var player in players)
@@ -86,12 +91,8 @@ namespace Predicto.DataCollector.NewFolder
                         };
                         playerEntity.Teams = new List<TeamEntity> { team };
 
-                        await unitOfWork.Player.AddAsync(playerEntity);
-                        //await unitOfWork.TeamPlayer.AddAsync(new TeamPlayerEntity()
-                        //{
-                        //    PlayerEntity = playerEntity,
-                        //    TeamEntity = team,
-                        //});
+                        await unitOfWork.Player.AddAsync(playerEntity,1);
+                      
                     }
                 }
                 catch (Exception ex)
@@ -100,7 +101,7 @@ namespace Predicto.DataCollector.NewFolder
                     //  throw;
                 }
             }
-        }
+        }*/
         private async Task SeedPlayers(UnitOfWork unitOfWork, TeamEntity? team)
         {
             string[] fileEntries = Directory.GetDirectories("../../../../Predicto.DataCollector/Data/Teams/Players/");
@@ -134,9 +135,9 @@ namespace Predicto.DataCollector.NewFolder
                             PhotoUrl = playerData.photo,
                             Age = playerData.age,
                             Position = playerData.position,
-                            ShirtNumber = playerData.number,
+                            NationalTeamNumber = playerData.number,
                         };
-                        await unitOfWork.Player.AddAsync(player);
+                        await unitOfWork.Player.AddAsync(player,1);
 
 
                         //await unitOfWork.TeamPlayer.AddAsync(new TeamPlayerEntity()
@@ -155,11 +156,11 @@ namespace Predicto.DataCollector.NewFolder
                 }
             }
         }
-        private async Task UefaTeamSeed(UnitOfWork unitOfWork)
-        {
-            var uefa = new UefaCom();
-            await uefa.SeedTeamAsync(unitOfWork);
-        }
+        //private async Task UefaTeamSeed(UnitOfWork unitOfWork)
+        //{
+        //    var uefa = new UefaCom();
+        //    await uefa.SeedTeamAsync(unitOfWork);
+        //}
         private async Task UefaPlayerSeed(UnitOfWork unitOfWork)
         {
             var uefa = new UefaCom();
@@ -170,5 +171,6 @@ namespace Predicto.DataCollector.NewFolder
             var fifa = new FifaCom();
             await fifa.SeedData(unitOfWork);
         }
+
     }
 }

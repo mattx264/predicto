@@ -17,41 +17,50 @@ namespace Predicto.Database.Repositories
 
         public async Task<T?> GetByIdAsync(int id)
         {
-            return await _dbSet.FindAsync(id);
+
+            return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.Where(e => e.IsActive).ToListAsync();
         }
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(T entity, int userId)
         {
             entity.IsActive = true;
+            entity.CreatedDate = DateTime.Now;
+            entity.ModifiedDate = DateTime.Now;
+            entity.CreatedBy = userId; //to be replaced
+            entity.ModifiedBy = userId; //to be replaced
             await _dbSet.AddAsync(entity);
         }
 
-        public void Update(T entity)
+        public void Update(T entity, int userId)
         {
+            entity.ModifiedDate = DateTime.Now;
+            entity.ModifiedBy = userId; //to be replaced
             _dbSet.Update(entity);
         }
 
         public void Remove(T entity)
         {
-            //entity.IsActive = false;
-            //_dbSet.Update(entity);
-            _dbSet.Remove(entity);
+            entity.IsActive = false;
+            _dbSet.Update(entity);
+            //_dbSet.Remove(entity);
         }
 
         public Task<T?> FindAsync(Func<T, bool> value)
         {
-            //isActive check
+            var originalPredicate = value;
+            value = x => x.IsActive && originalPredicate(x);
             return Task.FromResult(_dbSet.FirstOrDefault(value));
         }
 
         public Task<IEnumerable<T>> WhereAsync(Func<T, bool> predicate)
         {
-            //isActive check
+            var originalPredicate = predicate;
+            predicate = x => x.IsActive && originalPredicate(x);
             return Task.FromResult(_dbSet.Where(predicate));
         }
     }

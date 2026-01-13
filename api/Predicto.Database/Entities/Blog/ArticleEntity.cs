@@ -21,5 +21,9 @@ namespace Predicto.Database.Entities.Blog
         public int? TournamentId { get; set; }
         public virtual TournamentEntity? Tournament { get; set; }
         public bool IsActive { get; set; }
+        public DateTime CreatedDate { get; set; }= DateTime.Now;
+        public int CreatedBy { get; set; }
+        public DateTime ModifiedDate { get; set; }=DateTime.Now;
+        public int ModifiedBy { get; set; }
     }
 }

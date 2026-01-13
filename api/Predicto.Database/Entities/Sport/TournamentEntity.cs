@@ -11,7 +11,6 @@ namespace Predicto.Database.Entities.Sport
         public virtual SportCategoryEntity SportCategory { get; set; }
         public required string Name { get; set; }
         //public virtual IList<TeamEntity> Teams { get; set; } = new List<TeamEntity>();
-        public bool IsActive { get; set; } = true;
         public string? Description { get; set; }
         public string? League { get; set; }
         public int MatchesCount { get; set; }
@@ -19,6 +18,12 @@ namespace Predicto.Database.Entities.Sport
         public DateTime EndDate { get; set; }
         public string? LogoUrl { get; set; }
         public virtual ICollection<GameEntity>? Games { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public int CreatedBy { get; set; }
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
+        public int ModifiedBy { get; set; }
+        public bool IsActive { get; set; } = true;
+
     }
 }
 

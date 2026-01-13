@@ -149,7 +149,7 @@ namespace Predicto.DataCollector.Fifa
                             GamePlayerEvents = gamePlayerEvents,
                             Stadium = stadium
                         };
-                        await unitOfWork.Game.AddAsync(gameEntity);
+                        await unitOfWork.Game.AddAsync(gameEntity, 1);
                         await unitOfWork.CompleteAsync();
                     }
                     catch (Exception ex)
@@ -244,10 +244,10 @@ namespace Predicto.DataCollector.Fifa
 
                     });
                 }
-                catch (Exception ex)
+                catch (Exception )
                 {
                     Console.WriteLine($"Player not found for card: {item.IdPlayer}");
-                    throw;
+                    throw ;
                 }
             }
         }
@@ -284,6 +284,7 @@ namespace Predicto.DataCollector.Fifa
                     if (player == null)
                     {
                         Console.WriteLine($"Player not found: {item.ShortName[0].Description}");
+                        continue;
                     }
                     gamePlayer.Add(new GamePlayerEntity()
                     {
@@ -293,7 +294,7 @@ namespace Predicto.DataCollector.Fifa
                     });
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 throw;
             }
@@ -336,7 +337,7 @@ namespace Predicto.DataCollector.Fifa
                         IsActive = true,
                         Teams = new List<TeamEntity> { teamEntity }
                     };
-                    await unitOfWork.Player.AddAsync(player);
+                    await unitOfWork.Player.AddAsync(player,1);
                     await unitOfWork.CompleteAsync();
                     return player;
                     //  throw new Exception($"Player with last name {lastName} not found in team {teamEntity.Name}");

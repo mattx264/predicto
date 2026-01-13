@@ -13,6 +13,12 @@ namespace Predicto.DataCollector.Fifa
         {
             return word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
         }
+        public static string FileNameSanitizer(string input)
+        {
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var sanitized = new string(input.Select(c => invalidChars.Contains(c) ? '_' : c).ToArray());
+            return sanitized.Replace(" ", "_");
+        }
         public static string ReplaceSpecialCharacters(string input)
         {
             return new string(input

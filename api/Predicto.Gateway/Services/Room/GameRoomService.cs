@@ -1,7 +1,6 @@
 ﻿using FluentEmail.Core;
 using Predicto.Database.Entities;
 using Predicto.Database.Interfaces;
-using Predicto.Database.Migrations;
 using Predicto.Gateway.DTO.Room;
 
 namespace Predicto.Gateway.Services.Room

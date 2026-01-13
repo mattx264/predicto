@@ -28,12 +28,68 @@ namespace Predicto.DataCollector.Scraber
         }
         public IList<IWebElement> GetElements(string selector)
         {
+
             var elements = driver.FindElements(By.CssSelector(selector));
             return elements;
         }
         internal IWebElement GetElement(string selector)
         {
             var element = driver.FindElement(By.CssSelector(selector));
+            return element;
+        }
+        public IWebElement GetElementFromShadowDom(params string[] selectors)
+        {
+            //document.querySelector("pk-badge").shadowRoot.querySelector('img')
+        
+            if (driver == null)
+            {
+                throw new InvalidOperationException("ChromeDriver is not initialized. Call StartChrome first.");
+            }
+
+            ChromeDriver js = driver;
+            var scriptString = "return document.querySelector";
+            var selectorIndex = 0;
+            var stopIndex = selectors.Length - 1;
+
+            foreach (var selector in selectors)
+            {
+                var root = "('" + selector + "')";
+                root += (selectorIndex != stopIndex && selectors.Length != 1) ? ".shadowRoot.querySelector" : null;
+                selectorIndex++;
+                scriptString += root;
+            }
+
+            var webElement = (IWebElement)js.ExecuteScript(scriptString);
+            return webElement;
+        }
+        public List<IWebElement> GetElementsFromShadowDom(params string[] selectors)
+        {
+
+            if (driver == null)
+            {
+                throw new InvalidOperationException("ChromeDriver is not initialized. Call StartChrome first.");
+            }
+
+            ChromeDriver js = driver;
+            var scriptString = "return document.querySelector";
+            var selectorIndex = 0;
+            var stopIndex = selectors.Length - 1;
+
+            foreach (var selector in selectors)
+            {
+                var root = "('" + selector + "')";
+                root += (selectorIndex != stopIndex && selectors.Length != 1) ? ".shadowRoot.querySelectorAll" : null;
+                selectorIndex++;
+                scriptString += root;
+            }
+            var webElements = js.ExecuteScript(scriptString) as IEnumerable<IWebElement>;
+            return webElements?.ToList() ?? new List<IWebElement>();
+           
+        }
+       
+        internal IWebElement GetElementByXPath(string selector)
+        {
+            var element = driver.FindElement(By.XPath(selector));
             return element;
         }
         public void Dispose()
@@ -52,56 +108,6 @@ namespace Predicto.DataCollector.Scraber
 
             }
         }
-
-
-        //public void StartChrome(string selector, int sleep=10000)
-        //{
-        //    // Initialize ChromeDriver
-        //    var driver = new ChromeDriver();
-        //    // Navigate to the specified URL
-        //    driver.Navigate().GoToUrl("https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/qualifiers/uefa/scores-fixtures?country=PL&wtw-filter=ALL");
-        //    // Additional actions can be implemented here
-        //    // Close the browser after tasks are complete
-        //   Thread.Sleep(sleep);
-
-        //    var elements = driver.FindElements(By.CssSelector(selector));
-
-        //        foreach (var page in elements)
-        //        {
-
-        //            var url = page.GetAttribute("href");
-        //            driver.Navigate().GoToUrl(url);
-        //            Thread.Sleep(10000);                    
-        //            var element = driver.FindElement(By.CssSelector("main"));
-        //            var groupAndDate = element.FindElements(By.CssSelector(".match-details-header-main-component_MatchDate__os-xd"));
-        //            var group = groupAndDate[0].GetAttribute("innerText");
-        //            var dateString = groupAndDate[1].GetAttribute("innerText").Replace("•", "");
-        //            var date = DateTime.Parse(dateString ?? "");
-
-        //            var teams = element.FindElements(By.CssSelector(".match-score_TeamName__519Ix"));
-        //            // Console.WriteLine(teams[0].GetAttribute("innerHTML"));
-        //            // Console.WriteLine(teams[1].GetAttribute("innerHTML"));
-        //            var score = element.FindElement(By.CssSelector(".show-match-score_BigFont__pfLm9"));
-
-        //            var gameInfo = new GameInfo
-        //            {
-        //                Date = date,
-        //                Group = group ?? "",
-        //                HomeTeam = teams[0].GetAttribute("innerText") ?? "",
-        //                AwayTeam = teams[1].GetAttribute("innerText") ?? "",
-        //                Url = url
-        //            };
-        //            if(score.GetAttribute("innerText")!=null && score.GetAttribute("innerText").Contains("-"))
-        //            {
-        //                gameInfo.HomeScore = int.Parse(score.GetAttribute("innerText")?.Split('-')[0].Trim() ?? "0");
-        //                gameInfo.AwayScore = int.Parse(score.GetAttribute("innerText")?.Split('-')[1].Trim() ?? "0");
-        //            }
-        //            data.Games.Add(gameInfo);
-
-        //    }
-        //    }
-
-        //}
 
     }
 

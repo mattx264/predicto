@@ -50,7 +50,7 @@ namespace Predicto.Gateway.Services
                     LogoUrl = x.Team.ImageUrl,
                     Tactic = x.Tactics,
                     Coach = x.Team.Coach,
-                    FormLastGames = x.Team.FormLastGames,
+                    FormLastGames = "",//x.Team.FormLastGames,
 
                     Players = x.Team.Players.Select(gp => new PlayerBasicInfoDto()
                     {
@@ -58,7 +58,7 @@ namespace Predicto.Gateway.Services
                         Name = gp.Name,
                         ImageUrl = gp.PhotoUrl,
                         Position = gp.Position,
-                        ShirtNumber = gp.ShirtNumber,
+                        ShirtNumber = gp.NationalTeamNumber,
                     }).ToList()
 
                 }).ToList(),
