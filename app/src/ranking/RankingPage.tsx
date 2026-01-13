@@ -178,7 +178,10 @@ const RankingPage: React.FC = () => {
         return <span className="rank-number-large">#{rank}</span>;
     }
   };
-
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as "all" | "month" | "week";
+    setTimeFilter(value);
+  };
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case "up":
@@ -212,7 +215,7 @@ const RankingPage: React.FC = () => {
             <Filter className="filter-icon-rank" size={20} />
             <select
               value={timeFilter}
-              onChange={(e) => setTimeFilter(e.target.value as any)}
+              onChange={handleFilterChange}
               className="time-select"
             >
               <option value="all">Cały czas</option>
@@ -357,9 +360,8 @@ const RankingPage: React.FC = () => {
             {players.map((player) => (
               <div
                 key={player.id}
-                className={`ranking-item-detail ${
-                  player.id === currentUserId ? "is-current" : ""
-                } ${player.rank <= 3 ? "top-three" : ""}`}
+                className={`ranking-item-detail ${player.id === currentUserId ? "is-current" : ""
+                  } ${player.rank <= 3 ? "top-three" : ""}`}
                 onClick={() => navigate(`/profile/${player.id}`)}
               >
                 <div className="rank-col">

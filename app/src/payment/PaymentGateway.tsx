@@ -141,25 +141,23 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
           </div>
           <div className="detail-row">
             <span className="detail-label">Wpisowe:</span>
-            <span className="detail-value highlight">{entryFee} PLN</span>
+            <span className="detail-value highlight">{entryFee} Monet</span>
           </div>
         </div>
 
         <div className="payment-content">
           <div className="payment-method-selector">
             <button
-              className={`method-tab ${
-                paymentMethod === "mock" ? "active" : ""
-              }`}
+              className={`method-tab ${paymentMethod === "mock" ? "active" : ""
+                }`}
               onClick={() => setPaymentMethod("mock")}
               disabled={isProcessing}
             >
               ⚡ Szybka płatność (TEST)
             </button>
             <button
-              className={`method-tab ${
-                paymentMethod === "card" ? "active" : ""
-              }`}
+              className={`method-tab ${paymentMethod === "card" ? "active" : ""
+                }`}
               onClick={() => setPaymentMethod("card")}
               disabled={isProcessing}
             >
@@ -198,7 +196,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
                     onClick={handleMockPayment}
                     disabled={isProcessing}
                   >
-                    <Lock size={20} /> Zapłać i dołącz - {entryFee} PLN
+                    <Lock size={20} /> Zapłać i dołącz - {entryFee} Monet
                   </button>
                 </div>
               )}
@@ -264,7 +262,7 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
                     className="submit-button"
                     disabled={isProcessing}
                   >
-                    <Lock size={20} /> Zapłać i dołącz - {entryFee} PLN
+                    <Lock size={20} /> Zapłać i dołącz - {entryFee} Monet
                   </button>
                 </form>
               )}

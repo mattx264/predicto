@@ -51,7 +51,7 @@ const HowToPlay: React.FC = () => {
               </div>
               <div className="feature-item">
                 <DollarSign size={18} />
-                <span>Wpisowe od 10 do 500 PLN</span>
+                <span>Wpisowe od 10 do 500 Monet</span>
               </div>
             </div>
           </div>

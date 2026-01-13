@@ -113,7 +113,7 @@ const RoomSettingsStep: React.FC<Props> = ({
         </div>
         <div className="form-group">
           <label className="form-label">
-            <DollarSign size={18} /> Wpisowe (PLN) *
+            <DollarSign size={18} /> Wpisowe (Monet) *
           </label>
           <input
             ref={refs.entryFeeRef}

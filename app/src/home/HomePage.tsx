@@ -42,7 +42,7 @@ const HomePage: React.FC = () => {
             </div>
             <div className="stat">
               <span className="stat-number">500k+</span>
-              <span className="stat-label">PLN w pulach</span>
+              <span className="stat-label">Monet w pulach</span>
             </div>
           </div>
         </div>

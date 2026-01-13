@@ -186,11 +186,11 @@ const MyRooms: React.FC<MyRoomsProps> = ({
           <div className="room-card-footer">
             <div className="fee-info">
               <span className="fee-label">Wpisowe:</span>
-              <span className="fee-value">{room.entryFee} PLN</span>
+              <span className="fee-value">{room.entryFee} Monet</span>
             </div>
             <div className="prize-info">
               <Trophy className="prize-icon" size={16} />
-              <span className="prize-value">{room.prize} PLN</span>
+              <span className="prize-value">{room.prize} Monet</span>
             </div>
           </div>
 

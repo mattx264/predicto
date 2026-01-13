@@ -1,35 +1,28 @@
-import type {
-  AuthResponse,
-  LoginRequest,
-  RegisterRequest,
-  UserDto,
-} from "../../types/types";
+import { Client, LoginReq, RegistrationReq, UserDto } from "../nsawg/client";
 import apiService from "./api.service";
 
 class AuthService {
-  async login(email: string, password: string): Promise<AuthResponse> {
-    const loginData: LoginRequest = { email, password };
+  private client: Client;
 
-    const response = await fetch(
-      `${apiService.getBackendUrl()}/api/user/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      }
-    );
+  constructor() {
+    this.client = new Client(apiService.getBackendUrl());
+  }
 
-    if (!response.ok) {
-      if (response.status === 401) {
+  async login(email: string, password: string): Promise<string> {
+    const loginData = new LoginReq({
+      email,
+      password,
+    });
+
+    try {
+      const token = await this.client.login(loginData);
+      return token;
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("401")) {
         throw new Error("Nieprawidłowy email lub hasło");
       }
       throw new Error("Błąd logowania. Spróbuj ponownie.");
     }
-
-    const data: AuthResponse = await response.json();
-    return data;
   }
 
   async register(
@@ -38,28 +31,18 @@ class AuthService {
     password: string,
     lang: string = "pl"
   ): Promise<void> {
-    const registerData: RegisterRequest = {
+    const registerData = new RegistrationReq({
       username,
       email,
       password,
       lang,
-    };
+    });
 
-    const response = await fetch(
-      `${apiService.getBackendUrl()}/api/user/register`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(registerData),
-      }
-    );
-
-    if (!response.ok) {
-      if (response.status === 400) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Nieprawidłowe dane rejestracji");
+    try {
+      await this.client.register(registerData);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("400")) {
+        throw new Error("Nieprawidłowe dane rejestracji");
       }
       throw new Error("Błąd rejestracji. Spróbuj ponownie.");
     }
@@ -75,11 +58,13 @@ class AuthService {
       return null;
     }
 
-    return {
+    const userDto = new UserDto({
       id: parseInt(decoded.sub || "0"),
       name: decoded.email?.split("@")[0] || "User",
       email: decoded.email || "",
-    };
+    });
+
+    return userDto;
   }
 
   decodeToken(

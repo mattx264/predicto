@@ -11,7 +11,7 @@ import {
   ArrowLeft,
   Loader2,
 } from "lucide-react";
-import type { TournamentDto } from "../../types/types";
+import type { TournamentDto } from "../../services/nsawg/client";
 
 interface Props {
   tournamentTemplates: TournamentDto[];
@@ -82,22 +82,21 @@ const TournamentSelectionStep: React.FC<Props> = ({
             {tournamentTemplates.map((template) => (
               <SwiperSlide key={template.id}>
                 <div
-                  className={`template-card ${
-                    selectedTemplateId === template.id.toString()
+                  className={`template-card ${selectedTemplateId === template.id?.toString()
                       ? "selected"
                       : ""
-                  }`}
-                  onClick={() => onTemplateSelect(template.id.toString())}
+                    }`}
+                  onClick={() => onTemplateSelect(template.id?.toString() || "")}
                 >
-                  {selectedTemplateId === template.id.toString() && (
+                  {selectedTemplateId === template.id?.toString() && (
                     <div className="selected-badge">
                       <Check size={16} />
                     </div>
                   )}
                   <div className="template-logo-container">
                     <img
-                      src={template.logoUrl}
-                      alt={template.league}
+                      src={template.logoUrl || "/placeholder-logo.png"}
+                      alt={template.league || "Logo turnieju"}
                       className="template-logo"
                     />
                   </div>
@@ -111,14 +110,14 @@ const TournamentSelectionStep: React.FC<Props> = ({
                     <div className="info-item">
                       <Calendar size={14} />
                       <span>
-                        {new Date(template.startDate).toLocaleDateString(
-                          "pl-PL"
-                        )}
+                        {template.startDate
+                          ? new Date(template.startDate).toLocaleDateString("pl-PL")
+                          : "Brak daty"}
                       </span>
                     </div>
                     <div className="info-item">
                       <span className="matches-count">
-                        {template.matchesCount} meczów
+                        {template.matchesCount || 0} meczów
                       </span>
                     </div>
                   </div>

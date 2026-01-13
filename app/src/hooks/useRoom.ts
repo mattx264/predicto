@@ -11,20 +11,21 @@ import {
   setRoomError,
   clearCurrentRoom,
 } from "../signals/room-detail.signals";
-import { mapRoomDtoToRoom, type RoomDTO, type Room } from "../types/types";
+import { mapRoomDtoToRoom, type Room } from "../types/types";
 import { roomHubService } from "../services/signalr/signalr/room-hub.service";
 import { roomsHubService } from "../services/signalr/signalr/rooms-hub.service";
+import type { RoomDTO } from "../services/nsawg/client";
 
 interface UseRoomReturn {
   room: Room | null;
   isLoading: boolean;
   error: string | null;
   connectionStatus:
-    | "disconnected"
-    | "connecting"
-    | "connected"
-    | "reconnecting"
-    | "error";
+  | "disconnected"
+  | "connecting"
+  | "connected"
+  | "reconnecting"
+  | "error";
   refetch: () => Promise<void>;
 }
 

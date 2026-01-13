@@ -1,48 +1,59 @@
-import type {
+import {
+  Client,
   RoomDTO,
-  CreateRoomRequest,
   TournamentDto,
-} from "../../types/types";
+  NewRoomDto
+} from "../nsawg/client";
+import type { CreateRoomRequest } from "../../types/types";
 import apiService from "./api.service";
 
 const getAuthToken = (): string | null => {
   return localStorage.getItem("authToken");
 };
 
-const getAuthHeaders = (): HeadersInit => {
-  const token = getAuthToken();
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-  };
+class AuthenticatedHttpClient {
+  async fetch(url: RequestInfo, init?: RequestInit): Promise<Response> {
+    const token = getAuthToken();
+    const headers = new Headers(init?.headers);
 
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+    if (!headers.has("Content-Type")) {
+      headers.set("Content-Type", "application/json");
+    }
+
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    return fetch(url, {
+      ...init,
+      headers,
+    });
+  }
+}
+
+class RoomService {
+  private client: Client;
+
+  constructor() {
+    this.client = new Client(
+      apiService.getBackendUrl(),
+      new AuthenticatedHttpClient()
+    );
   }
 
-  return headers;
-};
-
-export const roomService = {
   async getRooms(): Promise<RoomDTO[]> {
     try {
-      const response = await fetch(`${apiService.getBackendUrl()}/api/room`, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Musisz być zalogowany, aby zobaczyć pokoje");
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      return response.json();
+      return await this.client.roomAll();
     } catch (error) {
       console.error("❌ Error fetching rooms:", error);
+
+      if (error instanceof Error && error.message.includes("401")) {
+        throw new Error("Musisz być zalogowany, aby zobaczyć pokoje");
+      }
+
       throw error;
     }
-  },
+  }
 
   async createRoom(data: CreateRoomRequest): Promise<RoomDTO> {
     const token = getAuthToken();
@@ -51,64 +62,55 @@ export const roomService = {
       throw new Error("Musisz być zalogowany, aby utworzyć pokój");
     }
 
+    const newRoomDto = new NewRoomDto({
+      name: data.name,
+      description: data.description,
+      tournamentId: data.tournamentId,
+      maxParticipants: data.maxParticipants,
+      entryFee: data.entryFee,
+      isPrivate: data.isPrivate,
+    });
+
     try {
-      const response = await fetch(`${apiService.getBackendUrl()}/api/room`, {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(data),
-      });
+      await this.client.roomPOST(newRoomDto);
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Sesja wygasła. Zaloguj się ponownie");
-        }
+      const rooms = await this.client.roomAll();
+      const createdRoom = rooms.find(r => r.name === data.name);
 
-        if (response.status === 400) {
-          const errorData = await response.json();
-
-          if (errorData.errors) {
-            const messages = Object.values(errorData.errors).flat();
-            throw new Error(messages.join(", "));
-          }
-
-          throw new Error(errorData.title || "Nieprawidłowe dane pokoju");
-        }
-
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!createdRoom) {
+        throw new Error("Nie można znaleźć utworzonego pokoju");
       }
 
-      const createdRoom: RoomDTO = await response.json();
       return createdRoom;
     } catch (error) {
       console.error("❌ Error creating room:", error);
+
+      if (error instanceof Error) {
+        if (error.message.includes("401")) {
+          throw new Error("Sesja wygasła. Zaloguj się ponownie");
+        }
+        if (error.message.includes("400")) {
+          throw new Error("Nieprawidłowe dane pokoju");
+        }
+      }
+
       throw error;
     }
-  },
+  }
 
   async getTournaments(): Promise<TournamentDto[]> {
     try {
-      const response = await fetch(
-        `${apiService.getBackendUrl()}/api/tournament`,
-        {
-          method: "GET",
-          headers: getAuthHeaders(),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      return response.json();
+      return await this.client.tournament();
     } catch (error) {
       console.error("❌ Error fetching tournaments:", error);
       throw error;
     }
-  },
+  }
 
   isAuthenticated(): boolean {
     return !!getAuthToken();
-  },
+  }
+
   async getMyRooms(): Promise<RoomDTO[]> {
     const token = getAuthToken();
 
@@ -117,27 +119,17 @@ export const roomService = {
     }
 
     try {
-      const response = await fetch(
-        `${apiService.getBackendUrl()}/api/room/my`,
-        {
-          method: "GET",
-          headers: getAuthHeaders(),
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Sesja wygasła. Zaloguj się ponownie");
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      return response.json();
+      return await this.client.my();
     } catch (error) {
       console.error("❌ Error fetching my rooms:", error);
+
+      if (error instanceof Error && error.message.includes("401")) {
+        throw new Error("Sesja wygasła. Zaloguj się ponownie");
+      }
+
       throw error;
     }
-  },
+  }
 
   async joinRoom(roomId: number): Promise<{ message: string }> {
     const token = getAuthToken();
@@ -147,39 +139,26 @@ export const roomService = {
     }
 
     try {
-      const response = await fetch(
-        `${apiService.getBackendUrl()}/api/room/${roomId}/join`,
-        {
-          method: "POST",
-          headers: getAuthHeaders(),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-
-        if (response.status === 401) {
-          throw new Error("Sesja wygasła. Zaloguj się ponownie");
-        }
-
-        if (response.status === 404) {
-          throw new Error(errorData.message || "Pokój nie istnieje");
-        }
-
-        if (response.status === 400) {
-          throw new Error(errorData.message || "Nie można dołączyć do pokoju");
-        }
-
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      return result;
+      await this.client.join(roomId);
+      return { message: "Pomyślnie dołączono do pokoju" };
     } catch (error) {
       console.error("❌ Error joining room:", error);
+
+      if (error instanceof Error) {
+        if (error.message.includes("401")) {
+          throw new Error("Sesja wygasła. Zaloguj się ponownie");
+        }
+        if (error.message.includes("404")) {
+          throw new Error("Pokój nie istnieje");
+        }
+        if (error.message.includes("400")) {
+          throw new Error("Nie można dołączyć do pokoju");
+        }
+      }
+
       throw error;
     }
-  },
+  }
 
   async leaveRoom(roomId: number): Promise<{ message: string }> {
     const token = getAuthToken();
@@ -189,40 +168,26 @@ export const roomService = {
     }
 
     try {
-      const response = await fetch(
-        `${apiService.getBackendUrl()}/api/room/${roomId}/leave`,
-        {
-          method: "POST",
-          headers: getAuthHeaders(),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-
-        if (response.status === 401) {
-          throw new Error("Sesja wygasła. Zaloguj się ponownie");
-        }
-
-        if (response.status === 404) {
-          throw new Error(errorData.message || "Pokój nie istnieje");
-        }
-
-        if (response.status === 400) {
-          throw new Error(errorData.message || "Nie można opuścić pokoju");
-        }
-
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const text = await response.text();
-      const result = text
-        ? JSON.parse(text)
-        : { message: "Pomyślnie opuszczono pokój" };
-      return result;
+      await this.client.leave(roomId);
+      return { message: "Pomyślnie opuszczono pokój" };
     } catch (error) {
       console.error("❌ Error leaving room:", error);
+
+      if (error instanceof Error) {
+        if (error.message.includes("401")) {
+          throw new Error("Sesja wygasła. Zaloguj się ponownie");
+        }
+        if (error.message.includes("404")) {
+          throw new Error("Pokój nie istnieje");
+        }
+        if (error.message.includes("400")) {
+          throw new Error("Nie można opuścić pokoju");
+        }
+      }
+
       throw error;
     }
-  },
-};
+  }
+}
+
+export const roomService = new RoomService();

@@ -8,10 +8,11 @@ import "./CreateRoomPage.css";
 import TournamentSelectionStep from "./steps/TournamentSelectionStep";
 import RoomSettingsStep from "./steps/RoomSettingsStep";
 import SummaryStep from "./steps/SummaryStep";
-import type { RoomFormData, TournamentDto } from "../types/types";
-import { mapFormDataToCreateRequest } from "../types/types";
+
+import { mapFormDataToCreateRequest, type RoomFormData } from "../types/types";
 import { roomService } from "../services/signalr/room.service";
 import { toast } from "react-toastify";
+import type { TournamentDto } from "../services/nsawg/client";
 
 const CreateRoomPage: React.FC = () => {
   const navigate = useNavigate();
@@ -88,43 +89,46 @@ const CreateRoomPage: React.FC = () => {
   }, [step]);
 
   const selectedTemplate = tournamentTemplates.find(
-    (t) => t.id.toString() === formData.tournamentTemplateId
+    (t) => t.id?.toString() === formData.tournamentTemplateId
   );
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
+ const handleInputChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >
+) => {
+  const { name, value, type } = e.target;
+  const checked = (e.target as HTMLInputElement).checked;
 
-    let valueToSet: string | number | boolean = value;
-    if (type === "checkbox") {
-      valueToSet = checked;
-    } else if (type === "number") {
-      valueToSet = value === "" ? "" : parseInt(value, 10);
+  let valueToSet: string | number | boolean = value;
+  if (type === "checkbox") {
+    valueToSet = checked;
+  } else if (type === "number") {
+    valueToSet = value === "" ? "" : parseInt(value, 10);
+  }
+
+  setFormData((prev) => {
+    const newFormData = JSON.parse(JSON.stringify(prev)) as RoomFormData;
+    const keys = name.split(".");
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let currentLevel: Record<string, any> = newFormData as any;
+    
+    for (let i = 0; i < keys.length - 1; i++) {
+      currentLevel = currentLevel[keys[i]];
     }
+    currentLevel[keys[keys.length - 1]] = valueToSet;
+    return newFormData;
+  });
 
-    setFormData((prev) => {
-      const newFormData = JSON.parse(JSON.stringify(prev));
-      const keys = name.split(".");
-      let currentLevel: any = newFormData;
-      for (let i = 0; i < keys.length - 1; i++) {
-        currentLevel = currentLevel[keys[i]];
-      }
-      currentLevel[keys[keys.length - 1]] = valueToSet;
-      return newFormData;
+  if (errors[name]) {
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[name];
+      return newErrors;
     });
-
-    if (errors[name]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
-  };
+  }
+};
   const validateStep1 = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!formData.tournamentTemplateId) {
@@ -161,7 +165,7 @@ const CreateRoomPage: React.FC = () => {
       newErrors.entryFee = "Wpisowe nie może być ujemne";
       if (!firstErrorField) firstErrorField = entryFeeRef;
     } else if (formData.entryFee > 10000) {
-      newErrors.entryFee = "Maksymalne wpisowe to 10000 PLN";
+      newErrors.entryFee = "Maksymalne wpisowe to 10000 monet";
       if (!firstErrorField) firstErrorField = entryFeeRef;
     }
 

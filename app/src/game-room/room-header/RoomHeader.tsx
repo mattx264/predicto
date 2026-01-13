@@ -23,11 +23,11 @@ interface RoomHeaderProps {
   room: Room;
   currentUserId: string;
   connectionStatus:
-    | "connected"
-    | "connecting"
-    | "error"
-    | "disconnected"
-    | "reconnecting";
+  | "connected"
+  | "connecting"
+  | "error"
+  | "disconnected"
+  | "reconnecting";
   onLeaveRoom: () => void;
   onShareRoom: () => void;
   onSettings: () => void;
@@ -168,7 +168,7 @@ const RoomHeader: React.FC<RoomHeaderProps> = ({
             <div className="my-stat-content">
               <span className="my-stat-label">Pula nagród</span>
               <span className="my-stat-value">
-                <AnimatedNumber value={room.prize} duration={500} /> PLN
+                <AnimatedNumber value={room.prize} duration={500} /> Monet
               </span>
             </div>
           </div>
@@ -187,7 +187,7 @@ const RoomHeader: React.FC<RoomHeaderProps> = ({
             <DollarSign className="my-stat-icon-room" />
             <div className="my-stat-content">
               <span className="my-stat-label">Wpisowe</span>
-              <span className="my-stat-value">{room.entryFee} PLN</span>
+              <span className="my-stat-value">{room.entryFee} Monet</span>
             </div>
           </div>
         </div>
