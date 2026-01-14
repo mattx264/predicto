@@ -1,6 +1,6 @@
 ﻿public class Alias
 {
-    public string Locale { get; set; }
+    public string   Locale { get; set; }
     public string Description { get; set; }
 }
 

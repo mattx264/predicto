@@ -1,6 +1,6 @@
-﻿namespace Predicto.Database.Entities.Sport
+﻿namespace Predicto.Database.Entities.Sport.Enums
 {
-    public enum TimeScore
+    public enum TimeScoreEnum
     {
         FullTime = 1,
         HalfTime = 2,

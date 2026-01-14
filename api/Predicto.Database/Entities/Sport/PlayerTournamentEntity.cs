@@ -1,10 +1,4 @@
 ﻿using Predicto.Database.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Predicto.Database.Entities.Sport
 {
@@ -27,8 +21,6 @@ namespace Predicto.Database.Entities.Sport
         public int RedCards { get; set; }
         public int? Tackles { get; set; }
         public int? BallsRecovered { get; set; }
-
-        public bool IsActive { get; set; }
         public int? Assists { get; set; }
         public int? TotalAttempts { get; set; }
         public int? Blocks { get; set; }
@@ -49,5 +41,10 @@ namespace Predicto.Database.Entities.Sport
         public int? PenaltiesMissed { get; set; }
         public int? PenaltiesAwarded { get; set; }
         public double? CrossingAccuracy { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public int CreatedBy { get; set; }
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
+        public int ModifiedBy { get; set; }
+        public bool IsActive { get; set; }
     }
 }

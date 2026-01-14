@@ -36,9 +36,15 @@ namespace Predicto.DataCollector.Scraber
                     Thread.Sleep(10000);                    
                     var element = driver.FindElement(By.CssSelector("main"));
                     var groupAndDate = element.FindElements(By.CssSelector(".match-details-header-main-component_MatchDate__os-xd"));
-                    var group = groupAndDate[0].GetAttribute("innerText");
-                    var dateString = groupAndDate[1].GetAttribute("innerText").Replace("•", "");
-                    var date = DateTime.Parse(dateString ?? "");
+                    string group = groupAndDate.Count > 0 && groupAndDate[0] != null
+                        ? groupAndDate[0].GetAttribute("innerText")
+                        : string.Empty;
+                    string dateString = groupAndDate.Count > 1 && groupAndDate[1] != null
+                        ? groupAndDate[1].GetAttribute("innerText")?.Replace("•", "")
+                        : string.Empty;
+                    DateTime date = !string.IsNullOrEmpty(dateString)
+                        ? DateTime.Parse(dateString)
+                        : default;
 
                     var teams = element.FindElements(By.CssSelector(".match-score_TeamName__519Ix"));
                     // Console.WriteLine(teams[0].GetAttribute("innerHTML"));
@@ -53,10 +59,11 @@ namespace Predicto.DataCollector.Scraber
                         AwayTeam = teams[1].GetAttribute("innerText") ?? "",
                         Url = url
                     };
-                    if(score.GetAttribute("innerText")!=null && score.GetAttribute("innerText").Contains("-"))
+                    var scoreText = score?.GetAttribute("innerText");
+                    if (!string.IsNullOrEmpty(scoreText) && scoreText.Contains('-'))
                     {
-                        gameInfo.HomeScore = int.Parse(score.GetAttribute("innerText")?.Split('-')[0].Trim() ?? "0");
-                        gameInfo.AwayScore = int.Parse(score.GetAttribute("innerText")?.Split('-')[1].Trim() ?? "0");
+                        gameInfo.HomeScore = int.Parse(scoreText.Split('-')[0].Trim());
+                        gameInfo.AwayScore = int.Parse(scoreText.Split('-')[1].Trim());
                     }
                     data.Games.Add(gameInfo);
 
@@ -111,7 +118,7 @@ namespace Predicto.DataCollector.Scraber
                     var element = driver.FindElement(By.CssSelector("main"));
                     var groupAndDate = element.FindElements(By.CssSelector(".match-details-header-main-component_MatchDate__os-xd"));
                     var group = groupAndDate[0].GetAttribute("innerText");
-                    var dateString = groupAndDate[1].GetAttribute("innerText").Replace("•", "");
+                    var dateString = groupAndDate[1].GetAttribute("innerText")?.Replace("•", "");
                     var date = DateTime.Parse(dateString ?? "");
 
                     var teams = element.FindElements(By.CssSelector(".match-score_TeamName__519Ix"));
@@ -129,10 +136,11 @@ namespace Predicto.DataCollector.Scraber
                         // AwayScore = int.Parse(score.GetAttribute("innerText")?.Split('-')[1].Trim() ?? "0"),
                         Url = page.Url
                     };
-                    if (score.GetAttribute("innerText") != null && score.GetAttribute("innerText").Contains("-"))
+                    var scoreText = score?.GetAttribute("innerText");
+                    if (!string.IsNullOrEmpty(scoreText) && scoreText.Contains('-'))
                     {
-                        gameInfo.HomeScore = int.Parse(score.GetAttribute("innerText")?.Split('-')[0].Trim() ?? "0");
-                        gameInfo.AwayScore = int.Parse(score.GetAttribute("innerText")?.Split('-')[1].Trim() ?? "0");
+                        gameInfo.HomeScore = int.Parse(scoreText.Split('-')[0].Trim());
+                        gameInfo.AwayScore = int.Parse(scoreText.Split('-')[1].Trim());
                     }
                     data.Games.Add(gameInfo);
                     //Console.WriteLine(group.GetAttribute("innerText"));

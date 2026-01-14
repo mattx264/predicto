@@ -43,7 +43,7 @@ namespace Predicto.DataCollector.Fifa
                         IsActive = true,
                         Name = item.Group[0].Description
                     };
-                    await unitOfWork.GameGroup.AddAsync(group);
+                    await unitOfWork.GameGroup.AddAsync(group,1);
                 }
                 else
                 {

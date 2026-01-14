@@ -22,6 +22,7 @@ namespace Predicto.Database.UnitOfWork
         public IRepository<TournamentEntity> Tournament { get; }
 
         public IRepository<TeamEntity> Team { get; }
+        public IRepository<TournamentTeamEntity> TournamentTeamRepository { get; }
 
         public IRepository<PlayerEntity> Player { get; }
 
@@ -46,6 +47,7 @@ namespace Predicto.Database.UnitOfWork
             SportCategory = new Repository<SportCategoryEntity>(_context);
             Tournament = new Repository<TournamentEntity>(_context);
             Team = new Repository<TeamEntity>(_context);
+            TournamentTeamRepository = new Repository<TournamentTeamEntity>(_context);
             Player = new Repository<PlayerEntity>(_context);
             GameStadium = new Repository<GameStadiumEntity>(_context);
             Game = new Repository<GameEntity>(_context);

@@ -27,7 +27,7 @@ namespace Predicto.Gateway.Services
 
             var password = _passwordHasher.HashPassword(user, user.Password);
             var userEntity = new UserEntity { Name = user.Username, Email = user.Email, Password = password, Lang = user.Lang };
-            await _unitOfWork.Users.AddAsync(userEntity);
+            await _unitOfWork.Users.AddAsync(userEntity, 0);
             await _unitOfWork.CompleteAsync();
         }
 

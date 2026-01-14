@@ -21,10 +21,10 @@ namespace Predicto.Gateway.Controllers
             var teams=await _teamService.GetAll();
             return Ok(teams);
         }
-        [HttpGet("get-by-id/{id}")]
-        public async Task<IActionResult> GetTeamById(int id)
+        [HttpGet("get-by-id/{id}/{tournamentId}")]
+        public async Task<IActionResult> GetTeamById(int id, int tournamentId)
         {
-            var team = await _teamService.GetById(id);
+            var team = await _teamService.GetById(id, tournamentId);
             return Ok(team);
         }
 

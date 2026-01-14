@@ -18,22 +18,28 @@ namespace Predicto.Gateway.Services
             return teams.Select(x => new TeamListDto(x)).ToList();
         }
 
-        public async Task<TeamDetailsDto> GetById(int id)
+        public async Task<TeamDetailsDto> GetById(int id, int tournamentId)
         {
             var team = await _unitOfWork.Team.GetByIdAsync(id);
+            var teamTournament = await _unitOfWork.TournamentTeamRepository
+                .FindAsync(tt => tt.TeamEntityId == id && tt.TournamentEntityId == tournamentId);
+            if (teamTournament == null)
+            {
+
+            }
 
             return new TeamDetailsDto(team)
             {
                 Slug = team.Slug,
                 Coach = team.Coach,
-                FormLastGames = team.FormLastGames,
+                FormLastGames = teamTournament.FormLastGames,
                 Players = team.Players.Select(gp => new PlayerBasicInfoDto()
                 {
                     Id = gp.Id,
                     Name = gp.Name,
                     ImageUrl = gp.PhotoUrl,
                     Position = gp.Position,
-                    ShirtNumber = gp.ShirtNumber
+                    ShirtNumber = gp.NationalTeamNumber
                 }).ToList()
             };
         }
@@ -41,6 +47,6 @@ namespace Predicto.Gateway.Services
     public interface ITeamService
     {
         Task<List<TeamListDto>> GetAll();
-        Task<TeamDetailsDto> GetById(int id);
+        Task<TeamDetailsDto> GetById(int id, int tournamentId);
     }
 }

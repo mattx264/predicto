@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Predicto.Database.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Predicto.Database.Entities.Sport
 {
-    public class GamePlayerEventEntity
+    public class GamePlayerEventEntity : IEntity
     {
         public int Id { get; set; }
         public int GameId { get; set; }
@@ -15,6 +16,11 @@ namespace Predicto.Database.Entities.Sport
         public virtual PlayerEntity Player { get; set; }
         public int Minute { get; set; }
         public GamePlayerEvent GamePlayerEvent { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public int CreatedBy { get; set; }
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
+        public int ModifiedBy { get; set; }
+        public bool IsActive { get; set; }
     }
     public enum GamePlayerEvent
     {

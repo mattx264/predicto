@@ -14,7 +14,10 @@ namespace Predicto.Database.Entities.Room
         public virtual UserEntity? User { get; set; }
         public virtual UserRoomRole UserRoomRole { get; set; }      
         public virtual ICollection<RoomUserBetEntity>? RoomUserBets { get; set; }
-
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public int CreatedBy { get; set; }
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
+        public int ModifiedBy { get; set; }
         public bool IsActive { get; set; }
     }
 

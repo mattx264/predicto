@@ -1,98 +1,328 @@
-﻿using HtmlAgilityPack.CssSelectors.NetCore;
+﻿using Castle.Components.DictionaryAdapter.Xml;
+using HtmlAgilityPack;
+using HtmlAgilityPack.CssSelectors.NetCore;
 using Predicto.Database.Entities.Sport;
+using Predicto.Database.Entities.Sport.Enums;
 using Predicto.Database.UnitOfWork;
+using Predicto.DataCollector.Models;
 using Predicto.DataCollector.Scraber;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Predicto.DataCollector.Fifa
 {
-    public class UefaCom
+    public class UefaComChanpionship
     {
-        string path = "C:\\Users\\mattx\\src\\Predicto\\api\\Predicto.DataCollector\\Data\\Uefa\\";
-        public UefaCom() { }
-        public void Start()
+        string path = "C:\\Users\\mattx\\src\\Predicto\\api\\Predicto.DataCollector\\Data\\UefaClub\\";
+        public UefaComChanpionship() { }
+        public async Task SeedDataAsync(UnitOfWork unitOfWork)
         {
+            //3
+            await TeamsDetailsSeedData(unitOfWork);
+        }
+        public async Task Start()
+        {
+            //1
+            // Teams();
+            //2
+            //await TeamsDetails();
+            //3 SeedData
 
-            Player();
-            return;
+            //1
+            await Player();
+
+        }
+        public void Teams()
+        {
             using var scraber = new BaseScraber<string>();
-            scraber.StartChrome("https://www.uefa.com/european-qualifiers/teams", 0);
-            var elements = scraber.GetElements(".teams-overview_teams-wrapper a");
-            foreach (var element in elements)
+            scraber.StartChrome("https://www.uefa.com/uefachampionsleague/clubs/", 0);
+            var teams = scraber.GetElements(".teams-overview_group a");
+            var json = JsonSerializer.Serialize(teams.Select(x => new UefaComTeam
             {
-                ///european-qualifiers/teams/2--albania/
-                var url = element.GetAttribute("href");
-                var name = url.Split("--")[1];
-                name = name.Replace("/", "");
-                using var subPage = new BaseScraber<string>();
-                subPage.StartChrome(url + "squad", 0);
-                var body = subPage.GetElement(".body");
-                if (body == null)
-                {
-                    throw new Exception("body is null");
-                }
-                File.WriteAllText($"{path}{name}.html", body.GetAttribute("innerHTML"), Encoding.UTF8);
+                Name = x.GetAttribute("innerText").Replace("\r\n", "").Trim(),
+                Url = x.GetAttribute("href")
+            }).ToList());
+            File.WriteAllText($"{path}list.json", json, Encoding.UTF8);
 
+
+        }
+        public async Task TeamsDetails()
+        {
+            var jsonText = await File.ReadAllTextAsync($"{path}list.json");
+            try
+            {
+                var teams = JsonSerializer.Deserialize<List<UefaComTeam>>(jsonText);
+                if (teams == null)
+                {
+                    Console.WriteLine("Failed to deserialize teams list - teams is null");
+                    return;
+                }
+
+                foreach (var team in teams)
+                {
+                    var href = team.Url;
+                    if (href == null)
+                    {
+                        continue;
+                    }
+                    using var clubScraber = new BaseScraber<string>();
+                    clubScraber.StartChrome(href, 0);
+                    var names = clubScraber.GetElements(".team-name");
+                    if (names == null || names.Count < 2)
+                    {
+                        Console.WriteLine($"Invalid team names collection for {href}");
+                        continue;
+                    }
+
+                    var nameAttribute = names[1]?.GetAttribute("innerText");
+                    if (nameAttribute == null)
+                    {
+                        Console.WriteLine($"Missing innerText attribute for {href}");
+                        continue;
+                    }
+
+                    var name = nameAttribute.Replace("\r\n", "").Trim();
+                    var img = clubScraber.GetElementFromShadowDom("pk-badge", "img");
+                    var srcset = img.GetAttribute("srcset");
+                    var body = clubScraber.GetElement(".body");
+                    if (body == null)
+                    {
+                        throw new Exception("body is null");
+                    }
+
+                    var gamesStat = clubScraber.GetElementsFromShadowDom("pk-donut-chart", ".donut-chart-legend--series div");
+                    if (gamesStat == null || gamesStat.Count < 3)
+                    {
+                        Console.WriteLine($"Invalid games statistics collection for {name}");
+                        continue;
+                    }
+
+                    var gamesWonAttr = gamesStat[0]?.GetAttribute("innerText");
+                    var gamesDrawAttr = gamesStat[1]?.GetAttribute("innerText");
+                    var gamesLostAttr = gamesStat[2]?.GetAttribute("innerText");
+
+                    if (gamesWonAttr == null || gamesDrawAttr == null || gamesLostAttr == null)
+                    {
+                        Console.WriteLine($"Missing game statistics attributes for {name}");
+                        continue;
+                    }
+
+                    var gamesWon = gamesWonAttr.Trim();
+                    var gamesDraw = gamesDrawAttr.Trim();
+                    var gamesLost = gamesLostAttr.Trim();
+                    var totalGames = int.Parse(gamesWon) + int.Parse(gamesDraw) + int.Parse(gamesLost);
+                    var fileName = FifacomHelper.FileNameSanitizer(name);
+                    var bodyInnerHtml = body.GetAttribute("innerHTML");
+                    if (bodyInnerHtml != null)
+                    {
+                        File.WriteAllText($"{path}{fileName}.html", bodyInnerHtml, Encoding.UTF8);
+                    }
+
+                    var json = JsonSerializer.Serialize(teams.Select(x => new UefaComTeamDetails
+                    {
+                        ImageSrcSet = srcset,
+                        gamesWon = int.Parse(gamesWon),
+                        gamesDraw = int.Parse(gamesDraw),
+                        gamesLost = int.Parse(gamesLost),
+                        totalGames = totalGames
+                    })
+                    );
+                    File.WriteAllText($"{path}{fileName}.json", json, Encoding.UTF8);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
-        public void Player()
+        public async Task TeamsDetailsSeedData(UnitOfWork unitOfWork)
         {
-            string[] fileEntries = Directory.GetFiles($"{path}");
+            var chapionsLeague = await unitOfWork.Tournament.FindAsync(t => t.Name == "Champions League");
+            if (chapionsLeague == null)
+            {
+                throw new Exception("Tournament not found: Champions League");
+            }
+            string[] fileEntries = Directory.GetFiles($"{path}\\*.html");
             foreach (var file in fileEntries)
             {
+                var json = await File.ReadAllLinesAsync(file.Replace(".html", ".json"));
+                var data = JsonSerializer.Deserialize<UefaComTeamDetails>(json[0]);
                 var html = File.ReadAllText(file);
                 var doc = new HtmlAgilityPack.HtmlDocument();
                 doc.LoadHtml(html);
-                var playerElements = doc.QuerySelectorAll(".pk-col--content a");
-                if (playerElements != null)
+                var names = doc.QuerySelectorAll(".team-name");
+                var fullName = names[0].InnerText.Replace("\r\n", "").Trim();
+                var name = names[1].InnerText.Replace("\r\n", "").Trim();
+                var teamCheck = await unitOfWork.Team.FindAsync(t => t.Name == name);
+                if (teamCheck != null)
                 {
-                    var name = Path.GetFileNameWithoutExtension(file);
-                    var folderPath = $"{path}Players\\{name}\\";
-                    Directory.CreateDirectory(folderPath);
-                    foreach (var playerElement in playerElements)
+                    continue;
+                }
+                var teamEntity = new TeamEntity()
+                {
+                    Name = name,
+                    Slug = FifacomHelper.TeamNormalization(name),
+                    FullName = fullName,
+                    Code = doc.QuerySelector(".team-country-name").InnerText,
+                    ImageUrl = data.ImageSrcSet,
+                    Coach = "", //doc.QuerySelectorAll("[column-key='coach'] span")[2].InnerText.Trim(),
+                    Type = TeamTypeEnum.Club
+
+                };
+                await unitOfWork.Team.AddAsync(teamEntity, 1);
+                var formLastGames = doc.QuerySelectorAll("pk-accordion-item-title div")[1].InnerText;
+                await unitOfWork.Team.AddAsync(teamEntity, 1);
+                var tournamentTeamEntity = new TournamentTeamEntity()
+                {
+                    TeamEntity = teamEntity,
+                    TournamentEntity = chapionsLeague,
+                    FormLastGames = formLastGames,
+                    GameCount = data.totalGames,
+                    GamesWon = data.gamesWon,
+                    GamesDraw = data.gamesDraw,
+                    GamesLost = data.gamesLost,
+                    Goals = int.TryParse(GetValueListByLable(doc, "pk-num-stat-item", ".stat-label", "Goals", ".stat-value", 0), out var goalsValue) ? goalsValue : 0,
+                    GoalsConceded = int.TryParse(GetValueListByLable(doc, "pk-num-stat-item", ".stat-label", "Goals conceded", ".stat-value", 0), out var goalsConcededValue) ? goalsConcededValue : 0,
+                    PossessionPercentage = int.TryParse(GetValueListByLable(doc, "pk-num-stat-item", ".stat-label", "Possession (%)", ".stat-value", 0), out var PossessionPercentageValue) ? PossessionPercentageValue : 0,
+                    PassingAccuracyPercentage = double.TryParse(GetValueListByLable(doc, "pk-num-stat-item", ".stat-label", "Passing accuracy (%)", ".stat-value", 0), out var PassingAccuracyPercentageValue) ? PassingAccuracyPercentageValue : 0,
+                    BallsRecovered = 0,
+                    TacklesWon = 0,
+                    CleanSheets = 0,
+                    Saves = 0,
+                    DistanceCoveredKm = 0,
+                    YellowCards = 0,
+                    RedCards = 0,
+
+                };
+                await unitOfWork.TournamentTeamRepository.AddAsync(tournamentTeamEntity, 1);
+                await unitOfWork.CompleteAsync();
+            }
+
+        }
+
+        private string? GetValueListByLable(HtmlDocument doc, string listSelector, string labelSelector, string labelName, string valueSelector, int? praboblyIndex)
+        {
+            var elements = doc.QuerySelectorAll(listSelector);
+            if (praboblyIndex != null)
+            {
+                var ele = elements[praboblyIndex.Value];
+                var lab = ele.QuerySelector(labelSelector);
+                if (lab.InnerText == labelName)
+                {
+                    var val = ele.QuerySelector(valueSelector);
+                    return val.InnerText;
+                }
+            }
+            foreach (var item in elements)
+            {
+                var lab = item.QuerySelector(labelSelector);
+                if (lab.InnerText == labelName)
+                {
+                    var val = item.QuerySelector(valueSelector);
+                    return val.InnerText;
+                }
+            }
+            throw new Exception("Label not found: " + labelName);
+        }
+
+        public async Task Player()
+        {
+            string[] fileEntries = Directory.GetFiles($"{path}\\*.html");
+            foreach (var file in fileEntries)
+            {
+                var jsonText = await File.ReadAllTextAsync(file);
+
+                var teams = JsonSerializer.Deserialize<List<UefaComTeam>>(jsonText);
+                foreach (var team in teams)
+                {
+                    using var clubScraber = new BaseScraber<string>();
+                    clubScraber.StartChrome(team.Url + "squad/", 0);
+                    var links = clubScraber.GetElements("pk-table-body a");
+                    foreach (var link in links)
                     {
-                        var playerName = playerElement.InnerText.Replace("\r\n", "").Replace(" ", "").Replace("\t", "");
-                        if (File.Exists($"{folderPath}{playerName}.html"))
-                        {
-                            continue;
-                        }
-                        var url = "https://www.uefa.com" + playerElement.GetAttributes("href").ElementAt(0).Value;
-                        if (url.IndexOf("/players/") == -1)
-                        {
-                            continue;
-                        }
-                        using var subPage = new BaseScraber<string>();
-
-                        subPage.StartChrome(url, 0);
-                        var body = subPage.GetElement(".body");
-
-
-                        if (body == null)
-                        {
-                            throw new Exception("body is null");
-                        }
-
-                        File.WriteAllText($"{folderPath}{playerName}.html", body.GetAttribute("innerHTML"), Encoding.UTF8);
+                        clubScraber.GetElementFromShadowDom("pk-identifier", "h2 span");
                     }
+                    var json = JsonSerializer.Serialize(links.Select(x => x.GetAttribute("href")).ToList());
+                    var fileName = FifacomHelper.FileNameSanitizer(team.Name);
+                    File.WriteAllText($"{path}Players\\{fileName}.json", json, Encoding.UTF8);
                 }
             }
         }
-        public void OpenSubPage()
+        public async Task PlayerOverView()
         {
-            using var subPage = new BaseScraber<string>();
-            subPage.StartChrome("https://www.uefa.com/european-qualifiers/teams/2--albania/squad", 0);
-            var body = subPage.GetElement(".body");
-            if (body == null)
-            {
-                throw new Exception("body is null");
-            }
-            Console.Write(body.GetAttribute("innerHTML"));
-            File.WriteAllText($"C:\\Users\\mattx\\src\\Predicto\\api\\Predicto.DataCollector\\Data\\Uefa\\2--albania.html", body.GetAttribute("innerHTML"), Encoding.UTF8);
-        }
 
+            string[] fileEntries = Directory.GetFiles($"{path}\\*.json");
+            foreach (var file in fileEntries)
+            {
+                var squad = JsonSerializer.Deserialize<List<string>>(file);
+                foreach (var url in squad)
+                {
+                    using var clubScraber = new BaseScraber<string>();
+                    clubScraber.StartChrome(url , 0);
+                    var nameShadow = clubScraber.GetElementsFromShadowDom("pk-identifier", "h2 span");
+                    var firstName = nameShadow[0].Text;
+                    var lastName = nameShadow[1].Text;
+
+                    var fileName = FifacomHelper.FileNameSanitizer($"{firstName}-{lastName}");
+                    var json = JsonSerializer.Serialize(new
+                    {
+                        FirstName = firstName,
+                        LastName = lastName
+                    });
+                    new PlayerEntity()
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Name = firstName + " " + lastName,
+                        Slug = FifacomHelper.TeamNormalization(firstName + "-" + lastName),
+                        Age = null,
+                        Birthday = null,
+                        BirthCountry = null,
+                        Nationality = null,
+                        ClubNumber = null,
+                        NationalTeamNumber = null,
+                        Position = null,
+                        PhotoUrl = null,
+
+                    };
+                   
+                    File.WriteAllText($"{path}Players\\Overview\\{fileName}.json", json, Encoding.UTF8);
+                }
+            }
+        }
+        public async Task PlayerStats()
+        {
+
+            string[] fileEntries = Directory.GetFiles($"{path}\\*.json");
+            foreach (var file in fileEntries)
+            {
+                var squad = JsonSerializer.Deserialize<List<string>>(file);
+                foreach (var url in squad)
+                {
+                    using var clubScraber = new BaseScraber<string>();
+                    clubScraber.StartChrome(url + "statistics/", 0);// <--- statistics page
+                    var nameShadow = clubScraber.GetElementsFromShadowDom("pk-identifier", "h2 span");
+                    var firstName = nameShadow[0].Text;
+                    var lastName = nameShadow[1].Text;
+
+                    var fileName = FifacomHelper.FileNameSanitizer($"{firstName}-{lastName}-statistics");
+                    var json = JsonSerializer.Serialize(new
+                    {
+                       
+                    });
+                  
+                    new PlayerTournamentEntity()
+                    {
+
+                    };
+                    File.WriteAllText($"{path}Players\\Stats\\{fileName}.json", json, Encoding.UTF8);
+                }
+            }
+        }
         //internal async Task SeedTeamAsync(UnitOfWork unitOfWork)
         //{
         //    bool add = false;
