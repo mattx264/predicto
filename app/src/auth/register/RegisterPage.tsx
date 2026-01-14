@@ -9,8 +9,8 @@ import {
   Sparkles,
   ArrowLeft,
 } from "lucide-react";
-import { getErrorMessage } from "../utils/erroUtils";
-import { useAuth } from "../context/AuthContext";
+import { getErrorMessage } from "../../utils/erroUtils";
+import { useAuth } from "../AuthContext";
 
 const RegisterPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);

@@ -18,7 +18,7 @@
 .nav-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 5%;
+  padding: 0 2%;
 }
 
 .nav-content {
@@ -27,6 +27,7 @@
   align-items: center;
   height: 80px;
   transition: height 0.3s ease;
+  gap: 1rem;
 }
 
 .navigation.scrolled .nav-content {
@@ -40,6 +41,7 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .logo-icon-wrapper {
@@ -60,10 +62,12 @@
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.7;
   }
@@ -86,10 +90,11 @@
 
 .nav-links {
   display: flex;
-  gap: 0.75rem;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
 }
 
 .nav-icon-button {
@@ -98,6 +103,7 @@
   border: none;
   cursor: pointer;
   padding: 0;
+  flex-shrink: 0;
 }
 
 .nav-icon-circle {
@@ -141,7 +147,6 @@
   box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
 }
 
-/* Specjalny styl dla ikony sklepu */
 .nav-icon-circle.shop-icon:not(.active) {
   position: relative;
   overflow: visible;
@@ -157,10 +162,12 @@
 }
 
 @keyframes bounce-gift {
+
   0%,
   100% {
     transform: translateY(0) scale(1);
   }
+
   50% {
     transform: translateY(-4px) scale(1.1);
   }
@@ -202,6 +209,7 @@
     transform: scale(1);
     opacity: 0.8;
   }
+
   100% {
     transform: scale(1.4);
     opacity: 0;
@@ -238,6 +246,7 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  z-index: 10;
 }
 
 .nav-icon-button:hover .nav-tooltip {
@@ -248,6 +257,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .user-profile-btn {
@@ -256,6 +266,7 @@
   border: none;
   cursor: pointer;
   padding: 0;
+  flex-shrink: 0;
 }
 
 .user-avatar {
@@ -315,6 +326,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px;
+  flex-shrink: 0;
 }
 
 .username {
@@ -333,6 +345,7 @@
   font-weight: 600;
   font-size: 0.95rem;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .btn-secondary:hover {
@@ -352,6 +365,7 @@
   font-size: 0.95rem;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  flex-shrink: 0;
 }
 
 .btn-primary:hover {
@@ -372,6 +386,7 @@
   font-weight: 600;
   font-size: 0.95rem;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .btn-logout:hover {
@@ -389,6 +404,115 @@
 .navigation.scrolled .logout-icon {
   width: 16px;
   height: 16px;
+}
+
+
+.balance-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.balance-badge::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.balance-badge:hover::before {
+  left: 100%;
+}
+
+.balance-badge:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(59, 130, 246, 0.25) 100%);
+  border-color: #22c55e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
+}
+
+.balance-icon {
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.balance-text {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: -0.02em;
+}
+
+.navigation.scrolled .balance-badge {
+  padding: 0.5rem 0.85rem;
+}
+
+.navigation.scrolled .balance-text {
+  font-size: 0.9rem;
+}
+
+.mobile-balance-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-balance-btn:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(59, 130, 246, 0.25) 100%);
+  border-color: #22c55e;
+  transform: translateX(4px);
+}
+
+.mobile-balance-btn svg {
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.mobile-balance-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.mobile-balance-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.mobile-balance-value {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #22c55e;
+}
+
+.mobile-topup-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #22c55e;
+  opacity: 0.8;
 }
 
 .mobile-menu-btn {
@@ -534,7 +658,6 @@
   color: white;
 }
 
-/* Specjalne style dla sklepu w mobile */
 .mobile-link.shop-mobile:not(.active) {
   position: relative;
 }
@@ -602,33 +725,6 @@
   display: none;
 }
 
-@media (max-width: 768px) {
-  .desktop-only {
-    display: none;
-  }
-
-  .mobile-only {
-    display: block;
-  }
-
-  .mobile-menu-btn {
-    display: block;
-  }
-
-  .nav-content {
-    height: 70px;
-  }
-
-  .logo-text {
-    font-size: 1.5rem;
-  }
-
-  .logo-icon {
-    width: 28px;
-    height: 28px;
-  }
-}
-
 .nav-icon-circle.inventory-icon {
   position: relative;
 }
@@ -675,11 +771,13 @@
 }
 
 @keyframes inventory-pulse {
+
   0%,
   100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.2);
     opacity: 0.7;
@@ -711,11 +809,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.1) 0%,
-    rgba(124, 58, 237, 0.1) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(139, 92, 246, 0.1) 0%,
+      rgba(124, 58, 237, 0.1) 100%);
   border-radius: 16px;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -738,25 +834,106 @@
 }
 
 .nav-icon-circle.inventory-icon .ping-animation {
-  background: radial-gradient(
-    circle,
-    rgba(139, 92, 246, 0.6) 0%,
-    rgba(139, 92, 246, 0.3) 50%,
-    transparent 100%
-  );
+  background: radial-gradient(circle,
+      rgba(139, 92, 246, 0.6) 0%,
+      rgba(139, 92, 246, 0.3) 50%,
+      transparent 100%);
+}
+
+
+
+@media (max-width: 1200px) {
+  .nav-container {
+    padding: 0 3%;
+  }
+
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .nav-links {
+    gap: 0.35rem;
+    max-width: 500px;
+  }
+
+  .nav-icon-circle {
+    width: 50px;
+    height: 50px;
+  }
+
+  .balance-badge {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .balance-text {
+    font-size: 0.85rem;
+  }
+
+  .user-info {
+    padding: 0.4rem 0.75rem;
+  }
+
+  .username {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .user-info {
+    display: none;
+  }
+
+  .btn-logout span {
+    display: none;
+  }
+
+  .btn-logout {
+    padding: 0.7rem;
+  }
 }
 
 @media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .nav-content {
+    height: 70px;
+  }
+
+  .nav-container {
+    padding: 0 5%;
+  }
+
+  .logo-text {
+    font-size: 1.5rem;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .balance-badge {
+    display: none;
+  }
+
   .mobile-link.inventory-mobile {
     border-left: 4px solid #8b5cf6;
   }
 
   .mobile-link.inventory-mobile.active {
-    background: linear-gradient(
-      135deg,
-      rgba(139, 92, 246, 0.2) 0%,
-      rgba(124, 58, 237, 0.1) 100%
-    );
+    background: linear-gradient(135deg,
+        rgba(139, 92, 246, 0.2) 0%,
+        rgba(124, 58, 237, 0.1) 100%);
     border-left-color: #7c3aed;
   }
 }

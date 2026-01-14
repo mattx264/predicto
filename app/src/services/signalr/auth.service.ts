@@ -1,6 +1,11 @@
 import { Client, LoginReq, RegistrationReq, UserDto } from "../nsawg/client";
 import apiService from "./api.service";
 
+interface LoginResponse {
+  Token?: string;
+  token?: string;
+}
+
 class AuthService {
   private client: Client;
 
@@ -15,7 +20,26 @@ class AuthService {
     });
 
     try {
-      const token = await this.client.login(loginData);
+      const response = await this.client.login(loginData);
+
+      let token: string;
+
+      if (typeof response === 'string') {
+        try {
+          const parsed: LoginResponse = JSON.parse(response);
+          token = parsed.Token || parsed.token || '';
+        } catch {
+          token = response;
+        }
+      } else {
+        const loginResponse = response as LoginResponse;
+        token = loginResponse.Token || loginResponse.token || '';
+      }
+
+      if (!token) {
+        throw new Error("Token nie został zwrócony przez serwer");
+      }
+
       return token;
     } catch (error) {
       if (error instanceof Error && error.message.includes("401")) {
@@ -91,6 +115,7 @@ class AuthService {
     if (!decoded || !decoded.exp) {
       return true;
     }
+
     const expirationDate = new Date(decoded.exp * 1000);
     return expirationDate < new Date();
   }

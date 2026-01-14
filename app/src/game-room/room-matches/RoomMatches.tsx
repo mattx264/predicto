@@ -6,7 +6,7 @@ import MatchLiveModal from "../match-live/MatchLiveModal";
 import LivePredictionsModal from "../match-live/predictions/LivePredictionsModal";
 import gameService from "../../services/signalr/game.service";
 import MatchesTabs from "./matches-tabs/MatchesTabs";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../auth/AuthContext";
 import { toast } from "react-toastify";
 import type { Match } from "../../types/types";
 

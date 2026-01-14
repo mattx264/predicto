@@ -13,17 +13,22 @@ import {
   ChartNoAxesCombined,
   Store,
   Package,
+  Wallet,
 } from "lucide-react";
 import "./Navigation.css";
 import NotificationBell from "../notifications/NotificationsBell";
 import LanguageSwitcher from "../i18n/language-switcher/LanguageSwitcher";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../auth/AuthContext";
 
 interface NavigationProps {
   onOpenProfile: () => void;
+  onOpenTopUp: () => void;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ onOpenProfile }) => {
+const Navigation: React.FC<NavigationProps> = ({
+  onOpenProfile,
+  onOpenTopUp,
+}) => {
   const { t } = useTranslation();
   const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,6 +37,8 @@ const Navigation: React.FC<NavigationProps> = ({ onOpenProfile }) => {
   const [animatingNav, setAnimatingNav] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const userBalance = 250.50;
 
   const allNavItems = [
     {
@@ -142,6 +149,11 @@ const Navigation: React.FC<NavigationProps> = ({ onOpenProfile }) => {
     onOpenProfile();
   };
 
+  const handleBalanceClick = () => {
+    setIsMenuOpen(false);
+    onOpenTopUp();
+  };
+
   const username = user?.name || "Gracz";
 
   return (
@@ -192,6 +204,18 @@ const Navigation: React.FC<NavigationProps> = ({ onOpenProfile }) => {
 
                 <LanguageSwitcher />
 
+                {/* ✅ NOWY BALANCE BADGE */}
+                <button
+                  className="balance-badge"
+                  onClick={handleBalanceClick}
+                  title="Doładuj konto"
+                >
+                  <Wallet size={16} className="balance-icon" />
+                  <span className="balance-text">
+                    {userBalance.toFixed(2)}
+                  </span>
+                </button>
+
                 <button
                   className="user-profile-btn"
                   onClick={handleProfileClick}
@@ -240,9 +264,26 @@ const Navigation: React.FC<NavigationProps> = ({ onOpenProfile }) => {
           <div className="mobile-menu-content">
             <div className="mobile-top-actions">
               {isAuthenticated && (
-                <div className="mobile-notifications-wrapper">
-                  <NotificationBell />
-                </div>
+                <>
+                  {/* ✅ MOBILE BALANCE */}
+                  <button
+                    className="mobile-balance-btn"
+                    onClick={handleBalanceClick}
+                  >
+                    <Wallet size={20} />
+                    <div className="mobile-balance-info">
+                      <span className="mobile-balance-label">Saldo</span>
+                      <span className="mobile-balance-value">
+                        {userBalance.toFixed(2)} Monet
+                      </span>
+                    </div>
+                    <span className="mobile-topup-text">Doładuj →</span>
+                  </button>
+
+                  <div className="mobile-notifications-wrapper">
+                    <NotificationBell />
+                  </div>
+                </>
               )}
 
               <div className="mobile-language-wrapper">
@@ -254,11 +295,9 @@ const Navigation: React.FC<NavigationProps> = ({ onOpenProfile }) => {
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item.id, item.path)}
-                className={`mobile-link ${
-                  activeNav === item.id ? "active" : ""
-                } ${item.id === "shop" ? "shop-mobile" : ""} ${
-                  item.id === "inventory" ? "inventory-mobile" : ""
-                }`}
+                className={`mobile-link ${activeNav === item.id ? "active" : ""
+                  } ${item.id === "shop" ? "shop-mobile" : ""} ${item.id === "inventory" ? "inventory-mobile" : ""
+                  }`}
               >
                 <div className="mobile-link-icon">{item.icon}</div>
                 <span>{item.label}</span>
