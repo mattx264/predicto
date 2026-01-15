@@ -3,12 +3,12 @@ name: NodeJS with Webpack
 on:
   push:
     paths:
-      - 'app/**'
+      - 'blog/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'app/**'
+      - 'blog/**'
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
+      working-directory: ./blog
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
