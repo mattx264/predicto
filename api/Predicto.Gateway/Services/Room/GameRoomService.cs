@@ -99,7 +99,6 @@ namespace Predicto.Gateway.Services.Room
                 throw new Exception("Room not exists: " + roomId);
             }
             var userRoom = room.Participants.FirstOrDefault(x => x.UserId == userId);
-            userRoom.RoomUserBets?.ToList();
             if (userRoom == null)
             {
                 throw new UnauthorizedAccessException();
@@ -118,8 +117,7 @@ namespace Predicto.Gateway.Services.Room
             var totalCount = 0;
             foreach (var item in participants)
             {
-
-                var roomUserBet = item.RoomUserBets.Where(x => x.GameId == gameId && x.IsActive).ToList();
+                var roomUserBet = (item.RoomUserBets ?? Enumerable.Empty<RoomUserBetEntity>()).Where(x => x.GameId == gameId && x.IsActive).ToList();
                 var first = roomUserBet.FirstOrDefault();
 
                 if (first == null)
@@ -162,8 +160,6 @@ namespace Predicto.Gateway.Services.Room
                         otherBetSecond.Win += 1;
                         totalCount++;
                     }
-
-
                 }
             }
             foreach (var item in otherGameBetSimpleDto)
@@ -171,7 +167,6 @@ namespace Predicto.Gateway.Services.Room
                 item.TotalCount = totalCount;
             }
             return otherGameBetSimpleDto;
-
         }
     }
     public interface IGameRoomService

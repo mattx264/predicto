@@ -13,9 +13,13 @@ namespace Predicto.DataCollector.Models.uefa
         public UefaGameModelscore score { get; set; }
         public IList<UefaGameModelreferees> referees { get; set; }
         public UefaGameModelstadium stadium { get; set; }
-
+        public UefaGameModelplayerEvents? playerEvents { get; set; }
         public string status { get; set; }// "UPCOMING",
-
+        public UefaGameModelplayerOfTheMatch playerOfTheMatch { get; set; }
+    }
+    internal class UefaGameModelplayerOfTheMatch
+    {
+        public Player player { get; set; }
     }
     internal class City
     {
@@ -42,7 +46,26 @@ namespace Predicto.DataCollector.Models.uefa
         public int length { get; set; }
         public int width { get; set; }
     }
+    internal class UefaGameModelplayerEvents
+    {
+        public List<UefaGameModelscorers> scorers { get; set; }
 
+    }
+    internal class UefaGameModelscorers
+    {
+        public string goalType { get; set; }
+        public string id { get; set; }
+        public string phase { get; set; }
+        public Player player { get; set; }
+        public string teamId { get; set; }
+        public string teamIdProvider { get; set; }
+        public Time time { get; set; }
+    }
+    public class Time
+    {
+        public int minute { get; set; }
+        public int second { get; set; }
+    }
     internal class UefaGameModelstadium
     {
         public string address { get; set; }

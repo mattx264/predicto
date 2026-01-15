@@ -10,10 +10,10 @@
         public int? Age { get; set; }
         public DateOnly? Birthday { get; set; }
         public string? BirthPlace { get; set; }
-        public required string BirthCountry { get; set; }
-        public required string? Nationality { get; set; }
-        public required int? Height { get; set; }
-        public required int? Weight { get; set; }
+        public string? BirthCountry { get; set; }
+        public string? Nationality { get; set; }
+        public int? Height { get; set; }
+        public int? Weight { get; set; }
         public int? ShirtNumber { get; set; }
         public string? Position { get; set; } //Goalkeeper, Defender, Midfielder, Forward
         public string? PhotoUrl { get; set; }

@@ -51,19 +51,28 @@ namespace Predicto.Gateway.Services
             return null;
         }
 
-        public async Task<UserDto> GetUserAsync()
-        {
-            var user = await _unitOfWork.Users.GetByIdAsync(1);
-            return new UserDto
-            {
-                Id = user.Id,
-                Name = user.Name
-            };
-        }
+        //public async Task<UserDto> GetUserAsync()
+        //{
+        //    var user = await _unitOfWork.Users.GetByIdAsync(1);
+        //    if (user == null)
+        //    {
+        //        throw new Exception("User not found");
+        //    }
+        //    return new UserDto
+        //    {
+        //        Id = user.Id,
+        //        Name = user.Name
+        //    };
+        //}
 
         private string GenerateJSONWebToken(UserEntity userInfo)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var jwtKey = _config["Jwt:Key"];
+            if (string.IsNullOrEmpty(jwtKey))
+            {
+                throw new InvalidOperationException("JWT key is not configured.");
+            }
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[] {
@@ -88,6 +97,6 @@ namespace Predicto.Gateway.Services
     {
         Task CreateUserAsync(RegistrationReq user);
         Task<string?> AuthenticateAsync(LoginReq loginDto);
-        Task<UserDto> GetUserAsync();
+       // Task<UserDto> GetUserAsync();
     }
 }

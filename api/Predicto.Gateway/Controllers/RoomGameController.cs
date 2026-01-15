@@ -34,7 +34,7 @@ namespace Predicto.Gateway.Controllers
             {
                 return Unauthorized();
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 return BadRequest();
             }
@@ -55,7 +55,7 @@ namespace Predicto.Gateway.Controllers
             {
                 return Unauthorized();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest();
             }
@@ -76,7 +76,7 @@ namespace Predicto.Gateway.Controllers
             {
                 return Unauthorized();
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 return BadRequest();
             }

@@ -32,13 +32,13 @@ namespace Predicto.Gateway.Services
             {
                 Slug = team.Slug,
                 Coach = team.Coach,
-                FormLastGames = teamTournament.FormLastGames,
+                FormLastGames = teamTournament?.FormLastGames??"",
                 Players = team.Players.Select(gp => new PlayerBasicInfoDto()
                 {
                     Id = gp.Id,
                     Name = gp.Name,
-                    ImageUrl = gp.PhotoUrl,
-                    Position = gp.Position,
+                    ImageUrl = gp.PhotoUrl??"",
+                    Position = gp.Position ?? "",
                     ShirtNumber = gp.NationalTeamNumber
                 }).ToList()
             };

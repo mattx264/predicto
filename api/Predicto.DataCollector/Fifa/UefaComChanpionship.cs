@@ -704,7 +704,9 @@ namespace Predicto.DataCollector.Fifa
             //RestClient _restClient = new RestClient();
             //var gamesJson = await _restClient.GetAsync("https://match.uefa.com/v5/matches?competitionId=1&fromDate=2025-09-16&limit=30&offset=0&order=ASC&phase=ALL&seasonYear=2026&toDate=2025-09-16&utcOffset=-6");
             //var games = JsonSerializer.Deserialize<List<UefaGameModel>>(gamesJson);
-            var gamesJson = await File.ReadAllTextAsync($"{path}Games\\2026-01-20.json");
+            //   var gamesJson = await File.ReadAllTextAsync($"{path}Games\\2026-01-20.json");
+            var gamesJson = await File.ReadAllTextAsync($"{path}Games\\2025-09-16.json");
+           
             var games = JsonSerializer.Deserialize<List<UefaGameModel>>(gamesJson);
             foreach (var game in games)
             {
@@ -719,6 +721,23 @@ namespace Predicto.DataCollector.Fifa
                 var gamePlayers = new List<GamePlayerEntity>();
                 var gamePlayerEvents = new List<GamePlayerEventEntity>();
                 var gameScoreEvents = new List<GameScoreEntity>();
+                if(game.playerEvents != null)
+                {
+                    game.playerEvents.scorers.ForEach(se =>
+                    {
+                       
+                        var scorerTeam = se.teamId == game.homeTeam.id ? "home" : "away";
+                        var gameScoreEntity = new GameScoreEntity()
+                        {
+                            Phase = se.phase,
+                            PlayerId=se.player.id,
+                            // TeamId = se.teamId,
+                            //Score =,
+                            TimeScored = se.time.minute + ":" + se.time.second,
+                        };
+
+                        gameScoreEvents.Add(gameScoreEntity);
+                    });
                 var stadium = await unitOfWork.GameStadium.FindAsync(x => x.UefaId == game.stadium.id);
                 if (stadium == null)
                 {
@@ -765,7 +784,7 @@ namespace Predicto.DataCollector.Fifa
                 {
                     // GamePlayers = gamePlayers,
                     // GamePlayerEvents = gamePlayerEvents,
-                    //GameScoreEvents= gameScoreEvents,
+                    GameScoreEvents= gameScoreEvents,
                     Referee = game.referees.First(x => x.role == "UEFA_DELEGATE").person.translations.name.EN,
                     Stadium = stadium,
                     StartGame = game.kickOffTime.dateTime,
@@ -773,6 +792,7 @@ namespace Predicto.DataCollector.Fifa
                     FinalScore = score,
                     Tournament = chapionsLeague,
                     Teams = teams,
+                    PlayerOfTheMatchId = game.playerOfTheMatch != null ? game.playerOfTheMatch.id : null,
 
                 };
                 await unitOfWork.Game.AddAsync(gameEntity, 1);

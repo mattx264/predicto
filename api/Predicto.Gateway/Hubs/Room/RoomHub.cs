@@ -17,31 +17,50 @@ namespace Predicto.Gateway.Hubs.Room
 
         public override async Task OnConnectedAsync()
         {
-            var roomid = Context?.GetHttpContext()?.GetRouteValue("roomid") as string;
-            
+            if (Context.User?.Identity?.IsAuthenticated == false)
+            {
+                throw new UnauthorizedAccessException("User is not authenticated");
+            }
+            var httpContext = Context?.GetHttpContext();
+            var roomid = httpContext?.GetRouteValue("roomid") as string;
+
             if (string.IsNullOrEmpty(roomid) || !int.TryParse(roomid, out int roomId))
             {
                 _logger.LogError("❌ Invalid Room ID: {RoomId}", roomid);
                 throw new Exception("Invalid Room ID");
             }
 
-            _logger.LogInformation("🔌 User connected to room {RoomId}, ConnectionId: {ConnectionId}", 
-                roomId, Context.ConnectionId);
-            
-            await Groups.AddToGroupAsync(Context.ConnectionId, $"Room_{roomId}");
+            var connectionId = Context?.ConnectionId;
+            if (string.IsNullOrEmpty(connectionId))
+            {
+                _logger.LogError("❌ ConnectionId is null or empty");
+                throw new Exception("ConnectionId is null or empty");
+            }
+
+            _logger.LogInformation("🔌 User connected to room {RoomId}, ConnectionId: {ConnectionId}",
+                roomId, connectionId);
+
+            await Groups.AddToGroupAsync(connectionId, $"Room_{roomId}");
             _logger.LogInformation("✅ Added user to group Room_{RoomId}", roomId);
-            
+
             await base.OnConnectedAsync();
-            
+
             try
             {
-                var room = await _roomService.GetRoomByIdAsync(roomId);
-                
+                var userIdentifier = Context?.UserIdentifier;
+                if (string.IsNullOrEmpty(userIdentifier) || !int.TryParse(userIdentifier, out var userId))
+                {
+                    _logger.LogError("❌ Invalid or missing UserIdentifier: {UserIdentifier}", userIdentifier);
+                    throw new Exception("Invalid or missing UserIdentifier");
+                }
+
+                var room = await _roomService.GetRoomByIdAsync(roomId, userId);
+
                 if (room != null)
                 {
-                    _logger.LogInformation("📤 Sending initial room data to ConnectionId: {ConnectionId}, Participants: {Count}", 
-                        Context.ConnectionId, room.Users?.Count ?? 0);
-                    
+                    _logger.LogInformation("📤 Sending initial room data to ConnectionId: {ConnectionId}, Participants: {Count}",
+                        connectionId, room.Users?.Count ?? 0);
+
                     await Clients.Caller.SendAsync("GetRoom", room);
                 }
                 else
@@ -58,12 +77,12 @@ namespace Predicto.Gateway.Hubs.Room
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             _logger.LogInformation("🔌 User disconnected, ConnectionId: {ConnectionId}", Context.ConnectionId);
-            
+
             if (exception != null)
             {
                 _logger.LogError(exception, "❌ Disconnection error: {Message}", exception.Message);
             }
-            
+
             await base.OnDisconnectedAsync(exception);
         }
     }

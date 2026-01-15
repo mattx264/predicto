@@ -17,6 +17,7 @@ namespace Predicto.Database.Entities.Sport
         public virtual ICollection<GamePlayerEventEntity>? GamePlayerEvents { get; set; }
         public virtual ICollection<GameScoreEntity>? GameScoreEvents { get; set; }
         public virtual GameStadiumEntity? Stadium { get; set; }
+        public int? PlayerOfTheMatchId { get; set; }
         public int? StadiumId { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int CreatedBy { get; set; }

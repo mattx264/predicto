@@ -8,7 +8,7 @@ namespace Predicto.Gateway.Hubs
     public class RoomsHub : Hub
     {
         private readonly IRoomService _roomService;
-
+        private readonly string ROOM_NAME = "RoomsAndUsers";
         public RoomsHub(IRoomService roomService)
         {
             _roomService = roomService;
@@ -18,7 +18,7 @@ namespace Predicto.Gateway.Hubs
         {
             var id = Context?.GetHttpContext()?.GetRouteValue("group") as string;
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
+            await Groups.AddToGroupAsync(Context.ConnectionId, ROOM_NAME);
             await base.OnConnectedAsync();
             
           
@@ -58,7 +58,7 @@ namespace Predicto.Gateway.Hubs
         /// </summary>
         public async Task NotifyUserJoined(int roomId, int userId, string userName, int participantsCount)
         {
-            await Clients.Group("SignalR Users").SendAsync("UserJoined", new
+            await Clients.Group(ROOM_NAME).SendAsync("UserJoined", new
             {
                 roomId,
                 userId,
@@ -72,7 +72,7 @@ namespace Predicto.Gateway.Hubs
         /// </summary>
         public async Task NotifyUserLeft(int roomId, int userId, int participantsCount)
         {
-            await Clients.Group("SignalR Users").SendAsync("UserLeft", new
+            await Clients.Group(ROOM_NAME).SendAsync("UserLeft", new
             {
                 roomId,
                 userId,
@@ -85,7 +85,7 @@ namespace Predicto.Gateway.Hubs
         /// </summary>
         public async Task NotifyRoomCreated(RoomDTO room)
         {
-            await Clients.Group("SignalR Users").SendAsync("RoomCreated", room);
+            await Clients.Group(ROOM_NAME).SendAsync("RoomCreated", room);
         }
     }
 }

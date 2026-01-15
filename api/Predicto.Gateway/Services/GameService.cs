@@ -57,8 +57,8 @@ namespace Predicto.Gateway.Services
                     {
                         Id = gp.Id,
                         Name = gp.Name,
-                        ImageUrl = gp.PhotoUrl,
-                        Position = gp.Position,
+                        ImageUrl = gp.PhotoUrl??"",
+                        Position = gp.Position??"",
                         ShirtNumber = gp.NationalTeamNumber,
                     }).ToList()
 

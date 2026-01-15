@@ -65,7 +65,9 @@ namespace Predicto.Gateway.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomDTO>> GetRoom(int id)
         {
-            var room = await _roomService.GetRoomByIdAsync(id);
+
+            var userId = User.TryGetUserId();
+            var room = await _roomService.GetRoomByIdAsync(id, userId);
             if (room == null)
                 return NotFound();
             return Ok(room);

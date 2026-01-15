@@ -8,7 +8,10 @@ namespace Predicto.Gateway.Hubs
         {
             var id = Context?.GetHttpContext()?.GetRouteValue("group") as string;
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
+            if (Context?.ConnectionId != null)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
+            }
             await base.OnConnectedAsync();
         }
         public async Task SendMessage(string user, string message)

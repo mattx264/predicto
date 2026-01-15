@@ -5,7 +5,7 @@
         //Football World Cup, UEFA Champions League, NBA Finals, Wimbledon, Super Bowl, World Series, Stanley Cup, Rugby World Cup, ICC Cricket World Cup
         public int Id { get; set; }
         public int SportCategoryId { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
          public string? Description { get; set; }
         public string? League { get; set; }
         public int MatchesCount { get; set; }
