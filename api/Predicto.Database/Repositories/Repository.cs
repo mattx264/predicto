@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using Predicto.Database.Interfaces;
 
 namespace Predicto.Database.Repositories
@@ -28,11 +32,13 @@ namespace Predicto.Database.Repositories
 
         public async Task AddAsync(T entity, int userId)
         {
-            entity.IsActive = true;
-            entity.CreatedDate = DateTime.Now;
+            var timestamp = DateTime.Now;
+
+            //CascadeActivate(entity, userId, timestamp, new HashSet<object>(ReferenceEqualityComparer.Instance));
             entity.ModifiedDate = DateTime.Now;
-            entity.CreatedBy = userId; //to be replaced
-            entity.ModifiedBy = userId; //to be replaced
+            entity.ModifiedBy = userId;
+            entity.CreatedDate = DateTime.Now;
+            entity.CreatedBy = userId;
             await _dbSet.AddAsync(entity);
         }
 
@@ -62,6 +68,71 @@ namespace Predicto.Database.Repositories
             var originalPredicate = predicate;
             predicate = x => x.IsActive && originalPredicate(x);
             return Task.FromResult(_dbSet.Where(predicate));
+        }
+
+        private void CascadeActivate(object? candidate, int userId, DateTime timestamp, HashSet<object> visited)
+        {
+            if (candidate is null || visited.Contains(candidate) || candidate is not IEntity entity)
+            {
+                return;
+            }
+
+            visited.Add(candidate);
+
+            entity.IsActive = true;
+
+
+            entity.CreatedDate = timestamp;
+            entity.CreatedBy = userId;
+
+            entity.ModifiedDate = timestamp;
+            entity.ModifiedBy = userId;
+
+            foreach (var property in candidate.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            {
+                if (!property.CanRead || property.GetIndexParameters().Length > 0 || property.PropertyType == typeof(string))
+                {
+                    continue;
+                }
+
+                var value = property.GetValue(candidate);
+
+                if (value is null)
+                {
+                    continue;
+                }
+
+                if (value is IEnumerable enumerable)
+                {
+                    foreach (var item in enumerable)
+                    {
+                        CascadeActivate(item, userId, timestamp, visited);
+                    }
+
+                    continue;
+                }
+
+                CascadeActivate(value, userId, timestamp, visited);
+            }
+        }
+
+        private sealed class ReferenceEqualityComparer : IEqualityComparer<object>
+        {
+            public static ReferenceEqualityComparer Instance { get; } = new ReferenceEqualityComparer();
+
+            private ReferenceEqualityComparer()
+            {
+            }
+
+            public new bool Equals(object? x, object? y)
+            {
+                return ReferenceEquals(x, y);
+            }
+
+            public int GetHashCode(object obj)
+            {
+                return RuntimeHelpers.GetHashCode(obj);
+            }
         }
     }
 }

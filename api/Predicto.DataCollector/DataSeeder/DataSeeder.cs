@@ -23,8 +23,8 @@ namespace Predicto.DataCollector.NewFolder
 
             //await UefaTeamSeed(unitOfWork);
             // await FifaGamesSeed(unitOfWork);
-            await new UefaComChanpionship().Start();
-          // await new UefaComChanpionship().SeedDataAsync(unitOfWork);
+          //  await new UefaComChanpionship().Start();
+           await new UefaComChanpionship().SeedDataAsync(unitOfWork);
 
 
 

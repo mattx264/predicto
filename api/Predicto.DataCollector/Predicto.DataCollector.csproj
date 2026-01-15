@@ -16,6 +16,7 @@
     <Folder Include="Data\Countries\" />
     <Folder Include="Data\Fifacom\Games\" />
     <Folder Include="Data\Fifacom\NewFolder\" />
+    <Folder Include="Data\UefaClub\Games\" />
     <Folder Include="Data\UefaClub\Players\Stats\" />
     <Folder Include="Data\UefaClub\Players\Overview\" />
     <Folder Include="Data\Uefa\UefaClub\" />

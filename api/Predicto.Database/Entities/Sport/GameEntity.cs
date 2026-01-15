@@ -10,7 +10,7 @@ namespace Predicto.Database.Entities.Sport
         public int TournamentId { get; set; }
         public virtual TournamentEntity? Tournament { get; set; }
         public virtual ICollection<GameTeamEntity> Teams { get; set; }//Home and Away teams
-        public required string? FinalScore { get; set; }// 1:1 (4:5) //
+        public string? FinalScore { get; set; }// 1:1 (4:5) //
         public DateTime StartGame { get; set; }      
         public string? Referee { get; set; }
         public virtual ICollection<GamePlayerEntity>? GamePlayers { get; set; }
@@ -23,6 +23,8 @@ namespace Predicto.Database.Entities.Sport
         public DateTime ModifiedDate { get; set; } = DateTime.Now;
         public int ModifiedBy { get; set; }
         public bool IsActive { get; set; } = true;
+
+        public string? UefaId { get; set; }
 
     }
 }

@@ -1,9 +1,4 @@
-import {
-  Client,
-  RoomDTO,
-  TournamentDto,
-  NewRoomDto
-} from "../nsawg/client";
+import { Client, RoomDTO, TournamentDto, NewRoomDto } from "../nsawg/client";
 import type { CreateRoomRequest } from "../../types/types";
 import apiService from "./api.service";
 
@@ -72,10 +67,10 @@ class RoomService {
     });
 
     try {
-      await this.client.roomPOST(newRoomDto);
+      await this.client.createRoom(newRoomDto);
 
       const rooms = await this.client.roomAll();
-      const createdRoom = rooms.find(r => r.name === data.name);
+      const createdRoom = rooms.find((r) => r.name === data.name);
 
       if (!createdRoom) {
         throw new Error("Nie można znaleźć utworzonego pokoju");

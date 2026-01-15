@@ -17,8 +17,8 @@ namespace Predicto.Database
                 }
                 if (!context.Set<TournamentEntity>().Any())
                 {
-                    context.Add(new TournamentEntity { Name = "FIFA World Cup", SportCategoryId = 1 });
-                    context.Add(new TournamentEntity { Name = "Champions League", SportCategoryId = 1 });
+                    context.Add(new TournamentEntity { Name = "FIFA World Cup", SportCategoryId = 1, MatchesCount=291, StartDate = new DateTime(2026, 6, 11), EndDate = new DateTime(2026, 7, 19) });
+                    context.Add(new TournamentEntity { Name = "Champions League", SportCategoryId = 1,MatchesCount= 104 , LogoUrl = "https://img.uefa.com/imgml/uefacom/elements/logos/competitions/color/full/1.svg", StartDate = new DateTime(2025, 9, 16), EndDate = new DateTime(2026, 5, 30) });
                 }
                 context.SaveChanges();
                 //   SeedArticles(context);

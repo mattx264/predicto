@@ -17,7 +17,7 @@ namespace Predicto.Database.Interfaces
         IRepository<TeamEntity> Team { get; }
         IRepository<TournamentTeamEntity> TournamentTeamRepository { get; }
         IRepository<PlayerEntity> Player { get; }
-        IRepository<TeamPlayerEntity> TeamPlayer { get; }
+        IRepository<TeamPlayerEntity> TeamPlayerRepository { get; }
         IRepository<GameEntity> Game { get; }
         IRepository<ArticleEntity> Article { get; }
         IGameGroupRepository GameGroupRepository { get; }

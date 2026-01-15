@@ -21,6 +21,7 @@ namespace Predicto.Database
         public DbSet<GameTeamEntity> GameTeam => Set<GameTeamEntity>();
         public DbSet<PlayerTournamentEntity> PlayerTournament => Set<PlayerTournamentEntity>();
         public DbSet<RoomUserBetEntity> RoomUserBet => Set<RoomUserBetEntity>();
+        public DbSet<TournamentTeamEntity> TournamentTeam => Set<TournamentTeamEntity>();
 
         
 

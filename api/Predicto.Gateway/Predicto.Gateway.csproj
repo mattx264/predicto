@@ -24,6 +24,7 @@
     <Folder Include="Interfaces\" />
     <Folder Include="EmailTemplates\" />
     <Folder Include="Services\Game\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>

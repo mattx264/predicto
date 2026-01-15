@@ -8,11 +8,11 @@ namespace Predicto.Database.Entities.Sport
         public int Id { get; set; }
         public int TeamId { get; set; }
         [ForeignKey("TeamId")]
-        public virtual TeamEntity TeamEntity { get; set; }
+        public virtual required TeamEntity TeamEntity { get; set; }
 
         public int PlayerId { get; set; }
         [ForeignKey("PlayerId")]
-        public virtual PlayerEntity PlayerEntity { get; set; }
+        public virtual required PlayerEntity PlayerEntity { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int CreatedBy { get; set; }
         public DateTime ModifiedDate { get; set; } = DateTime.Now;

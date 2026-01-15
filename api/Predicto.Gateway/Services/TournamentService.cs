@@ -27,10 +27,10 @@ namespace Predicto.Gateway.Services
                    StartDate = t.StartDate,
                    EndDate = t.EndDate,
                    LogoUrl = t.LogoUrl
-               });
+               }).OrderBy(x => x.StartDate);
         }
     }
-    
+
     public interface ITournamentService
     {
         Task<IEnumerable<TournamentDto>> GetAllAsync();

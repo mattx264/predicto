@@ -64,7 +64,6 @@
 }
 
 @keyframes sparkle {
-
   0%,
   100% {
     opacity: 1;
@@ -252,10 +251,11 @@
 }
 
 .template-logo {
-  width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 14px;
+  background: white;
+  padding: 10px;
 }
 
 .template-name {
@@ -462,9 +462,11 @@
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg,
-      rgba(34, 197, 94, 0.1) 0%,
-      rgba(59, 130, 246, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1) 0%,
+    rgba(59, 130, 246, 0.1) 100%
+  );
   border: 2px solid rgba(34, 197, 94, 0.2);
   border-radius: 16px;
   margin-top: 1rem;
@@ -531,11 +533,13 @@
 }
 
 .summary-logo {
-  width: 40px;
+  /* width: 40px; */
   height: 40px;
   object-fit: cover;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
+  /* background: rgba(255, 255, 255, 0.05); */
+  background: white;
+  padding: 4px;
 }
 
 .item-icon-svg {
@@ -572,9 +576,11 @@
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg,
-      rgba(34, 197, 94, 0.15) 0%,
-      rgba(59, 130, 246, 0.15) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.15) 0%,
+    rgba(59, 130, 246, 0.15) 100%
+  );
   border: 2px solid rgba(34, 197, 94, 0.3);
   border-radius: 12px;
 }

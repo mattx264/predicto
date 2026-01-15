@@ -7,7 +7,6 @@ namespace Predicto.Database.Entities.Sport
         public int Id { get; set; }
         public int? FootballApiId { get; set; }
         public int? FifaId { get; set; }
-        public int? UefaId { get; set; }
         public string Slug { get; set; }
         public required string Name { get; set; }
         public required string FirstName { get; set; }
@@ -32,6 +31,7 @@ namespace Predicto.Database.Entities.Sport
         public DateTime ModifiedDate { get; set; } = DateTime.Now;
         public int ModifiedBy { get; set; }
 
+        public string? UefaId { get; set; }
 
     }
 }

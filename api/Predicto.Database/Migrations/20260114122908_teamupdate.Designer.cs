@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Predicto.Database;
 
@@ -11,9 +12,11 @@ using Predicto.Database;
 namespace Predicto.Database.Migrations
 {
     [DbContext(typeof(PredictoDbContext))]
-    partial class PredictoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260114122908_teamupdate")]
+    partial class teamupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -526,21 +529,11 @@ namespace Predicto.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Capacity")
-                        .HasColumnType("int");
-
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -556,9 +549,6 @@ namespace Predicto.Database.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StadiumNameCityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UefaId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1021,93 +1011,6 @@ namespace Predicto.Database.Migrations
                     b.ToTable("Tournament");
                 });
 
-            modelBuilder.Entity("Predicto.Database.Entities.Sport.TournamentTeamEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BallsRecovered")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CleanSheets")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("DistanceCoveredKm")
-                        .HasColumnType("float");
-
-                    b.Property<string>("FormLastGames")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("GameCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GamesDraw")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GamesLost")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GamesWon")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Goals")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GoalsConceded")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("PassingAccuracyPercentage")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PossessionPercentage")
-                        .HasColumnType("float");
-
-                    b.Property<int>("RedCards")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Saves")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TacklesWon")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TeamEntityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TournamentEntityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("YellowCards")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TeamEntityId");
-
-                    b.HasIndex("TournamentEntityId");
-
-                    b.ToTable("TournamentTeam");
-                });
-
             modelBuilder.Entity("Predicto.Database.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -1400,25 +1303,6 @@ namespace Predicto.Database.Migrations
                         .IsRequired();
 
                     b.Navigation("SportCategory");
-                });
-
-            modelBuilder.Entity("Predicto.Database.Entities.Sport.TournamentTeamEntity", b =>
-                {
-                    b.HasOne("Predicto.Database.Entities.Sport.TeamEntity", "TeamEntity")
-                        .WithMany()
-                        .HasForeignKey("TeamEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Predicto.Database.Entities.Sport.TournamentEntity", "TournamentEntity")
-                        .WithMany()
-                        .HasForeignKey("TournamentEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TeamEntity");
-
-                    b.Navigation("TournamentEntity");
                 });
 
             modelBuilder.Entity("Predicto.Database.Entities.Room.RoomEntity", b =>

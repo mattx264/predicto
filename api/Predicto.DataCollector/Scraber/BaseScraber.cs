@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -58,9 +59,43 @@ namespace Predicto.DataCollector.Scraber
                 selectorIndex++;
                 scriptString += root;
             }
+            try
+            {
+                var webElement = (IWebElement)js.ExecuteScript(scriptString);
+                return webElement;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("error with " + scriptString);
+                throw;
+            }
+            
+        }
+        public IWebElement GetElementsFromScript(string scriptString)
+        {
+            /*
+            var list=[];document.querySelectorAll('.pk-col--content pk-table').forEach(x=>{x.querySelectorAll('pk-table-body pk-avatar').forEach(y=>{
+            list.push(y.shadowRoot.querySelector('img'))
+            })});return list;
+            */
+            //selectors
+            if (driver == null)
+            {
+                throw new InvalidOperationException("ChromeDriver is not initialized. Call StartChrome first.");
+            }
 
-            var webElement = (IWebElement)js.ExecuteScript(scriptString);
-            return webElement;
+            ChromeDriver js = driver;
+          
+            try
+            {
+                var webElement = (IWebElement)js.ExecuteScript(scriptString);
+                return webElement;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("error with " + scriptString);
+                throw;
+            }
         }
         public List<IWebElement> GetElementsFromShadowDom(params string[] selectors)
         {

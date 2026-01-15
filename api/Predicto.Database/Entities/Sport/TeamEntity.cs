@@ -20,5 +20,8 @@ namespace Predicto.Database.Entities.Sport
         public int ModifiedBy { get; set; }
         public bool IsActive { get; set; } = true;
 
+        public string? UefaId { get; set; }
+   
+
     }
 }

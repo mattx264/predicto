@@ -24,7 +24,7 @@ namespace Predicto.Database.Entities.Sport
         public int TacklesWon { get; set; }
         public int CleanSheets { get; set; }
         public int Saves { get; set; }
-        public int DistanceCoveredKm { get; set; }
+        public double DistanceCoveredKm { get; set; }
         public int YellowCards { get; set; }
         public int RedCards { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;

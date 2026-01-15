@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Azure.Core.HttpHeader;
 
 namespace Predicto.DataCollector.Fifa
 {
@@ -24,6 +25,12 @@ namespace Predicto.DataCollector.Fifa
             return new string(input
                 .Select(c => replacements.ContainsKey(c) ? replacements[c] : c)
                 .ToArray());
+        }
+        public static string Slug(string name)
+        {
+            name = name.Replace(".", "");
+            name = name.Replace(" ", "-");
+            return ReplaceSpecialCharacters(string.Join("-", name).ToLower());
         }
         public static string TeamNormalization(string teamName)
         {

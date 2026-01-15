@@ -45,8 +45,15 @@ namespace Predicto.Gateway.Services.Room
                 TournamentId = newRoomDto.TournamentId,
                 RoomStatus = RoomStatus.Waiting,
             };
-
             await _unitOfWork.Rooms.AddAsync(roomEntity, createdByUserId);
+            var roomUserEntity = new RoomUserEntity()
+            {
+                Room = roomEntity,
+                UserId= createdByUserId,
+                UserRoomRole= UserRoomRole.Admin                
+            };
+           
+            await _unitOfWork.RoomUserRepository.AddAsync(roomUserEntity, createdByUserId);
             await _unitOfWork.CompleteAsync();
 
             var roomDto = new RoomDTO

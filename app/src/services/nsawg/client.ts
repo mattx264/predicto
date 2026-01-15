@@ -233,11 +233,14 @@ export class Client {
     /**
      * @return OK
      */
-    getById(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/TeamBlog/get-by-id/{id}";
+    getById(id: number, tournamentId: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/TeamBlog/get-by-id/{id}/{tournamentId}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (tournamentId === undefined || tournamentId === null)
+            throw new globalThis.Error("The parameter 'tournamentId' must be defined.");
+        url_ = url_.replace("{tournamentId}", encodeURIComponent("" + tournamentId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -344,8 +347,8 @@ export class Client {
     /**
      * @return OK
      */
-    roomPOST(body: NewRoomDto): Promise<void> {
-        let url_ = this.baseUrl + "/api/Room";
+    createRoom(body: NewRoomDto): Promise<RoomDTO> {
+        let url_ = this.baseUrl + "/api/Room/create-room";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -355,27 +358,31 @@ export class Client {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRoomPOST(_response);
+            return this.processCreateRoom(_response);
         });
     }
 
-    protected processRoomPOST(response: Response): Promise<void> {
+    protected processCreateRoom(response: Response): Promise<RoomDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RoomDTO.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<RoomDTO>(null as any);
     }
 
     /**
@@ -425,7 +432,7 @@ export class Client {
     /**
      * @return OK
      */
-    roomGET(id: number): Promise<RoomDTO> {
+    room(id: number): Promise<RoomDTO> {
         let url_ = this.baseUrl + "/api/Room/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -440,11 +447,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRoomGET(_response);
+            return this.processRoom(_response);
         });
     }
 
-    protected processRoomGET(response: Response): Promise<RoomDTO> {
+    protected processRoom(response: Response): Promise<RoomDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {

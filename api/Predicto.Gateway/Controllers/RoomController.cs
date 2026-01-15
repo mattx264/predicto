@@ -18,9 +18,9 @@ namespace Predicto.Gateway.Controllers
             _roomService = roomService;
         }
 
-        [HttpPost]
+        [HttpPost("create-room")]
         [Authorize]
-        public async Task<IActionResult> CreateRoom([FromBody] NewRoomDto newRoomDto)
+        public async Task<ActionResult<RoomDTO>> CreateRoom([FromBody] NewRoomDto newRoomDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -29,7 +29,8 @@ namespace Predicto.Gateway.Controllers
             {
                 var userId = User.GetUserId();
                 var room = await _roomService.CreateRoomAsync(newRoomDto, userId);
-                return CreatedAtAction(nameof(GetRoom), new { id = room.Id }, room);
+                //return CreatedAtAction(nameof(GetRoom), new { id = room.Id }, room);
+                return room;
             }
             catch (UnauthorizedAccessException ex)
             {

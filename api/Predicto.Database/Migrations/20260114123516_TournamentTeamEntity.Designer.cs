@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Predicto.Database;
 
@@ -11,9 +12,11 @@ using Predicto.Database;
 namespace Predicto.Database.Migrations
 {
     [DbContext(typeof(PredictoDbContext))]
-    partial class PredictoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260114123516_TournamentTeamEntity")]
+    partial class TournamentTeamEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -526,21 +529,11 @@ namespace Predicto.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Capacity")
-                        .HasColumnType("int");
-
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -556,9 +549,6 @@ namespace Predicto.Database.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StadiumNameCityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UefaId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

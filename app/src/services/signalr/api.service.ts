@@ -12,9 +12,13 @@
 
 // export default apiService;
 const BACKEND_URL = "http://predicto.gg";
+const BACKEND_URL_LOCAL = "https://localhost:7174";
 
 const apiService = {
   getBackendUrl: (): string => {
+    if (window.location.hostname === "localhost") {
+      return BACKEND_URL_LOCAL;
+    }
     return BACKEND_URL;
   },
 };

@@ -35,6 +35,10 @@ namespace Predicto.Gateway.Services
         {
             var hasher = new PasswordHasher<LoginReq>();
             var user = await _unitOfWork.Users.FindAsync(u => u.Email == loginDto.Email);
+            if (user == null)
+            {
+                return null;
+            }
             var password = hasher.VerifyHashedPassword(loginDto, user.Password, loginDto.Password);
 
             if (password == PasswordVerificationResult.Success)
