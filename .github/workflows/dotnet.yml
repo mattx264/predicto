@@ -6,14 +6,15 @@ name: .NET
 on:
   push:
     branches: [ "main" ]
-    paths-ignore: ['./app/**']
   pull_request:
     branches: [ "main" ]
 jobs:
   build:
 
     runs-on: windows-latest
-
+    defaults:
+      run:
+        working-directory: api
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET    
