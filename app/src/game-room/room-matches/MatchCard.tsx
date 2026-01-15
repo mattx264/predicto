@@ -71,7 +71,7 @@ const MatchCard: React.FC<MatchCardProps> = ({
           <span className="team-name">{match.homeTeam}</span>
           {match.homeTeamLogo && (
             <img
-              src={match.homeTeamLogo}
+              srcSet={match.homeTeamLogo}
               alt={match.homeTeam}
               className="match-team-logo"
             />
@@ -93,7 +93,7 @@ const MatchCard: React.FC<MatchCardProps> = ({
         <div className="team away">
           {match.awayTeamLogo && (
             <img
-              src={match.awayTeamLogo}
+              srcSet={match.awayTeamLogo}
               alt={match.awayTeam}
               className="match-team-logo"
             />

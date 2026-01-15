@@ -80,7 +80,7 @@ const PredictionModal: React.FC<PredictionModalProps> = ({
           <div className="modal-team-container">
             {match.homeTeamLogo && (
               <img
-                src={match.homeTeamLogo}
+                srcSet={match.homeTeamLogo}
                 alt={match.homeTeam}
                 className="modal-team-logo"
               />
@@ -92,7 +92,7 @@ const PredictionModal: React.FC<PredictionModalProps> = ({
             <span className="modal-team">{match.awayTeam}</span>
             {match.awayTeamLogo && (
               <img
-                src={match.awayTeamLogo}
+                srcSet={match.awayTeamLogo}
                 alt={match.awayTeam}
                 className="modal-team-logo"
               />

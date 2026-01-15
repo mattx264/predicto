@@ -24,16 +24,16 @@ class AuthService {
 
       let token: string;
 
-      if (typeof response === 'string') {
+      if (typeof response === "string") {
         try {
           const parsed: LoginResponse = JSON.parse(response);
-          token = parsed.Token || parsed.token || '';
+          token = parsed.Token || parsed.token || "";
         } catch {
           token = response;
         }
       } else {
         const loginResponse = response as LoginResponse;
-        token = loginResponse.Token || loginResponse.token || '';
+        token = loginResponse.Token || loginResponse.token || "";
       }
 
       if (!token) {

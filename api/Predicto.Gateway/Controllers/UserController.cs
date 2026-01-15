@@ -45,14 +45,19 @@ namespace Predicto.Gateway.Controllers
             }
             return Ok(new { Token = token });
         }
-        [HttpGet]
+        //[HttpGet]
+        //[Authorize]
+        //public async Task GetUser()
+        //{
+        //    var userId = User.GetUserId();
+
+        //}
+        [HttpGet("GetCurrentUser")]
         [Authorize]
-        public async Task GetUser()
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var userId = User.GetUserId();
-
+            throw new NotImplementedException();
         }
-
         //[HttpGet(Name = "GetWeatherForecast")]
         //public IEnumerable<WeatherForecast> Get()
         //{

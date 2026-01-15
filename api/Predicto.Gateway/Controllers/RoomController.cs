@@ -52,7 +52,7 @@ namespace Predicto.Gateway.Controllers
                 {
                     currentUserId = User.GetUserId();
                 }
-                
+
                 var rooms = await _roomService.GetRoomsAsync(currentUserId);
                 return Ok(rooms);
             }
@@ -134,5 +134,7 @@ namespace Predicto.Gateway.Controllers
                 return StatusCode(500, new { message = "error leaving room", error = ex.Message });
             }
         }
+
+       
     }
 }

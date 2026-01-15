@@ -62,7 +62,7 @@ namespace Predicto.Gateway.Services.Room
                 Name = roomEntity.Name,
                 Description = roomEntity.Description,
                 EntryFee = roomEntity.EntryFee,
-                Users = new List<DTO.User.UserDto>(),
+                Users = new List<RoomUserDTO>(),
                 MaxUsers = roomEntity.MaxUsers,
                 IsPublic = !roomEntity.IsPrivate,
                 RoomStatus = roomEntity.RoomStatus,
@@ -81,18 +81,19 @@ namespace Predicto.Gateway.Services.Room
         public async Task<List<RoomDTO>> GetRoomsAsync(int? currentUserId = null)
         {
             var rooms = await _unitOfWork.Rooms.GetAllAsync();
-
+          
             return rooms.Select(r => new RoomDTO
             {
                 Id = r.Id,
                 Name = r.Name,
                 Description = r.Description,
                 EntryFee = r.EntryFee,
-                Users = r.Participants.Select(u => new DTO.User.UserDto
+                Users = r.Participants.Select(u => new RoomUserDTO
                 {
                     Id = u.UserId,
-                    Name = u.User.Name,
-                    Email = u.User.Email
+                    UserRoomRole= u.UserRoomRole,
+                    //  Name = u.User.Name,//should name be shared in api
+                    //  Email = u.User.Email//should email be shared in api
                 }).ToList(),
                 MaxUsers = r.MaxUsers,
                 IsPublic = !r.IsPrivate,
@@ -102,11 +103,10 @@ namespace Predicto.Gateway.Services.Room
                 TournamentLeague = r.Tournament?.League ?? "Unknown League",
                 TournamentStartDate = r.Tournament?.StartDate ?? DateTime.MinValue,
                 TournamentEndDate = r.Tournament?.EndDate ?? DateTime.MinValue,
-                //CreatedByUserId = r.CreatedByUserId,
-                //CreatedByUserName = r.CreatedByUser?.Name ?? "Unknown User",
-                //IsUserInRoom = currentUserId.HasValue &&
-                //              (r.CreatedByUserId == currentUserId.Value ||
-                //               r.Participants.Any(p => p.Id == currentUserId.Value))
+                CreatedByUserId = r.CreatedBy,
+              //  CreatedByUserName = r.CreatedBy?.Name ?? "Unknown User",
+                IsUserInRoom = currentUserId.HasValue && IsUserInRoom(r, currentUserId.Value)
+                           
             }).ToList();
         }
 
@@ -121,11 +121,10 @@ namespace Predicto.Gateway.Services.Room
                 Name = room.Name,
                 Description = room.Description,
                 EntryFee = room.EntryFee,
-                Users = room.Participants.Select(u => new DTO.User.UserDto
+                Users = room.Participants.Select(u => new RoomUserDTO
                 {
                     Id = u.UserId,
-                    Name = u.User.Name,
-                    Email = u.User.Email
+                    UserRoomRole= u.UserRoomRole,
                 }).ToList(),
                 MaxUsers = room.MaxUsers,
                 IsPublic = !room.IsPrivate,
@@ -155,11 +154,10 @@ namespace Predicto.Gateway.Services.Room
                 Name = r.Name,
                 Description = r.Description,
                 EntryFee = r.EntryFee,
-                Users = r.Participants.Select(u => new DTO.User.UserDto
+                Users = r.Participants.Select(u => new RoomUserDTO
                 {
                     Id = u.UserId,
-                    Name = u.User.Name,
-                    Email = u.User.Email
+                    UserRoomRole= u.UserRoomRole,
                 }).ToList(),
                 MaxUsers = r.MaxUsers,
                 IsPublic = !r.IsPrivate,
@@ -261,6 +259,11 @@ namespace Predicto.Gateway.Services.Room
                 userId = userId,
                 participantsCount = updatedRoom.Users.Count
             });
+        }
+
+        private bool IsUserInRoom(RoomEntity room, int userId)
+        {
+            return room.Participants.Any(p => p.UserId == userId);
         }
     }
 

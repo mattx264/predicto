@@ -14,9 +14,10 @@ namespace Predicto.Gateway.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<List<GameListDto>> GetAll()
+        public async Task<List<GameListDto>> GetAll(int id)
         {
-            var games = await _unitOfWork.Game.GetAllAsync();
+
+            var games = await _unitOfWork.Game.WhereAsync(x=>x.TournamentId==id);
             return games.Select(g => new GameListDto
             {
                 Id = g.Id,
@@ -81,7 +82,7 @@ namespace Predicto.Gateway.Services
     }
     public interface IGameService
     {
-        Task<List<GameListDto>> GetAll();
+        Task<List<GameListDto>> GetAll(int id);
         Task<GameDetailsDto> GetByIdAsync(int id);
 
     }

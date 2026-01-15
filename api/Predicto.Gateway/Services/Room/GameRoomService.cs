@@ -87,8 +87,6 @@ namespace Predicto.Gateway.Services.Room
                     continue;
                 }
                 tu.Bet = bet.Bet;
-
-
             }
 
             return roomGame;

@@ -1,4 +1,4 @@
-import { Client, RoomGameBetDto } from "../nsawg/client";
+import { Client, GameListDto, RoomGameBetDto } from "../nsawg/client";
 import type { GameApiDTO, GameDetailsDTO, Match } from "../../types/types";
 import { mapGameApiDtoToMatch } from "../../types/types";
 import apiService from "./api.service";
@@ -27,28 +27,47 @@ class GameService {
   private client: Client;
 
   constructor() {
-    this.client = new Client(apiService.getBackendUrl(), new AuthenticatedHttpClient());
+    this.client = new Client(
+      apiService.getBackendUrl(),
+      new AuthenticatedHttpClient()
+    );
   }
 
   async getGamesByTournamentId(tournamentId: number): Promise<Match[]> {
     try {
-      const response = await fetch(
-        `${apiService.getBackendUrl()}/api/GameBlog/tournament/${tournamentId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      // const response = await fetch(
+      //   `${apiService.getBackendUrl()}/api/Game/tournament/${tournamentId}`,
+      //   {
+      //     method: "GET",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+
+      // if (!response.ok) {
+      //   throw new Error(`Failed to fetch games: ${response.statusText}`);
+      // }
+
+      // const games: GameApiDTO[] = await response.json();
+      // return games
+      //   .map(mapGameApiDtoToMatch)
+      //   .sort(
+      //     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      //   );
+
+      const toGameApiDTO = (game: GameListDto): GameApiDTO => {
+        if (game.id === undefined) {
+          throw new Error("Invalid game data: missing id");
         }
-      );
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch games: ${response.statusText}`);
-      }
+        return { ...(game as unknown as GameApiDTO), id: game.id };
+      };
 
-      const games: GameApiDTO[] = await response.json();
-      return games
-        .map(mapGameApiDtoToMatch)
+      //  const response = await this.client.getTournamentByIdAll(tournamentId);
+      const response = await this.client.getTournamentByIdAll(tournamentId);
+      return response
+        .map((g) => mapGameApiDtoToMatch(toGameApiDTO(g)))
         .sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
         );
@@ -61,7 +80,7 @@ class GameService {
   async getGameDetails(gameId: number): Promise<GameDetailsDTO> {
     try {
       const response = await fetch(
-        `${apiService.getBackendUrl()}/api/GameBlog/details/${gameId}`,
+        `${apiService.getBackendUrl()}/api/Game/details/${gameId}`,
         {
           method: "GET",
           headers: {
@@ -81,7 +100,6 @@ class GameService {
       throw error;
     }
   }
-
 
   async betGame(betData: RoomGameBetDto): Promise<void> {
     try {

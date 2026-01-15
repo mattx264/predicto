@@ -1,5 +1,6 @@
 ﻿using Predicto.Database.Entities.Room;
 using Predicto.Gateway.DTO.User;
+using System.Text.Json.Serialization;
 
 namespace Predicto.Gateway.DTO.Rooms
 {
@@ -9,7 +10,7 @@ namespace Predicto.Gateway.DTO.Rooms
         public string Name { get; set; }
         public string Description { get; set; }
         public int? EntryFee { get; set; }
-        public IList<UserDto> Users { get; set; }
+        public IList<RoomUserDTO> Users { get; set; }
         public int? MaxUsers { get; set; }
         public bool IsPublic { get; set; }
         public RoomStatus RoomStatus { get; set; }
@@ -24,5 +25,12 @@ namespace Predicto.Gateway.DTO.Rooms
         public int CreatedByUserId { get; set; }
         
         public bool IsUserInRoom { get; set; } 
+    }
+    public class RoomUserDTO
+    {
+        public int Id { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public UserRoomRole UserRoomRole { get; set; }
+
     }
 }
