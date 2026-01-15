@@ -31,7 +31,7 @@ function AppContent() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isTopUpOpen, setIsTopUpOpen] = useState(false);
 
-  const userBalance = 250.50;
+  const userBalance = 350.5;
 
   return (
     <>

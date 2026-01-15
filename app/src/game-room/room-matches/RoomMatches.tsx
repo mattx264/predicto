@@ -10,7 +10,10 @@ import { useAuth } from "../../auth/AuthContext";
 import { toast } from "react-toastify";
 import type { Match } from "../../types/types";
 
-import { RoomGameBetDto, RoomGameBetTeamDto } from "../../services/nsawg/client";
+import {
+  RoomGameBetDto,
+  RoomGameBetTeamDto,
+} from "../../services/nsawg/client";
 
 interface RoomMatchesProps {
   tournamentId?: number;
@@ -153,14 +156,14 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
         prevMatches.map((m) =>
           m.id === matchId
             ? {
-              ...m,
-              userPrediction: {
-                home: payload.home,
-                away: payload.away,
-                winner: payload.winner,
-                joker: payload.joker,
-              },
-            }
+                ...m,
+                userPrediction: {
+                  home: payload.home,
+                  away: payload.away,
+                  winner: payload.winner,
+                  joker: payload.joker,
+                },
+              }
             : m
         )
       );
@@ -176,7 +179,7 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
   const selectedMatch = matches.find((m) => m.id === selectedMatchId);
 
   if (loading) {
-    return <div className="matches-section">Ładowanie meczów...</div>;
+    return <div className="matches-section ">Ładowanie meczów...</div>;
   }
 
   if (error) {
