@@ -119,13 +119,12 @@ const LeagueTable: React.FC<LeagueTableProps> = ({
                 </td>
                 <td className="col-stat">
                   <span
-                    className={`goal-diff ${
-                      team.goalDifference > 0
+                    className={`goal-diff ${team.goalDifference > 0
                         ? "positive"
                         : team.goalDifference < 0
-                        ? "negative"
-                        : ""
-                    }`}
+                          ? "negative"
+                          : ""
+                      }`}
                   >
                     {team.goalDifference > 0 ? "+" : ""}
                     {team.goalDifference}

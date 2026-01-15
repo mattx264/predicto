@@ -14,6 +14,7 @@ import {
   Store,
   Package,
   Wallet,
+  LayoutDashboard
 } from "lucide-react";
 import "./Navigation.css";
 import NotificationBell from "../notifications/NotificationsBell";
@@ -34,7 +35,6 @@ const Navigation: React.FC<NavigationProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeNav, setActiveNav] = useState("home");
-  const [animatingNav, setAnimatingNav] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,42 +44,44 @@ const Navigation: React.FC<NavigationProps> = ({
     {
       id: "home",
       label: isAuthenticated ? t("nav.dashboard") : t("nav.home"),
-      icon: <ChartNoAxesCombined className="nav-icon" />,
+      icon: isAuthenticated ? <LayoutDashboard size={20} /> : <ChartNoAxesCombined size={20} />,
       path: isAuthenticated ? "/dashboard" : "/",
       authRequired: false,
     },
     {
       id: "rooms",
       label: t("nav.rooms"),
-      icon: <Users className="nav-icon" />,
+      icon: <Users size={20} />,
       path: "/rooms",
       authRequired: true,
     },
     {
       id: "shop",
       label: t("nav.shop"),
-      icon: <Store className="nav-icon" />,
+      icon: <Store size={20} />,
       path: "/shop",
       authRequired: true,
+      className: "nav-item-shop"
     },
     {
       id: "inventory",
       label: t("nav.inventory"),
-      icon: <Package className="nav-icon" />,
+      icon: <Package size={20} />,
       path: "/inventory",
       authRequired: true,
+      className: "nav-item-inventory"
     },
     {
       id: "ranking",
       label: t("nav.ranking"),
-      icon: <Trophy className="nav-icon" />,
+      icon: <Trophy size={20} />,
       path: "/ranking",
       authRequired: true,
     },
     {
       id: "jak-grac",
       label: t("nav.howToPlay"),
-      icon: <BookOpen className="nav-icon" />,
+      icon: <BookOpen size={20} />,
       path: "/jak-grac",
       authRequired: false,
       hideWhenAuthenticated: true,
@@ -94,47 +96,32 @@ const Navigation: React.FC<NavigationProps> = ({
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20);
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
     const currentPath = location.pathname;
-    let newActiveNav = activeNav;
+    let newActiveNav = "home";
 
-    if (currentPath === "/dashboard" || currentPath === "/") {
-      newActiveNav = "home";
-    } else {
+    if (currentPath !== "/" && currentPath !== "/dashboard") {
       const activeItem = navItems.find(
         (item) =>
-          currentPath === item.path ||
-          (item.path !== "/" &&
-            item.path !== "/dashboard" &&
-            currentPath.startsWith(item.path))
+          item.path !== "/" &&
+          item.path !== "/dashboard" &&
+          currentPath.startsWith(item.path)
       );
       if (activeItem) {
         newActiveNav = activeItem.id;
       }
     }
-
-    if (newActiveNav !== activeNav) {
-      setActiveNav(newActiveNav);
-    }
-  }, [location.pathname, isAuthenticated]);
-
-  const handleNavClick = (id: string, path: string) => {
-    if (id !== activeNav) {
-      setAnimatingNav(id);
-      setTimeout(() => {
-        setAnimatingNav(null);
-      }, 600);
-    }
-
-    setActiveNav(id);
+    setActiveNav(newActiveNav);
     setIsMenuOpen(false);
+  }, [location.pathname, navItems]);
+
+  const handleNavClick = (path: string) => {
     navigate(path);
   };
 
@@ -144,56 +131,36 @@ const Navigation: React.FC<NavigationProps> = ({
     navigate("/");
   };
 
-  const handleProfileClick = () => {
-    setIsMenuOpen(false);
-    onOpenProfile();
-  };
-
-  const handleBalanceClick = () => {
-    setIsMenuOpen(false);
-    onOpenTopUp();
-  };
-
-  const username = user?.name || "Gracz";
-
   return (
     <nav className={`navigation ${isScrolled ? "scrolled" : ""}`}>
+      <div className="nav-border-gradient" />
+
       <div className="nav-container">
         <div className="nav-content">
+
           <Link to={isAuthenticated ? "/dashboard" : "/"} className="nav-logo">
-            <div className="logo-icon-wrapper">
-              <Sparkles className="logo-icon" />
+            <div className="logo-icon-box">
+              <Sparkles className="logo-icon" size={22} />
+              <div className="logo-glow" />
             </div>
             <span className="logo-text">PREDICTO</span>
           </Link>
 
-          <div className="nav-links desktop-only">
+          <div className="nav-center-capsule desktop-only">
             {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.id, item.path)}
-                className="nav-icon-button"
-              >
-                <div
-                  className={`
-                  nav-icon-circle
-                  ${activeNav === item.id ? "active" : ""}
-                  ${item.id === "shop" ? "shop-icon" : ""}
-                  ${item.id === "inventory" ? "inventory-icon" : ""}
-                `}
+              <div key={item.id} className="nav-item-wrapper">
+                <button
+                  onClick={() => handleNavClick(item.path)}
+                  className={`nav-item-btn ${activeNav === item.id ? "active" : ""} ${item.className || ""}`}
+                  aria-label={item.label}
                 >
-                  {item.icon}
-
-                  {animatingNav === item.id && (
-                    <div className="ping-animation"></div>
-                  )}
-                  {activeNav === item.id && (
-                    <div className="active-border"></div>
-                  )}
-                </div>
-
+                  <div className="nav-icon-wrapper">
+                    {item.icon}
+                  </div>
+                  {activeNav === item.id && <span className="active-dot" />}
+                </button>
                 <div className="nav-tooltip">{item.label}</div>
-              </button>
+              </div>
             ))}
           </div>
 
@@ -202,145 +169,127 @@ const Navigation: React.FC<NavigationProps> = ({
               <>
                 <NotificationBell />
 
-                <LanguageSwitcher />
+                <div className="divider-vertical" />
 
-                {/* ✅ NOWY BALANCE BADGE */}
-                <button
-                  className="balance-badge"
-                  onClick={handleBalanceClick}
-                  title="Doładuj konto"
-                >
-                  <Wallet size={16} className="balance-icon" />
-                  <span className="balance-text">
-                    {userBalance.toFixed(2)}
-                  </span>
-                </button>
-
-                <button
-                  className="user-profile-btn"
-                  onClick={handleProfileClick}
-                >
-                  <div className="user-avatar">
-                    <User className="user-icon" />
-                    <div className="online-indicator"></div>
-                  </div>
-                </button>
-                <div className="user-info">
-                  <span className="username">{username}</span>
+                <div className="nav-lang-wrapper">
+                  <LanguageSwitcher />
                 </div>
 
-                <button onClick={handleLogout} className="btn-logout">
-                  <LogOut className="logout-icon" />
-                  <span>{t("nav.logout")}</span>
+                <button
+                  className="balance-pill-glass"
+                  onClick={onOpenTopUp}
+                  title="Twój portfel"
+                >
+                  <div className="balance-icon-box">
+                    <Wallet size={16} />
+                  </div>
+                  <span className="balance-value">{userBalance.toFixed(2)}</span>
+                  <span className="balance-plus">+</span>
+                </button>
+
+                <div className="profile-wrapper">
+                  <button className="user-profile-glass" onClick={onOpenProfile}>
+                    <div className="avatar-ring">
+                      <div className="user-avatar-img">
+                        <User size={20} />
+                      </div>
+                    </div>
+                    <span className="profile-name">{user?.name || "Gracz"}</span>
+                  </button>
+                </div>
+
+                <button onClick={handleLogout} className="logout-mini-btn" title="Wyloguj">
+                  <LogOut size={18} />
                 </button>
               </>
             ) : (
-              <>
+              <div className="auth-buttons">
                 <LanguageSwitcher />
-
                 <Link to="/login">
-                  <button className="btn-secondary">{t("nav.login")}</button>
+                  <button className="nav-btn-ghost">{t("nav.login")}</button>
                 </Link>
                 <Link to="/register">
-                  <button className="btn-primary">{t("nav.register")}</button>
+                  <button className="nav-btn-primary">{t("nav.register")}</button>
                 </Link>
-              </>
+              </div>
             )}
           </div>
 
           <button
-            className="mobile-menu-btn mobile-only"
+            className="mobile-menu-toggle mobile-only"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? (
-              <X className="menu-icon" />
-            ) : (
-              <Menu className="menu-icon" />
-            )}
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
+      </div>
 
-        <div className={`mobile-menu ${isMenuOpen ? "open" : ""}`}>
-          <div className="mobile-menu-content">
-            <div className="mobile-top-actions">
-              {isAuthenticated && (
-                <>
-                  {/* ✅ MOBILE BALANCE */}
-                  <button
-                    className="mobile-balance-btn"
-                    onClick={handleBalanceClick}
-                  >
-                    <Wallet size={20} />
-                    <div className="mobile-balance-info">
-                      <span className="mobile-balance-label">Saldo</span>
-                      <span className="mobile-balance-value">
-                        {userBalance.toFixed(2)} Monet
-                      </span>
-                    </div>
-                    <span className="mobile-topup-text">Doładuj →</span>
-                  </button>
+      <div className={`mobile-menu ${isMenuOpen ? "open" : ""}`}>
+        <div className="mobile-menu-container">
 
-                  <div className="mobile-notifications-wrapper">
-                    <NotificationBell />
-                  </div>
-                </>
-              )}
-
-              <div className="mobile-language-wrapper">
-                <LanguageSwitcher />
+          {isAuthenticated && (
+            <div className="mobile-user-card">
+              <div className="mobile-user-info" onClick={() => { onOpenProfile(); setIsMenuOpen(false); }}>
+                <div className="mobile-avatar">
+                  <User size={24} />
+                </div>
+                <div className="mobile-user-details">
+                  <span className="mobile-username">{user?.name}</span>
+                  <span className="mobile-status">Zarządzaj profilem</span>
+                </div>
               </div>
             </div>
+          )}
 
+          {isAuthenticated && (
+            <div className="mobile-balance-card" onClick={() => { onOpenTopUp(); setIsMenuOpen(false); }}>
+              <div className="mobile-balance-left">
+                <Wallet size={20} className="text-green" />
+                <span>Portfel</span>
+              </div>
+              <div className="mobile-balance-right">
+                <span className="value">{userBalance.toFixed(2)}</span>
+                <div className="plus-badge">+</div>
+              </div>
+            </div>
+          )}
+
+          <div className="mobile-nav-list">
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => handleNavClick(item.id, item.path)}
-                className={`mobile-link ${activeNav === item.id ? "active" : ""
-                  } ${item.id === "shop" ? "shop-mobile" : ""} ${item.id === "inventory" ? "inventory-mobile" : ""
-                  }`}
+                onClick={() => handleNavClick(item.path)}
+                className={`mobile-nav-item ${activeNav === item.id ? "active" : ""} ${item.className || ""}`}
               >
-                <div className="mobile-link-icon">{item.icon}</div>
-                <span>{item.label}</span>
+                <div className="mobile-icon-box">{item.icon}</div>
+                <span className="mobile-label">{item.label}</span>
+                {activeNav === item.id && <div className="active-indicator" />}
               </button>
             ))}
 
-            <div className="mobile-auth">
-              {isAuthenticated ? (
-                <>
-                  <div
-                    className="mobile-user-info"
-                    onClick={handleProfileClick}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div className="user-avatar">
-                      <User className="user-icon" />
-                      <div className="online-indicator"></div>
-                    </div>
-                    <div className="user-details">
-                      <span className="username">{username}</span>
-                      <span className="user-status">{t("nav.profile")}</span>
-                    </div>
-                  </div>
-                  <button onClick={handleLogout} className="btn-logout mobile">
-                    <LogOut className="logout-icon" />
-                    <span>{t("nav.logout")}</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                    <button className="btn-secondary mobile">
-                      {t("nav.login")}
-                    </button>
-                  </Link>
-                  <Link to="/register" onClick={() => setIsMenuOpen(false)}>
-                    <button className="btn-primary mobile">
-                      {t("nav.register")}
-                    </button>
-                  </Link>
-                </>
-              )}
+            {isAuthenticated && (
+              <button className="mobile-nav-item logout" onClick={handleLogout}>
+                <div className="mobile-icon-box red"><LogOut size={20} /></div>
+                <span className="mobile-label">Wyloguj</span>
+              </button>
+            )}
+          </div>
+
+          <div className="mobile-footer-actions">
+            <div className="mobile-lang-row">
+              <LanguageSwitcher />
             </div>
+
+            {!isAuthenticated && (
+              <div className="mobile-auth-buttons">
+                <Link to="/login" onClick={() => setIsMenuOpen(false)} className="w-full">
+                  <button className="nav-btn-ghost w-full">Zaloguj się</button>
+                </Link>
+                <Link to="/register" onClick={() => setIsMenuOpen(false)} className="w-full">
+                  <button className="nav-btn-primary w-full">Dołącz teraz</button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

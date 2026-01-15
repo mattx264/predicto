@@ -51,18 +51,18 @@ const UserStatsModal: React.FC<UserStatsModalProps> = ({
   const accuracy =
     userStats.totalPredictions > 0
       ? (
-          (userStats.correctPredictions / userStats.totalPredictions) *
-          100
-        ).toFixed(1)
+        (userStats.correctPredictions / userStats.totalPredictions) *
+        100
+      ).toFixed(1)
       : 0;
 
   const getMatchIcon = (points: number) => {
     if (points === 5) {
-      return <CheckCircle className="match-result-icon perfect" size={24} />;
+      return <CheckCircle className="match-result-icon perfect" size={20} />;
     } else if (points === 3) {
-      return <Minus className="match-result-icon partial" size={24} />;
+      return <Minus className="match-result-icon partial" size={20} />;
     } else {
-      return <XCircle className="match-result-icon missed" size={24} />;
+      return <XCircle className="match-result-icon missed" size={20} />;
     }
   };
 
@@ -78,20 +78,20 @@ const UserStatsModal: React.FC<UserStatsModalProps> = ({
                 {isCurrentUser && <span className="you-badge-modal">Ty</span>}
               </h2>
               <div className="user-stats-rank-display">
-                <Trophy size={18} />
+                <Trophy size={16} />
                 <span>Miejsce #{userStats.rank}</span>
               </div>
             </div>
           </div>
           <button className="user-stats-close" onClick={onClose}>
-            <X size={24} />
+            <X size={20} />
           </button>
         </div>
 
         <div className="user-stats-grid">
           <div className="user-stat-card primary">
             <div className="stat-icon-wrapper primary-icon">
-              <Trophy size={24} />
+              <Trophy size={20} />
             </div>
             <div className="stat-content-modal">
               <span className="stat-value-large">{userStats.totalPoints}</span>
@@ -101,7 +101,7 @@ const UserStatsModal: React.FC<UserStatsModalProps> = ({
 
           <div className="user-stat-card">
             <div className="stat-icon-wrapper success-icon">
-              <Target size={24} />
+              <Target size={20} />
             </div>
             <div className="stat-content-modal">
               <span className="stat-value-large">{accuracy}%</span>
@@ -111,7 +111,7 @@ const UserStatsModal: React.FC<UserStatsModalProps> = ({
 
           <div className="user-stat-card">
             <div className="stat-icon-wrapper info-icon">
-              <TrendingUp size={24} />
+              <TrendingUp size={20} />
             </div>
             <div className="stat-content-modal">
               <span className="stat-value-large">
@@ -123,7 +123,7 @@ const UserStatsModal: React.FC<UserStatsModalProps> = ({
 
           <div className="user-stat-card">
             <div className="stat-icon-wrapper warning-icon">
-              <Award size={24} />
+              <Award size={20} />
             </div>
             <div className="stat-content-modal">
               <span className="stat-value-large">{userStats.bestStreak}</span>
@@ -133,10 +133,10 @@ const UserStatsModal: React.FC<UserStatsModalProps> = ({
         </div>
 
         <div className="predictions-breakdown">
-          <h3 className="breakdown-title">Rozkład typowań</h3>
+          <h3 className="breakdown-title">Rozkład Typowań</h3>
           <div className="breakdown-grid">
             <div className="breakdown-item perfect">
-              <CheckCircle size={20} />
+              <CheckCircle size={18} />
               <div className="breakdown-info">
                 <span className="breakdown-value">
                   {userStats.perfectScores}
@@ -147,7 +147,7 @@ const UserStatsModal: React.FC<UserStatsModalProps> = ({
             </div>
 
             <div className="breakdown-item partial">
-              <Minus size={20} />
+              <Minus size={18} />
               <div className="breakdown-info">
                 <span className="breakdown-value">
                   {userStats.partialScores}
@@ -158,7 +158,7 @@ const UserStatsModal: React.FC<UserStatsModalProps> = ({
             </div>
 
             <div className="breakdown-item missed">
-              <XCircle size={20} />
+              <XCircle size={18} />
               <div className="breakdown-info">
                 <span className="breakdown-value">
                   {userStats.missedScores}
@@ -176,19 +176,18 @@ const UserStatsModal: React.FC<UserStatsModalProps> = ({
             {userStats.recentMatches.slice(0, 5).map((match) => (
               <div
                 key={match.matchId}
-                className={`recent-match-icon-wrapper ${
-                  match.points === 5
+                className={`recent-match-icon-wrapper ${match.points === 5
                     ? "perfect"
                     : match.points === 3
-                    ? "partial"
-                    : "missed"
-                }`}
+                      ? "partial"
+                      : "missed"
+                  }`}
                 title={
                   match.points === 5
                     ? "Dokładny wynik (+5 pkt)"
                     : match.points === 3
-                    ? "Tylko wynik (+3 pkt)"
-                    : "Błędny typ (0 pkt)"
+                      ? "Tylko wynik (+3 pkt)"
+                      : "Błędny typ (0 pkt)"
                 }
               >
                 {getMatchIcon(match.points)}

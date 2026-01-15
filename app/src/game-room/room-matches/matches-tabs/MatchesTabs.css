@@ -93,7 +93,6 @@
   }
 }
 
-/* Responsywność */
 @media (max-width: 768px) {
   .matches-tabs {
     gap: 8px;

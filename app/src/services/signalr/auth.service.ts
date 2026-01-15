@@ -6,6 +6,14 @@ interface LoginResponse {
   token?: string;
 }
 
+interface DecodedToken {
+  exp?: number;
+  sub?: string;
+  email?: string;
+  iat?: number;
+  jti?: string;
+}
+
 class AuthService {
   private client: Client;
 
@@ -21,7 +29,6 @@ class AuthService {
 
     try {
       const response = await this.client.login(loginData);
-
       let token: string;
 
       if (typeof response === "string") {
@@ -91,9 +98,7 @@ class AuthService {
     return userDto;
   }
 
-  decodeToken(
-    token: string
-  ): { exp?: number; sub?: string; email?: string } | null {
+  decodeToken(token: string): DecodedToken | null {
     try {
       const base64Url = token.split(".")[1];
       const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -118,6 +123,24 @@ class AuthService {
 
     const expirationDate = new Date(decoded.exp * 1000);
     return expirationDate < new Date();
+  }
+
+  getJoinDate(token: string): string {
+    const decoded = this.decodeToken(token);
+    if (decoded?.iat) {
+      return new Date(decoded.iat * 1000).toISOString();
+    }
+    return new Date().toISOString();
+  }
+
+  getUserIdFromToken(token: string): number {
+    const decoded = this.decodeToken(token);
+    return parseInt(decoded?.sub || "0");
+  }
+
+  getEmailFromToken(token: string): string {
+    const decoded = this.decodeToken(token);
+    return decoded?.email || "";
   }
 }
 

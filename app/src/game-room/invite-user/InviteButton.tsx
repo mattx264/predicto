@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { UserPlus, X, Copy, Mail, Check } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { UserPlus, X, Copy, Mail, Check, Link, Hash } from "lucide-react";
 import "./InviteButton.css";
 
 interface InviteButtonProps {
@@ -9,14 +9,33 @@ interface InviteButtonProps {
 }
 
 const InviteButton: React.FC<InviteButtonProps> = ({ roomId, inviteCode }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
   const [email, setEmail] = useState("");
 
-  const inviteLink = `${window.location.origin}/room/${roomId}${
-    inviteCode ? `?code=${inviteCode}` : ""
-  }`;
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const inviteLink = `${window.location.origin}/room/${roomId}${inviteCode ? `?code=${inviteCode}` : ""
+    }`;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(inviteLink);
@@ -37,127 +56,97 @@ const InviteButton: React.FC<InviteButtonProps> = ({ roomId, inviteCode }) => {
     console.log("Wysyłam zaproszenie na:", email);
     alert(`Zaproszenie wysłane na: ${email}`);
     setEmail("");
+    setIsOpen(false);
   };
 
   return (
-    <>
+    <div className="invite-wrapper" ref={containerRef}>
       <button
-        className="my-action-btn my-invite"
-        onClick={() => setIsModalOpen(true)}
+        className={`my-action-btn my-invite ${isOpen ? "active" : ""}`}
+        onClick={() => setIsOpen(!isOpen)}
       >
         <UserPlus size={20} />
         <span>Zaproś</span>
       </button>
 
-      {isModalOpen && (
-        <div
-          className="my-invite-modal-overlay"
-          onClick={() => setIsModalOpen(false)}
-        >
-          <div className="my-invite-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="my-invite-modal-header">
-              <h2>Zaproś do pokoju</h2>
-              <button
-                className="my-invite-close-btn"
-                onClick={() => setIsModalOpen(false)}
-              >
-                <X size={24} />
-              </button>
+      {isOpen && (
+        <div className="invite-popover">
+          <div className="popover-header">
+            <h3>Zaproś znajomych</h3>
+            <button className="close-btn-mini" onClick={() => setIsOpen(false)}>
+              <X size={16} />
+            </button>
+          </div>
+
+          <div className="popover-content">
+            <div className="invite-group">
+              <label className="invite-label">
+                <Link size={14} /> Link do pokoju
+              </label>
+              <div className="input-row">
+                <input
+                  type="text"
+                  value={inviteLink}
+                  readOnly
+                  className="popover-input"
+                />
+                <button
+                  className={`copy-btn-mini ${copiedLink ? "success" : ""}`}
+                  onClick={handleCopyLink}
+                  title="Kopiuj link"
+                >
+                  {copiedLink ? <Check size={16} /> : <Copy size={16} />}
+                </button>
+              </div>
             </div>
 
-            <div className="my-invite-modal-content">
-              <div className="my-invite-section">
-                <h3>Link z zaproszeniem</h3>
-                <p className="my-invite-description">
-                  Udostępnij ten link osobom, które chcesz zaprosić
-                </p>
-                <div className="my-invite-input-group">
+            {inviteCode && (
+              <div className="invite-group">
+                <label className="invite-label">
+                  <Hash size={14} /> Kod wejścia
+                </label>
+                <div className="input-row">
                   <input
                     type="text"
-                    value={inviteLink}
+                    value={inviteCode}
                     readOnly
-                    className="my-invite-input"
+                    className="popover-input code-font"
                   />
                   <button
-                    className="my-invite-copy-btn"
-                    onClick={handleCopyLink}
+                    className={`copy-btn-mini ${copiedCode ? "success" : ""}`}
+                    onClick={handleCopyCode}
+                    title="Kopiuj kod"
                   >
-                    {copiedLink ? (
-                      <>
-                        <Check size={18} />
-                        <span>Skopiowano!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={18} />
-                        <span>Kopiuj</span>
-                      </>
-                    )}
+                    {copiedCode ? <Check size={16} /> : <Copy size={16} />}
                   </button>
                 </div>
               </div>
+            )}
 
-              {inviteCode && (
-                <div className="my-invite-section">
-                  <h3>Kod zaproszenia</h3>
-                  <p className="my-invite-description">
-                    Użyj tego kodu w prywatnych pokojach
-                  </p>
-                  <div className="my-invite-input-group">
-                    <input
-                      type="text"
-                      value={inviteCode}
-                      readOnly
-                      className="my-invite-input my-invite-code"
-                    />
-                    <button
-                      className="my-invite-copy-btn"
-                      onClick={handleCopyCode}
-                    >
-                      {copiedCode ? (
-                        <>
-                          <Check size={18} />
-                          <span>Skopiowano!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy size={18} />
-                          <span>Kopiuj</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              )}
+            <div className="popover-divider" />
 
-              <div className="my-invite-section">
-                <h3>Wyślij zaproszenie e-mailem</h3>
-                <p className="my-invite-description">
-                  Wpisz adres email osoby, którą chcesz zaprosić
-                </p>
-                <form
-                  onSubmit={handleSendEmail}
-                  className="my-invite-email-form"
-                >
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="email@example.com"
-                    className="my-invite-input"
-                    required
-                  />
-                  <button type="submit" className="my-invite-send-btn">
-                    <Mail size={18} />
-                    <span>Wyślij</span>
-                  </button>
-                </form>
+            <form onSubmit={handleSendEmail} className="invite-group">
+              <label className="invite-label">
+                <Mail size={14} /> Wyślij e-mail
+              </label>
+              <div className="input-row">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="email@example.com"
+                  className="popover-input"
+                  required
+                />
+                <button type="submit" className="send-btn-mini">
+                  <UserPlus size={16} />
+                </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

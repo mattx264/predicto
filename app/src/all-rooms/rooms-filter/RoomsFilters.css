@@ -1,89 +1,114 @@
 .filters-section {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.search-box {
-  position: relative;
-  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
   align-items: center;
 }
 
-.search-icon {
-  position: absolute;
-  left: 1rem;
-  color: #94a3b8;
-  pointer-events: none;
-}
-
-.search-input {
+.filter-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
   width: 100%;
-  padding: 0.875rem 1rem 0.875rem 3rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  color: #f8fafc;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.search-input::placeholder {
-  color: #94a3b8;
+.filter-input-group:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(30, 41, 59, 0.7);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-.search-input:focus {
-  outline: none;
+.filter-input-group:focus-within {
   border-color: #22c55e;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 0 0 1px #22c55e, 0 0 20px rgba(34, 197, 94, 0.2);
+  transform: translateY(-1px);
 }
 
-.filter-group {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.filter-icon {
+.filter-input-icon {
   position: absolute;
   left: 1rem;
-  color: #94a3b8;
+  color: #64748b;
+  transition: color 0.3s ease, transform 0.3s ease;
   pointer-events: none;
-  z-index: 1;
+  z-index: 10;
 }
 
-.filter-select {
+.filter-input-group:hover .input-icon {
+  color: #94a3b8;
+}
+
+.filter-input-group:focus-within .filter-input-icon {
+  color: #22c55e;
+  transform: scale(1.1);
+}
+
+.glass-input {
   width: 100%;
-  padding: 0.875rem 1rem 0.875rem 3rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  padding: 1rem 1rem 1rem 3rem;
+  background: transparent;
+  border: none;
   color: #f8fafc;
   font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 14px;
+}
+
+.glass-input::placeholder {
+  color: #64748b;
+  transition: color 0.3s ease;
+}
+
+.glass-input:focus {
+  outline: none;
+}
+
+.glass-input:focus::placeholder {
+  color: #94a3b8;
+}
+
+.glass-select {
+  width: 100%;
+  padding: 1rem 2.5rem 1rem 3rem;
+  background: transparent;
+  border: none;
+  color: #f8fafc;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.3s ease;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  padding-right: 3rem;
+  -webkit-appearance: none;
 }
 
-.filter-select:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.filter-select:focus {
+.glass-select:focus {
   outline: none;
-  border-color: #22c55e;
-  background-color: rgba(255, 255, 255, 0.08);
 }
 
-.filter-select option {
-  background: #1e293b;
+.glass-select option {
+  background: #0f172a;
   color: #f8fafc;
+  padding: 10px;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 1rem;
+  color: #64748b;
+  pointer-events: none;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.filter-input-group:focus-within .select-arrow {
+  color: #22c55e;
+  transform: rotate(180deg);
 }
 
 @media (max-width: 1024px) {
@@ -91,7 +116,7 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  .search-box {
+  .search-item {
     grid-column: 1 / -1;
   }
 }
@@ -99,9 +124,12 @@
 @media (max-width: 640px) {
   .filters-section {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .search-box {
-    grid-column: auto;
+  .glass-input,
+  .glass-select {
+    font-size: 1rem;
+    padding-top: 0.875rem;
   }
 }

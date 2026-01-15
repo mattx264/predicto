@@ -1,5 +1,5 @@
 import React from "react";
-import { Award, ShieldCheck, Trophy, Crown, Zap, Lock } from "lucide-react";
+import { Award, ShieldCheck, Trophy, Crown, Zap, Lock, Star } from "lucide-react";
 import "./Achievements.css";
 
 type Rarity = "common" | "rare" | "epic" | "legendary";
@@ -22,9 +22,8 @@ const allAchievements: Achievement[] = [
     unlocked: true,
     rarity: "legendary",
     icon: Crown,
-    date: "05-09-2025",
+    date: "05.09.2025",
   },
-
   {
     id: 2,
     title: "Snajper",
@@ -32,16 +31,16 @@ const allAchievements: Achievement[] = [
     unlocked: true,
     rarity: "rare",
     icon: Zap,
-    date: "22-03-2024",
+    date: "22.03.2024",
   },
   {
     id: 3,
-    title: "Weteran Turniejów",
+    title: "Weteran",
     description: "Weź udział w 5 różnych turniejach.",
     unlocked: true,
     rarity: "epic",
     icon: ShieldCheck,
-    date: "18-08-2024",
+    date: "18.08.2024",
   },
   {
     id: 4,
@@ -50,7 +49,7 @@ const allAchievements: Achievement[] = [
     unlocked: true,
     rarity: "common",
     icon: Award,
-    date: "15-01-2024",
+    date: "15.01.2024",
   },
   {
     id: 5,
@@ -66,8 +65,8 @@ const allAchievements: Achievement[] = [
     description: "Wygraj 5 zakładów z rzędu.",
     unlocked: true,
     rarity: "rare",
-    icon: Award,
-    date: "12-05-2024",
+    icon: Star,
+    date: "12.05.2024",
   },
   {
     id: 7,
@@ -84,11 +83,11 @@ const allAchievements: Achievement[] = [
     unlocked: true,
     rarity: "common",
     icon: Award,
-    date: "16-01-2024",
+    date: "16.01.2024",
   },
 ];
 
-const Achievements = () => {
+const Achievements: React.FC = () => {
   const unlockedCount = allAchievements.filter((a) => a.unlocked).length;
   const totalCount = allAchievements.length;
   const progress = totalCount > 0 ? (unlockedCount / totalCount) * 100 : 0;
@@ -96,43 +95,68 @@ const Achievements = () => {
   return (
     <div className="achievements-container">
       <div className="achievements-header">
-        <div className="achievements-summary">
-          <h3>Twoja Gablota Osiągnięć</h3>
-          <p>
-            Zdobyto {unlockedCount} z {totalCount} trofeów
-          </p>
+        <div className="header-info">
+          <div className="header-icon-box">
+            <Trophy size={24} />
+          </div>
+          <div>
+            <h3 className="header-title">Gablota Trofeów</h3>
+            <p className="header-subtitle">
+              Zdobyto <span className="highlight-text">{unlockedCount}</span> z {totalCount} osiągnięć
+            </p>
+          </div>
         </div>
-        <div className="achievements-progress-bar">
-          <div
-            className="achievements-progress-fill"
-            style={{ width: `${progress}%` }}
-          ></div>
+
+        <div className="progress-container">
+          <div className="progress-bar-bg">
+            <div
+              className="progress-bar-fill"
+              style={{ width: `${progress}%` }}
+            >
+              <div className="progress-glow"></div>
+            </div>
+          </div>
+          <span className="progress-text">{Math.round(progress)}%</span>
         </div>
       </div>
+
+
       <div className="achievements-grid">
         {allAchievements.map((ach, index) => {
-          const Icon = ach.unlocked ? ach.icon : Lock;
-          const tooltipText = ach.unlocked
-            ? `${ach.description}\nZdobyto: ${ach.date}`
-            : ach.description;
+          const Icon = ach.icon;
 
           return (
             <div
               key={ach.id}
-              className={`achievement-card ${
-                ach.unlocked ? `unlocked rarity-${ach.rarity}` : "locked"
-              }`}
+              className={`achievement-card ${ach.unlocked ? `unlocked ${ach.rarity}` : "locked"
+                }`}
               style={{ animationDelay: `${index * 50}ms` }}
-              data-tooltip={tooltipText}
             >
-              <div className="achievement-icon-wrapper">
-                <Icon
-                  className="achievement-icon"
-                  size={40}
-                  strokeWidth={1.5}
-                />
+              {ach.rarity === 'legendary' && ach.unlocked && <div className="legendary-border" />}
+
+              <div className="card-content">
+                <div className="achievement-icon-wrapper">
+                  {ach.unlocked ? (
+                    <Icon className="achievement-icon" size={32} strokeWidth={1.5} />
+                  ) : (
+                    <Lock className="achievement-icon locked-icon" size={32} />
+                  )}
+                </div>
+
+                <div className="achievement-info">
+                  <span className="achievement-rarity-label">
+                    {ach.unlocked ? ach.rarity : "Zablokowane"}
+                  </span>
+                  <h4 className="achievement-title">{ach.title}</h4>
+                </div>
               </div>
-              <h4 className="achievement-title">{ach.title}</h4>
+
+              <div className="achievement-overlay">
+                <p className="overlay-desc">{ach.description}</p>
+                {ach.unlocked && ach.date && (
+                  <span className="overlay-date">Zdobyto: {ach.date}</span>
+                )}
+              </div>
             </div>
           );
         })}

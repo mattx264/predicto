@@ -1,6 +1,5 @@
 import React from "react";
-import { Users, TrendingUp, Trophy } from "lucide-react";
-import "./RoomsStats.css";
+import { Users, TrendingUp, Trophy, Sparkles } from "lucide-react";
 
 interface Room {
   id: string;
@@ -19,47 +18,46 @@ const RoomsStats: React.FC<RoomsStatsProps> = ({ rooms }) => {
   const totalPrize = rooms.reduce((sum, r) => sum + r.prize, 0);
   const totalPlayers = rooms.reduce((sum, r) => sum + r.participants, 0);
 
+  const stats = [
+    {
+      label: "Aktywne Pokoje",
+      value: activeRooms,
+      icon: Users,
+      color: "green",
+    },
+    {
+      label: "Otwarte do dołączenia",
+      value: openRooms,
+      icon: TrendingUp,
+      color: "blue",
+    },
+    {
+      label: "Łączna pula nagród",
+      value: `${totalPrize.toLocaleString("pl-PL")} Monet`,
+      icon: Trophy,
+      color: "purple",
+    },
+    {
+      label: "Całkowita liczba graczy",
+      value: totalPlayers,
+      icon: Sparkles,
+      color: "orange",
+    },
+  ];
+
   return (
-    <div className="stats-grid">
-      <div className="stat-card">
-        <div className="stat-icon-wrapper green">
-          <Users className="stat-icon" />
+    <div className="stats-overview">
+      {stats.map((stat, index) => (
+        <div key={index} className="stat-card-dash">
+          <div className={`stat-icon-wrapper ${stat.color}`}>
+            <stat.icon className="stat-icon-dash" />
+          </div>
+          <div className="stat-info-dash">
+            <span className="stat-label-dash">{stat.label}</span>
+            <span className="stat-value-dash">{stat.value}</span>
+          </div>
         </div>
-        <div className="stat-info">
-          <p className="stat-label">Aktywne Pokoje</p>
-          <p className="stat-value">{activeRooms}</p>
-        </div>
-      </div>
-
-      <div className="stat-card">
-        <div className="stat-icon-wrapper blue">
-          <TrendingUp className="stat-icon" />
-        </div>
-        <div className="stat-info">
-          <p className="stat-label">Otwarte do dołączenia</p>
-          <p className="stat-value">{openRooms}</p>
-        </div>
-      </div>
-
-      <div className="stat-card">
-        <div className="stat-icon-wrapper purple">
-          <Trophy className="stat-icon" />
-        </div>
-        <div className="stat-info">
-          <p className="stat-label">Łączna pula nagród</p>
-          <p className="stat-value">{totalPrize} Monet</p>
-        </div>
-      </div>
-
-      <div className="stat-card">
-        <div className="stat-icon-wrapper orange">
-          <Users className="stat-icon" />
-        </div>
-        <div className="stat-info">
-          <p className="stat-label">Całkowita liczba graczy</p>
-          <p className="stat-value">{totalPlayers}</p>
-        </div>
-      </div>
+      ))}
     </div>
   );
 };

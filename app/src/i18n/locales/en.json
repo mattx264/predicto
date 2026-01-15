@@ -3,7 +3,6 @@
     "home": "Home",
     "dashboard": "Dashboard",
     "shop": "Shop",
-
     "rooms": "Rooms",
     "ranking": "Ranking",
     "howToPlay": "How to Play",
@@ -11,7 +10,8 @@
     "login": "Log In",
     "register": "Sign Up",
     "notifications": "Notifications",
-    "profile": "View Profile"
+    "profile": "View Profile",
+    "inventory": "Inventory"
   },
   "common": {
     "welcome": "Welcome",

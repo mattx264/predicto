@@ -555,11 +555,59 @@
     background: rgba(34, 197, 94, 0.5);
 }
 
+@media (max-width: 1024px) {
+    .topup-modal {
+        max-width: 600px;
+    }
+
+    .packages-grid {
+        gap: 14px;
+    }
+
+    .package-card {
+        padding: 18px;
+    }
+}
 
 @media (max-width: 768px) {
     .topup-modal {
-        width: 95%;
-        max-height: 95vh;
+        width: 92%;
+        max-width: 550px;
+        max-height: 92vh;
+    }
+
+    .topup-header {
+        padding: 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .topup-title {
+        font-size: 20px;
+    }
+
+    .topup-subtitle {
+        font-size: 13px;
+    }
+
+    .topup-balance {
+        padding: 18px 20px;
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .balance-amount {
+        font-size: 16px;
+    }
+
+    .topup-content {
+        padding: 20px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        margin-bottom: 16px;
     }
 
     .packages-grid {
@@ -570,12 +618,45 @@
     .package-card {
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
         padding: 16px;
+        gap: 12px;
+    }
+
+    .package-card>* {
+        flex-shrink: 0;
     }
 
     .package-icon {
         width: 50px;
         height: 50px;
+        order: 1;
+    }
+
+    .package-coins {
+        order: 2;
+        flex: 1;
+        font-size: 16px;
+        justify-content: flex-start;
+    }
+
+    .package-price {
+        order: 3;
+        font-size: 20px;
+        flex-direction: row;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .package-discount {
+        font-size: 11px;
+    }
+
+    .package-select-btn {
+        order: 4;
+        width: auto;
+        padding: 8px 16px;
+        font-size: 13px;
     }
 
     .package-badge {
@@ -584,37 +665,320 @@
         padding: 3px 10px;
     }
 
-    .form-row {
-        grid-template-columns: 1fr;
+    .selected-package-details {
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
     }
 
-    .payment-method-selector {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .topup-header {
-        padding: 20px;
-    }
-
-    .topup-title {
+    .selected-coins {
         font-size: 18px;
-    }
-
-    .topup-content {
-        padding: 20px;
     }
 
     .selected-price {
         font-size: 24px;
     }
 
-    .package-coins {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .payment-method-selector {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .method-tab {
+        font-size: 13px;
+        padding: 10px;
+    }
+
+    .submit-button {
+        padding: 14px;
+        font-size: 15px;
+    }
+
+    .processing-indicator {
+        min-height: 150px;
+        font-size: 15px;
+    }
+
+    .topup-message {
+        padding: 16px;
+        min-height: 150px;
+        gap: 12px;
+    }
+
+    .message-title {
         font-size: 16px;
     }
 
+    .message-subtitle {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .topup-overlay {
+        padding: 10px;
+    }
+
+    .topup-modal {
+        width: 100%;
+        max-height: 100vh;
+        border-radius: 16px;
+    }
+
+    .topup-header {
+        padding: 16px;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .topup-title-section {
+        gap: 10px;
+    }
+
+    .topup-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .topup-title {
+        font-size: 18px;
+    }
+
+    .topup-subtitle {
+        font-size: 12px;
+    }
+
+    .topup-close-button {
+        padding: 6px;
+    }
+
+    .topup-close-button svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .topup-balance {
+        padding: 14px 16px;
+    }
+
+    .balance-label {
+        font-size: 13px;
+    }
+
+    .balance-amount {
+        font-size: 15px;
+    }
+
+    .topup-content {
+        padding: 16px;
+    }
+
+    .section-title {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+
+    .packages-grid {
+        gap: 10px;
+    }
+
+    .package-card {
+        padding: 12px;
+        border-radius: 12px;
+        gap: 10px;
+    }
+
+    .package-icon {
+        width: 45px;
+        height: 45px;
+    }
+
+    .package-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .package-coins {
+        font-size: 14px;
+    }
+
+    .package-coins svg {
+        width: 16px;
+        height: 16px;
+    }
+
     .package-price {
+        font-size: 18px;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .package-discount {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    .package-select-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .package-badge {
+        top: -8px;
+        font-size: 9px;
+        padding: 3px 8px;
+    }
+
+    .wallet-back-button {
+        padding: 6px 12px;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    .selected-package-details {
+        padding: 14px;
+    }
+
+    .selected-coins {
+        font-size: 16px;
+    }
+
+    .selected-coins svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .selected-price {
+        font-size: 22px;
+    }
+
+    .payment-method-selector {
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    .method-tab {
+        padding: 10px 8px;
+        font-size: 12px;
+        gap: 6px;
+    }
+
+    .method-tab svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .form-group {
+        gap: 6px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        gap: 4px;
+    }
+
+    .form-label svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .form-input {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .mock-info {
+        padding: 10px 12px;
+        gap: 10px;
+        font-size: 13px;
+    }
+
+    .mock-info svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .submit-button {
+        padding: 12px;
+        font-size: 14px;
+        gap: 8px;
+    }
+
+    .submit-button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .processing-indicator {
+        min-height: 120px;
+        gap: 12px;
+        font-size: 14px;
+    }
+
+    .processing-indicator .spinner {
+        width: 32px;
+        height: 32px;
+    }
+
+    .topup-message {
+        padding: 14px;
+        min-height: 120px;
+        gap: 10px;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .topup-message svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .message-title {
+        font-size: 15px;
+    }
+
+    .message-subtitle {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .topup-header {
+        padding: 14px;
+    }
+
+    .topup-title {
+        font-size: 16px;
+    }
+
+    .topup-content {
+        padding: 14px;
+    }
+
+    .package-card {
+        padding: 10px;
+    }
+
+    .selected-coins {
+        font-size: 15px;
+    }
+
+    .selected-price {
         font-size: 20px;
+    }
+
+    .method-tab {
+        padding: 8px 6px;
+        font-size: 11px;
+    }
+
+    .submit-button {
+        font-size: 13px;
     }
 }

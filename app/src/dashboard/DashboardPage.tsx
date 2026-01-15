@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
@@ -7,6 +7,7 @@ import MatchesToPredict from "./components/MatchesToPredict";
 import LiveAndRecentMatches from "./components/LiveAndRecentMatches";
 import BlogPosts from "./components/BlogPosts";
 import ActivityTimeline from "./components/ActivityTimeline";
+import { useAuth } from "../auth/AuthContext";
 import "./DashboardPage.css";
 
 interface Match {
@@ -66,6 +67,13 @@ interface RecentMatch {
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   const userStats = {
     globalRank: 42,
@@ -252,6 +260,16 @@ const DashboardPage: React.FC = () => {
     }
   ];
 
+  if (!user) {
+    return (
+      <div className="dashboard-page">
+        <div className="dashboard-container">
+          <div className="loading-state">Ładowanie...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
@@ -259,7 +277,7 @@ const DashboardPage: React.FC = () => {
           <div className="header-text">
             <h1 className="dashboard-title">
               {t("dashboard.welcomeBack")},{" "}
-              <span className="username-highlight">Gracz</span>!
+              <span className="username-highlight">{user.name || "Gracz"}</span>!
             </h1>
             <p className="dashboard-subtitle">{t("dashboard.subtitle")}</p>
           </div>

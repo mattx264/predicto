@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Trophy, Target, Medal, TrendingUp, Zap } from "lucide-react";
-
+import "../StatsOverview.css";
 interface StatsOverviewProps {
     stats: {
         globalRank: number;

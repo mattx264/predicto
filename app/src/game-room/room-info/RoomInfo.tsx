@@ -7,6 +7,8 @@ import {
   Globe,
   Calendar,
   Info,
+  Clock,
+  Hash
 } from "lucide-react";
 import "./RoomInfo.css";
 
@@ -56,15 +58,19 @@ const RoomInfo: React.FC<RoomInfoProps> = ({
 
   return (
     <div className="info-section">
-      <div className="info-card">
+
+      <div className="info-card main-card">
         <h3 className="info-card-title">
-          <Trophy size={20} />
+          <div className="title-icon-wrapper">
+            <Trophy size={20} />
+          </div>
           Informacje o turnieju
         </h3>
+
         <div className="info-grid">
           <div className="info-item-detail">
             <span className="info-label">Nazwa turnieju</span>
-            <span className="info-value">{tournamentName}</span>
+            <span className="info-value highlight">{tournamentName}</span>
           </div>
 
           <div className="info-item-detail">
@@ -75,7 +81,7 @@ const RoomInfo: React.FC<RoomInfoProps> = ({
           <div className="info-item-detail">
             <span className="info-label">Data rozpoczęcia</span>
             <span className="info-value">
-              <Calendar size={14} style={{ marginRight: "4px" }} />
+              <Calendar size={16} className="value-icon" />
               {formatDate(startDate)}
             </span>
           </div>
@@ -83,14 +89,17 @@ const RoomInfo: React.FC<RoomInfoProps> = ({
           <div className="info-item-detail">
             <span className="info-label">Data zakończenia</span>
             <span className="info-value">
-              <Calendar size={14} style={{ marginRight: "4px" }} />
+              <Calendar size={16} className="value-icon" />
               {formatDate(endDate)}
             </span>
           </div>
 
           <div className="info-item-detail">
             <span className="info-label">Czas trwania</span>
-            <span className="info-value">{calculateDuration()}</span>
+            <span className="info-value">
+              <Clock size={16} className="value-icon" />
+              {calculateDuration()}
+            </span>
           </div>
 
           <div className="info-item-detail">
@@ -98,88 +107,92 @@ const RoomInfo: React.FC<RoomInfoProps> = ({
             <span className="info-value">
               {isPrivate ? (
                 <>
-                  <Lock size={14} style={{ marginRight: "4px" }} /> Prywatny
+                  <Lock size={16} className="value-icon" /> Prywatny
                 </>
               ) : (
                 <>
-                  <Globe size={14} style={{ marginRight: "4px" }} /> Publiczny
+                  <Globe size={16} className="value-icon" /> Publiczny
                 </>
               )}
             </span>
           </div>
 
           {isPrivate && inviteCode && (
-            <div className="info-item-detail">
+            <div className="info-item-detail full-width-mobile">
               <span className="info-label">Kod zaproszenia</span>
-              <span className="info-value code">{inviteCode}</span>
+              <div className="invite-code-wrapper">
+                <Hash size={16} className="code-icon" />
+                <span className="info-value code">{inviteCode}</span>
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      {description ? (
-        <div className="info-card">
-          <h3 className="info-card-title">
+      <div className="info-card">
+        <h3 className="info-card-title">
+          <div className="title-icon-wrapper">
             <Info size={20} />
-            Opis pokoju
-          </h3>
+          </div>
+          Opis pokoju
+        </h3>
+        {description ? (
           <p className="info-text">{description}</p>
-        </div>
-      ) : (
-        <div className="info-card">
-          <h3 className="info-card-title">
-            <Info size={20} />
-            Opis pokoju
-          </h3>
+        ) : (
           <p className="info-text empty">
             Organizator nie dodał opisu dla tego pokoju.
           </p>
-        </div>
-      )}
+        )}
+      </div>
 
-      {rules ? (
-        <div className="info-card">
-          <h3 className="info-card-title">
+      <div className="info-card">
+        <h3 className="info-card-title">
+          <div className="title-icon-wrapper">
             <Target size={20} />
-            Zasady punktacji
-          </h3>
-          <div className="info-text rules">
-            {rules.split("\n").map((line, index) => (
-              <p key={index}>{line}</p>
-            ))}
           </div>
+          Zasady punktacji
+        </h3>
+        <div className="info-text rules">
+          {rules ? (
+            rules.split("\n").map((line, index) => (
+              <div key={index} className="rule-item">
+                <span className="rule-dot" />
+                <p>{line}</p>
+              </div>
+            ))
+          ) : (
+            <>
+              <div className="rule-item">
+                <span className="rule-emoji">📊</span>
+                <p><strong>Dokładny wynik:</strong> 5 punktów</p>
+              </div>
+              <div className="rule-item">
+                <span className="rule-emoji">🎯</span>
+                <p><strong>Poprawny zwycięzca i różnica bramek:</strong> 3 punkty</p>
+              </div>
+              <div className="rule-item">
+                <span className="rule-emoji">✅</span>
+                <p><strong>Poprawny zwycięzca:</strong> 1 punkt</p>
+              </div>
+              <div className="rule-item error">
+                <span className="rule-emoji">❌</span>
+                <p><strong>Błędna prognoza:</strong> 0 punktów</p>
+              </div>
+            </>
+          )}
         </div>
-      ) : (
-        <div className="info-card">
-          <h3 className="info-card-title">
-            <Target size={20} />
-            Zasady punktacji
-          </h3>
-          <div className="info-text rules">
-            <p>
-              📊 <strong>Dokładny wynik:</strong> 5 punktów
-            </p>
-            <p>
-              🎯 <strong>Poprawny zwycięzca i różnica bramek:</strong> 3 punkty
-            </p>
-            <p>
-              ✅ <strong>Poprawny zwycięzca:</strong> 1 punkt
-            </p>
-            <p>
-              ❌ <strong>Błędna prognoza:</strong> 0 punktów
-            </p>
-          </div>
-        </div>
-      )}
+      </div>
 
       <div className="info-card info-card-highlight">
         <h3 className="info-card-title">
-          <Users size={20} />
+          <div className="title-icon-wrapper">
+            <Users size={20} />
+          </div>
           Jak to działa?
         </h3>
         <div className="info-steps">
           <div className="info-step">
-            <span className="step-number">1</span>
+            <div className="step-number">1</div>
             <div className="step-content">
               <h4>Typuj wyniki</h4>
               <p>Przewiduj wyniki meczów przed ich rozpoczęciem</p>
@@ -187,7 +200,7 @@ const RoomInfo: React.FC<RoomInfoProps> = ({
           </div>
 
           <div className="info-step">
-            <span className="step-number">2</span>
+            <div className="step-number">2</div>
             <div className="step-content">
               <h4>Zdobywaj punkty</h4>
               <p>Otrzymuj punkty za trafne prognozy według zasad</p>
@@ -195,7 +208,7 @@ const RoomInfo: React.FC<RoomInfoProps> = ({
           </div>
 
           <div className="info-step">
-            <span className="step-number">3</span>
+            <div className="step-number">3</div>
             <div className="step-content">
               <h4>Wygraj nagrodę</h4>
               <p>Najlepsi typerzy dzielą się pulą nagród</p>

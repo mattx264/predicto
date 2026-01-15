@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Crown, Medal, AlertCircle, Users as UsersIcon } from "lucide-react";
+import { Crown, Medal, AlertCircle, Users as UsersIcon, Trophy, CheckCircle2 } from "lucide-react";
 import "./RoomLeaderboard.css";
 import UserStatsModal from "./user-stats-in-signe-room/UserStatsModal";
 
@@ -30,11 +30,11 @@ const RoomLeaderboard: React.FC<RoomLeaderboardProps> = ({
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Crown className="rank-icon gold" size={20} />;
+        return <Crown className="rank-icon gold" size={24} />;
       case 2:
-        return <Medal className="rank-icon silver" size={20} />;
+        return <Medal className="rank-icon silver" size={24} />;
       case 3:
-        return <Medal className="rank-icon bronze" size={20} />;
+        return <Medal className="rank-icon bronze" size={24} />;
       default:
         return <span className="rank-number">#{rank}</span>;
     }
@@ -83,32 +83,35 @@ const RoomLeaderboard: React.FC<RoomLeaderboardProps> = ({
     <>
       <div className="leaderboard-section">
         <div className="leaderboard-header">
-          <div className="leaderboard-header-text">
-            <h2 className="section-title">
-              {viewMode === "ranking"
-                ? "Ranking uczestników"
-                : "Wszyscy uczestnicy"}
-            </h2>
-            <p className="section-description">
-              {viewMode === "ranking"
-                ? "Najlepsi typerzy w pokoju"
-                : `Lista wszystkich uczestników (${participants.length})`}
-            </p>
+          <div className="header-title-group">
+            <div className="title-icon-wrapper">
+              {viewMode === "ranking" ? <Trophy size={20} /> : <UsersIcon size={20} />}
+            </div>
+            <div className="header-text-content">
+              <h2 className="section-title">
+                {viewMode === "ranking"
+                  ? "Ranking"
+                  : "Uczestnicy"}
+              </h2>
+              <p className="section-description">
+                {viewMode === "ranking"
+                  ? "Najlepsi typerzy"
+                  : `Lista graczy (${participants.length})`}
+              </p>
+            </div>
           </div>
 
           <div className="leaderboard-toggle">
             <button
-              className={`toggle-btn-leaderboard ${
-                viewMode === "ranking" ? "active" : ""
-              }`}
+              className={`toggle-btn-leaderboard ${viewMode === "ranking" ? "active" : ""
+                }`}
               onClick={() => setViewMode("ranking")}
             >
               Ranking
             </button>
             <button
-              className={`toggle-btn-leaderboard ${
-                viewMode === "all" ? "active" : ""
-              }`}
+              className={`toggle-btn-leaderboard ${viewMode === "all" ? "active" : ""
+                }`}
               onClick={() => setViewMode("all")}
             >
               Wszyscy
@@ -120,60 +123,59 @@ const RoomLeaderboard: React.FC<RoomLeaderboardProps> = ({
           {sortedParticipants.map((participant) => (
             <div
               key={participant.id}
-              className={`leaderboard-item ${
-                participant.id === currentUserId ? "current-user" : ""
-              }`}
+              className={`leaderboard-item ${participant.id === currentUserId ? "current-user" : ""
+                }`}
               onClick={() => handleUserClick(participant.id)}
             >
-              {viewMode === "ranking" ? (
-                <div className="leaderboard-rank">
-                  {getRankIcon(participant.rank)}
-                </div>
-              ) : (
-                <div className="leaderboard-rank">
-                  <UsersIcon className="participant-icon" size={20} />
-                </div>
-              )}
+              <div className="leaderboard-rank-col">
+                {viewMode === "ranking" ? (
+                  getRankIcon(participant.rank)
+                ) : (
+                  <div className="user-icon-placeholder">
+                    <UsersIcon size={18} />
+                  </div>
+                )}
+              </div>
 
-              <div className="leaderboard-avatar">{participant.avatar}</div>
+              <div className="leaderboard-avatar-col">
+                <div className="leaderboard-avatar">{participant.avatar}</div>
+              </div>
 
-              <div className="leaderboard-info">
-                <div className="leaderboard-name">
-                  {participant.username}
-
+              <div className="leaderboard-info-col">
+                <div className="leaderboard-name-row">
+                  <span className="leaderboard-name">{participant.username}</span>
                   {participant.id === currentUserId && (
                     <span className="you-badge">Ty</span>
                   )}
                 </div>
-                <div className="leaderboard-stats">
+
+                <div className="leaderboard-meta-row">
                   {viewMode === "ranking" ? (
                     <>
-                      <span>{participant.correctPredictions} trafień</span>
+                      <span className="meta-stat">{participant.correctPredictions} trafień</span>
                       {!participant.isPaid && (
                         <span className="unpaid-badge">
-                          <AlertCircle size={12} />
+                          <AlertCircle size={10} />
                           Nieopłacone
                         </span>
                       )}
                     </>
                   ) : (
                     <>
-                      <span>
-                        {participant.isPaid ? (
-                          <span className="paid-badge">Opłacone</span>
-                        ) : (
-                          <span className="unpaid-badge">
-                            <AlertCircle size={12} />
-                            Nieopłacone
-                          </span>
-                        )}
-                      </span>
+                      {participant.isPaid ? (
+                        <span className="paid-badge">
+                          <CheckCircle2 size={10} />
+                          Opłacone
+                        </span>
+                      ) : (
+                        <span className="unpaid-badge">
+                          <AlertCircle size={10} />
+                          Nieopłacone
+                        </span>
+                      )}
                       {participant.joinedAt && (
                         <span className="joined-date">
-                          Dołączył:{" "}
-                          {new Date(participant.joinedAt).toLocaleDateString(
-                            "pl-PL"
-                          )}
+                          {new Date(participant.joinedAt).toLocaleDateString("pl-PL")}
                         </span>
                       )}
                     </>
@@ -182,9 +184,9 @@ const RoomLeaderboard: React.FC<RoomLeaderboardProps> = ({
               </div>
 
               {viewMode === "ranking" && (
-                <div className="leaderboard-points">
-                  {participant.totalPoints}
-                  <span className="points-label">pkt</span>
+                <div className="leaderboard-points-col">
+                  <span className="points-value">{participant.totalPoints}</span>
+                  <span className="points-label">PKT</span>
                 </div>
               )}
             </div>

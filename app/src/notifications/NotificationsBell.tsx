@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Bell, X, MessageSquare, Trophy, Users, Calendar } from "lucide-react";
+import { Bell, X, MessageSquare, Trophy, Users, Calendar, CheckCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "./NotificationsBell.css";
 
@@ -21,40 +21,39 @@ const NotificationBell: React.FC = () => {
       id: "1",
       type: "match",
       title: "Mecz rozpoczęty!",
-      message: "Manchester United vs Liverpool - Dołącz do czatu na żywo",
+      message: "Man Utd vs Liverpool - Dołącz do czatu",
       timestamp: new Date(Date.now() - 300000),
       isRead: false,
       link: "/room/1",
-      icon: <MessageSquare size={20} />,
+      icon: <MessageSquare size={18} />,
     },
     {
       id: "2",
       type: "achievement",
       title: "Nowe osiągnięcie!",
-      message:
-        "Zdobyłeś odznakę 'Mistrz Typowania' za 5 idealnych typów z rzędu",
+      message: "Zdobyłeś odznakę 'Mistrz Typowania'",
       timestamp: new Date(Date.now() - 3600000),
       isRead: false,
-      icon: <Trophy size={20} />,
+      icon: <Trophy size={18} />,
     },
     {
       id: "3",
       type: "room",
       title: "Nowy uczestnik",
-      message: "Anna Wiśniewska dołączyła do pokoju 'Premier League Masters'",
+      message: "Anna dołączyła do 'PL Masters'",
       timestamp: new Date(Date.now() - 7200000),
       isRead: true,
       link: "/room/1",
-      icon: <Users size={20} />,
+      icon: <Users size={18} />,
     },
     {
       id: "4",
       type: "match",
       title: "Czas na typowanie!",
-      message: "Zostały 2 godziny do meczu Arsenal vs Chelsea",
+      message: "2h do meczu Arsenal vs Chelsea",
       timestamp: new Date(Date.now() - 14400000),
       isRead: true,
-      icon: <Calendar size={20} />,
+      icon: <Calendar size={18} />,
     },
   ]);
 
@@ -76,15 +75,15 @@ const NotificationBell: React.FC = () => {
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       if (window.innerWidth <= 768) {
-        document.body.classList.add("notification-open");
+        document.body.style.overflow = 'hidden';
       }
     } else {
-      document.body.classList.remove("notification-open");
+      document.body.style.overflow = 'unset';
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      document.body.classList.remove("notification-open");
+      document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
 
@@ -108,20 +107,14 @@ const NotificationBell: React.FC = () => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
-  const getNotificationColor = (type: string) => {
+  const getNotificationColorClass = (type: string) => {
     switch (type) {
-      case "match":
-        return "notification-match";
-      case "achievement":
-        return "notification-achievement";
-      case "room":
-        return "notification-room";
-      case "invite":
-        return "notification-invite";
-      case "message":
-        return "notification-message";
-      default:
-        return "";
+      case "match": return "icon-red";
+      case "achievement": return "icon-gold";
+      case "room": return "icon-blue";
+      case "invite": return "icon-purple";
+      case "message": return "icon-green";
+      default: return "icon-default";
     }
   };
 
@@ -141,10 +134,11 @@ const NotificationBell: React.FC = () => {
   return (
     <div className="notification-bell-container" ref={dropdownRef}>
       <button
-        className="notification-bell-button"
+        className={`notification-bell-button ${isOpen ? "active" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
+        aria-label="Powiadomienia"
       >
-        <Bell size={22} />
+        <Bell size={20} />
         {unreadCount > 0 && (
           <span className="notification-badge">{unreadCount}</span>
         )}
@@ -155,8 +149,12 @@ const NotificationBell: React.FC = () => {
           <div className="notification-header">
             <h3>Powiadomienia</h3>
             {unreadCount > 0 && (
-              <button className="mark-all-read" onClick={markAllAsRead}>
-                Oznacz wszystkie jako przeczytane
+              <button
+                className="mark-all-read"
+                onClick={markAllAsRead}
+                title="Oznacz wszystkie jako przeczytane"
+              >
+                <CheckCheck size={16} />
               </button>
             )}
           </div>
@@ -164,44 +162,46 @@ const NotificationBell: React.FC = () => {
           <div className="notification-list">
             {notifications.length === 0 ? (
               <div className="no-notifications">
-                <Bell size={48} />
-                <p>Brak powiadomień</p>
+                <div className="empty-icon">
+                  <Bell size={32} />
+                </div>
+                <p>Brak nowych powiadomień</p>
+                <span>Jesteś na bieżąco!</span>
               </div>
             ) : (
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`notification-item ${
-                    !notification.isRead ? "unread" : ""
-                  } ${getNotificationColor(notification.type)}`}
+                  className={`notification-item ${!notification.isRead ? "unread" : ""}`}
                   onClick={() => handleNotificationClick(notification)}
                 >
-                  <div className="notification-icon">{notification.icon}</div>
-                  <div className="notification-content">
-                    <div className="notification-title">
-                      {notification.title}
-                    </div>
-                    <div className="notification-message">
-                      {notification.message}
-                    </div>
-                    <div className="notification-timestamp">
-                      {formatTimestamp(notification.timestamp)}
-                    </div>
+                  <div className={`notification-icon ${getNotificationColorClass(notification.type)}`}>
+                    {notification.icon}
                   </div>
+
+                  <div className="notification-content">
+                    <div className="notification-top">
+                      <span className="notification-title">{notification.title}</span>
+                      <span className="notification-time">{formatTimestamp(notification.timestamp)}</span>
+                    </div>
+                    <p className="notification-message">{notification.message}</p>
+                  </div>
+
                   <button
                     className="notification-close"
                     onClick={(e) => clearNotification(notification.id, e)}
+                    title="Usuń"
                   >
-                    <X size={16} />
+                    <X size={14} />
                   </button>
                 </div>
               ))
             )}
           </div>
 
-          {notifications.length > 0 && (
+          {notifications.length > 4 && (
             <div className="notification-footer">
-              <button className="view-all-button">Zobacz wszystkie</button>
+              <button className="view-all-btn">Zobacz wszystkie</button>
             </div>
           )}
         </div>

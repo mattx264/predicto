@@ -163,13 +163,19 @@ const AllRoomsCards: React.FC<AllRoomsCardsProps> = ({
           </div>
 
           <div className="room-card-footer">
-            <div className="fee-info">
+            <div className="footer-row">
               <span className="fee-label">Wpisowe:</span>
               <span className="fee-value">{room.entryFee} Monet</span>
             </div>
-            <div className="prize-info">
-              <Trophy className="prize-icon" size={16} />
-              <span className="prize-value">{room.prize} Monet</span>
+
+            <div className="footer-divider" />
+
+            <div className="footer-row prize-row">
+              <span className="fee-label">W puli:</span>
+              <div className="prize-container">
+                <Trophy className="prize-icon" size={16} />
+                <span className="prize-value">{room.prize} Monet</span>
+              </div>
             </div>
           </div>
 

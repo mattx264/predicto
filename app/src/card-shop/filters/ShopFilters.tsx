@@ -43,9 +43,8 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
             {rarityFilters.map((filter) => (
               <button
                 key={filter.value}
-                className={`filter-btn ${
-                  selectedRarity === filter.value ? "active" : ""
-                }`}
+                className={`filter-btn ${selectedRarity === filter.value ? "active" : ""
+                  }`}
                 onClick={() => onRarityChange(filter.value)}
               >
                 {filter.label}
@@ -60,9 +59,8 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
             {typeFilters.map((filter) => (
               <button
                 key={filter.value}
-                className={`filter-btn ${
-                  selectedType === filter.value ? "active" : ""
-                }`}
+                className={`filter-btn ${selectedType === filter.value ? "active" : ""
+                  }`}
                 onClick={() => onTypeChange(filter.value)}
               >
                 {filter.label}

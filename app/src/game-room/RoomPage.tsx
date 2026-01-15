@@ -23,7 +23,7 @@ import LeagueTable from "./league-table/LeagueTable";
 
 import { useRoom } from "../hooks/useRoom";
 import { roomService } from "../services/signalr/room.service";
-import type { Match, Participant } from "../types/types";
+import type { Participant } from "../types/types";
 
 const RoomPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -107,46 +107,46 @@ const RoomPage: React.FC = () => {
     },
   ];
 
-  const mockMatches: Match[] = [
-    {
-      id: "1",
-      homeTeam: "Manchester City",
-      awayTeam: "Liverpool",
-      date: "2024-10-27T15:00:00",
-      status: "live",
-      actualScore: { home: 2, away: 1 },
-      userPrediction: { home: 2, away: 1 },
-      points: 5,
-    },
-    {
-      id: "2",
-      homeTeam: "Arsenal",
-      awayTeam: "Chelsea",
-      date: "2024-10-28T17:30:00",
-      status: "finished",
-      actualScore: { home: 3, away: 2 },
-      userPrediction: { home: 3, away: 2 },
-      points: 5,
-    },
-    {
-      id: "3",
-      homeTeam: "Tottenham",
-      awayTeam: "Liverpool",
-      date: "2024-10-29T20:00:00",
-      status: "upcoming",
-      userPrediction: { home: 1, away: 1 },
-    },
-    {
-      id: "4",
-      homeTeam: "Newcastle",
-      awayTeam: "Aston Villa",
-      date: "2024-10-30T18:00:00",
-      status: "finished",
-      actualScore: { home: 0, away: 0 },
-      userPrediction: { home: 1, away: 0 },
-      points: 2,
-    },
-  ];
+  // const mockMatches: Match[] = [
+  //   {
+  //     id: "1",
+  //     homeTeam: "Manchester City",
+  //     awayTeam: "Liverpool",
+  //     date: "2024-10-27T15:00:00",
+  //     status: "live",
+  //     actualScore: { home: 2, away: 1 },
+  //     userPrediction: { home: 2, away: 1 },
+  //     points: 5,
+  //   },
+  //   {
+  //     id: "2",
+  //     homeTeam: "Arsenal",
+  //     awayTeam: "Chelsea",
+  //     date: "2024-10-28T17:30:00",
+  //     status: "finished",
+  //     actualScore: { home: 3, away: 2 },
+  //     userPrediction: { home: 3, away: 2 },
+  //     points: 5,
+  //   },
+  //   {
+  //     id: "3",
+  //     homeTeam: "Tottenham",
+  //     awayTeam: "Liverpool",
+  //     date: "2024-10-29T20:00:00",
+  //     status: "upcoming",
+  //     userPrediction: { home: 1, away: 1 },
+  //   },
+  //   {
+  //     id: "4",
+  //     homeTeam: "Newcastle",
+  //     awayTeam: "Aston Villa",
+  //     date: "2024-10-30T18:00:00",
+  //     status: "finished",
+  //     actualScore: { home: 0, away: 0 },
+  //     userPrediction: { home: 1, away: 0 },
+  //     points: 2,
+  //   },
+  // ];
 
   const mockTeams = [
     {
@@ -405,23 +405,12 @@ const RoomPage: React.FC = () => {
     alert("Ustawienia pokoju");
   };
 
-  React.useEffect(() => {
-    if (!room) return;
-
-    console.log("🔄 Room data updated via SignalR:", {
-      roomId: room.id,
-      participants: room.participants,
-      maxParticipants: room.maxParticipants,
-      prize: room.prize,
-    });
-  }, [room]);
-
   if (isLoading) {
     return (
       <div className="my-room-page">
         <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Ładowanie pokoju...</p>
+          <div className="neon-spinner-large"></div>
+          <p>Wczytywanie areny...</p>
         </div>
       </div>
     );
@@ -430,12 +419,12 @@ const RoomPage: React.FC = () => {
   if (error || !displayRoom) {
     return (
       <div className="my-room-page">
-        <div className="error-state">
+        <div className="error-state-glass">
           <AlertCircle size={48} />
-          <h2>Nie można załadować pokoju</h2>
-          <p>{error || "Pokój nie został znaleziony"}</p>
-          <button onClick={() => navigate("/rooms")} className="btn-primary">
-            Powrót do listy pokoi
+          <h2>Błąd połączenia</h2>
+          <p>{error || "Nie udało się załadować danych pokoju."}</p>
+          <button onClick={() => navigate("/rooms")} className="btn-neon-primary">
+            Powrót do lobby
           </button>
         </div>
       </div>
@@ -445,69 +434,74 @@ const RoomPage: React.FC = () => {
   return (
     <div className="my-room-page">
       <div className="my-room-container">
-        <RoomHeader
-          room={displayRoom}
-          currentUserId={currentUserId}
-          connectionStatus={connectionStatus}
-          onLeaveRoom={handleLeaveRoom}
-          onShareRoom={handleShareRoom}
-          onSettings={handleSettings}
-        />
+        <div style={{ position: 'relative', zIndex: 100 }}>
+          <RoomHeader
+            room={displayRoom}
+            currentUserId={currentUserId}
+            connectionStatus={connectionStatus}
+            onLeaveRoom={handleLeaveRoom}
+            onShareRoom={handleShareRoom}
+            onSettings={handleSettings}
+          />
+        </div>
+        <div className="my-room-tabs-container">
+          <div className="my-room-tabs">
+            <button
+              className={`my-tab ${activeTab === "matches" ? "active" : ""}`}
+              onClick={() => setActiveTab("matches")}
+            >
+              <Target size={18} />
+              <span>Mecze</span>
+            </button>
 
-        <div className="my-room-tabs">
-          <button
-            className={`my-tab ${activeTab === "matches" ? "my-active" : ""}`}
-            onClick={() => setActiveTab("matches")}
-          >
-            <Target size={20} />
-            <span>Mecze ({mockMatches.length})</span>
-          </button>
+            <button
+              className={`my-tab ${activeTab === "table" ? "active" : ""}`}
+              onClick={() => setActiveTab("table")}
+            >
+              <BarChart3 size={18} />
+              <span>Tabela</span>
+            </button>
 
-          <button
-            className={`my-tab ${activeTab === "table" ? "my-active" : ""}`}
-            onClick={() => setActiveTab("table")}
-          >
-            <BarChart3 size={20} />
-            <span>Tabela</span>
-          </button>
+            <button
+              className={`my-tab ${activeTab === "leaderboard" ? "active" : ""}`}
+              onClick={() => setActiveTab("leaderboard")}
+            >
+              <Trophy size={18} />
+              <span>Ranking</span>
+            </button>
 
-          <button
-            className={`my-tab ${
-              activeTab === "leaderboard" ? "my-active" : ""
-            }`}
-            onClick={() => setActiveTab("leaderboard")}
-          >
-            <Trophy size={20} />
-            <span>Ranking</span>
-          </button>
-          <button
-            className={`my-tab ${activeTab === "stats" ? "my-active" : ""}`}
-            onClick={() => setActiveTab("stats")}
-          >
-            <TrendingUp size={20} />
-            <span>Statystyki</span>
-          </button>
-          <button
-            className={`my-tab ${activeTab === "chat" ? "my-active" : ""}`}
-            onClick={() => setActiveTab("chat")}
-          >
-            <MessageSquare size={20} />
-            <span>Czat</span>
-          </button>
-          <button
-            className={`my-tab ${activeTab === "comments" ? "my-active" : ""}`}
-            onClick={() => setActiveTab("comments")}
-          >
-            <MessageCircle size={20} />
-            <span>Komentarze</span>
-          </button>
-          <button
-            className={`my-tab ${activeTab === "info" ? "my-active" : ""}`}
-            onClick={() => setActiveTab("info")}
-          >
-            <Users size={20} />
-            <span>Informacje</span>
-          </button>
+            <button
+              className={`my-tab ${activeTab === "stats" ? "active" : ""}`}
+              onClick={() => setActiveTab("stats")}
+            >
+              <TrendingUp size={18} />
+              <span>Statystyki</span>
+            </button>
+
+            <button
+              className={`my-tab ${activeTab === "chat" ? "active" : ""}`}
+              onClick={() => setActiveTab("chat")}
+            >
+              <MessageSquare size={18} />
+              <span>Czat</span>
+            </button>
+
+            <button
+              className={`my-tab ${activeTab === "comments" ? "active" : ""}`}
+              onClick={() => setActiveTab("comments")}
+            >
+              <MessageCircle size={18} />
+              <span>Dyskusja</span>
+            </button>
+
+            <button
+              className={`my-tab ${activeTab === "info" ? "active" : ""}`}
+              onClick={() => setActiveTab("info")}
+            >
+              <Users size={18} />
+              <span>Info</span>
+            </button>
+          </div>
         </div>
 
         <div className="my-tab-content">
@@ -569,7 +563,7 @@ const RoomPage: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

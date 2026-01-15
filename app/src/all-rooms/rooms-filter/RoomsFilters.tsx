@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, Filter, Trophy } from "lucide-react";
+import { Search, Filter, Trophy, ChevronDown } from "lucide-react";
 import "./RoomsFilters.css";
 
 interface RoomsFiltersProps {
@@ -23,48 +23,54 @@ const RoomsFilters: React.FC<RoomsFiltersProps> = ({
 }) => {
   return (
     <div className="filters-section">
-      <div className="search-box">
-        <Search className="search-icon" />
-        <input
-          type="text"
-          placeholder="Szukaj pokoju lub użytkownika..."
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="search-input"
-        />
+      <div className="filter-item search-item">
+        <div className="filter-input-group">
+          <Search className="filter-input-icon" size={20} />
+          <input
+            type="text"
+            placeholder="Szukaj pokoju lub gracza..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="glass-input"
+          />
+        </div>
       </div>
 
-      <div className="filter-group">
-        <Filter className="filter-icon" />
-        <select
-          value={filterStatus}
-          onChange={(e) =>
-            onStatusChange(
-              e.target.value as "all" | "open" | "active" | "ended"
-            )
-          }
-          className="filter-select"
-        >
-          <option value="all">Wszystkie statusy</option>
-          <option value="open">Otwarte</option>
-          <option value="active">Aktywne</option>
-          <option value="ended">Zakończone</option>
-        </select>
+      <div className="filter-item">
+        <div className="filter-input-group">
+          <Filter className="filter-input-icon" size={20} />
+          <select
+            value={filterStatus}
+            onChange={(e) =>
+              onStatusChange(e.target.value as "all" | "open" | "active" | "ended")
+            }
+            className="glass-select"
+          >
+            <option value="all">Wszystkie statusy</option>
+            <option value="open">Otwarte</option>
+            <option value="active">Aktywne</option>
+            <option value="ended">Zakończone</option>
+          </select>
+          <ChevronDown className="select-arrow" size={16} />
+        </div>
       </div>
 
-      <div className="filter-group">
-        <Trophy className="filter-icon" />
-        <select
-          value={filterLeague}
-          onChange={(e) => onLeagueChange(e.target.value)}
-          className="filter-select"
-        >
-          {leagues.map((league) => (
-            <option key={league} value={league}>
-              {league === "all" ? "Wszystkie ligi" : league}
-            </option>
-          ))}
-        </select>
+      <div className="filter-item">
+        <div className="filter-input-group">
+          <Trophy className="filter-input-icon" size={20} />
+          <select
+            value={filterLeague}
+            onChange={(e) => onLeagueChange(e.target.value)}
+            className="glass-select"
+          >
+            {leagues.map((league) => (
+              <option key={league} value={league}>
+                {league === "all" ? "Wszystkie ligi" : league}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="select-arrow" size={16} />
+        </div>
       </div>
     </div>
   );

@@ -20,18 +20,15 @@ import HowToPlay from "./how-to-play/HowToPlay";
 import SplashScreen from "./splash-screen/SplashScreen";
 import { AuthProvider } from "./auth/AuthContext";
 import DemoPage from "./how-to-play/demo-page/DemoPage";
-import CardShop from "./card-shop/CardShop";
 import UserProfileModal from "./user-profile-modal/UserProfileModal";
-import { useAuth } from "./auth/AuthContext";
 import { ToastContainer } from "react-toastify";
 import WalletTopUpModal from "./payment/wallet-topup/WalletTopUpModal";
+import CosmeticShop from "./shop/components/CosmeticShop";
 
 function AppContent() {
-  const { user } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isTopUpOpen, setIsTopUpOpen] = useState(false);
 
-  const userBalance = 350.5;
 
   return (
     <>
@@ -62,14 +59,13 @@ function AppContent() {
         <Route path="/ranking" element={<RankingPage />} />
         <Route path="/jak-grac" element={<HowToPlay />} />
         <Route path="/demo" element={<DemoPage />} />
-        <Route path="/shop" element={<CardShop />} />
+        <Route path="/shop" element={<CosmeticShop />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
       <UserProfileModal
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
-        username={user?.name || "Gracz"}
         onOpenTopUp={() => {
           setIsProfileOpen(false);
           setIsTopUpOpen(true);
@@ -79,7 +75,7 @@ function AppContent() {
       <WalletTopUpModal
         isOpen={isTopUpOpen}
         onClose={() => setIsTopUpOpen(false)}
-        currentBalance={userBalance}
+        currentBalance={0}
       />
     </>
   );

@@ -11,8 +11,12 @@
 // };
 
 // export default apiService;
+
 const BACKEND_URL = "http://predicto.gg";
 const BACKEND_URL_LOCAL = "https://localhost:7174";
+
+//const BACKEND_URL = "http://localhost:5116";
+
 
 const apiService = {
   getBackendUrl: (): string => {

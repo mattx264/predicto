@@ -1,7 +1,7 @@
 import * as signalR from "@microsoft/signalr";
-import type { RoomDTO } from "../../../types/types";
 import apiService from "../api.service";
 import { signalRService } from "../signalr.service";
+import type { RoomDTO } from "../../nsawg/client";
 
 export class RoomsHubService {
   private connection: signalR.HubConnection | null = null;

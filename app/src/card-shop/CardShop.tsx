@@ -3,6 +3,7 @@ import { ShoppingCart, Star, Zap, Sparkles, Gem } from "lucide-react";
 import "./CardShop.css";
 import CardShopModal from "./CardShopModal";
 import ShopFilters from "./filters/ShopFilters";
+import ShopFeatured from "./shop-featured/ShopFeatured";
 
 interface ShopItem {
   id: string;
@@ -145,7 +146,13 @@ const CardShop: React.FC = () => {
   const handleTypeChange = (type: string) => {
     setSelectedType(type);
   };
-
+  const handleFeaturedItemClick = (itemId: string) => {
+    const item = shopItems.find(i => i.id === itemId);
+    if (item) {
+      setSelectedItem(item);
+      setIsModalOpen(true);
+    }
+  };
   return (
     <div className="card-shop">
       <div className="shop-header">
@@ -182,7 +189,7 @@ const CardShop: React.FC = () => {
           </div>
         </div>
       </div>
-
+      <ShopFeatured onItemClick={handleFeaturedItemClick} />
       <ShopFilters
         selectedRarity={selectedRarity}
         selectedType={selectedType}

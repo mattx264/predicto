@@ -1,19 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, User, Save } from "lucide-react";
 import Achievements from "../achievements/Achievements";
 import type { UserData } from "../UserProfileModal";
-
 
 interface ProfileTabProps {
     userData: UserData;
     setUserData: React.Dispatch<React.SetStateAction<UserData>>;
 }
 
+interface LocalProfileData {
+    phone: string;
+    location: string;
+    bio: string;
+    avatar: string;
+}
+
+const PROFILE_STORAGE_KEY = "userProfileData";
+
 const ProfileTab: React.FC<ProfileTabProps> = ({ userData, setUserData }) => {
     const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
-    const handleSave = () => {
-        console.log("Saving user data:", userData);
+    useEffect(() => {
+        const loadLocalProfileData = () => {
+            try {
+                const savedData = localStorage.getItem(PROFILE_STORAGE_KEY);
+                if (savedData) {
+                    const parsedData: LocalProfileData = JSON.parse(savedData);
+                    setUserData((prev) => ({
+                        ...prev,
+                        phone: parsedData.phone || prev.phone,
+                        location: parsedData.location || prev.location,
+                        bio: parsedData.bio || prev.bio,
+                        avatar: parsedData.avatar || prev.avatar,
+                    }));
+                }
+            } catch (error) {
+                console.error("Błąd wczytywania danych profilu:", error);
+            }
+        };
+
+        loadLocalProfileData();
+    }, [setUserData]);
+
+    const handleSave = async () => {
+        setIsSaving(true);
+
+        try {
+            const profileData: LocalProfileData = {
+                phone: userData.phone,
+                location: userData.location,
+                bio: userData.bio,
+                avatar: userData.avatar,
+            };
+
+            localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileData));
+
+
+
+            console.log("Dane profilu zapisane:", profileData);
+            setIsEditing(false);
+        } catch (error) {
+            console.error("Błąd podczas zapisywania profilu:", error);
+            alert("Wystąpił błąd podczas zapisywania. Spróbuj ponownie.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleCancel = () => {
+        try {
+            const savedData = localStorage.getItem(PROFILE_STORAGE_KEY);
+            if (savedData) {
+                const parsedData: LocalProfileData = JSON.parse(savedData);
+                setUserData((prev) => ({
+                    ...prev,
+                    phone: parsedData.phone,
+                    location: parsedData.location,
+                    bio: parsedData.bio,
+                    avatar: parsedData.avatar,
+                }));
+            }
+        } catch (error) {
+            console.error("Błąd przywracania danych:", error);
+        }
         setIsEditing(false);
     };
 
@@ -33,13 +103,18 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ userData, setUserData }) => {
                         <div className="my-profile-edit-actions">
                             <button
                                 className="my-profile-btn-cancel"
-                                onClick={() => setIsEditing(false)}
+                                onClick={handleCancel}
+                                disabled={isSaving}
                             >
                                 Anuluj
                             </button>
-                            <button className="my-profile-btn-save" onClick={handleSave}>
+                            <button
+                                className="my-profile-btn-save"
+                                onClick={handleSave}
+                                disabled={isSaving}
+                            >
                                 <Save size={16} />
-                                Zapisz
+                                {isSaving ? "Zapisywanie..." : "Zapisz"}
                             </button>
                         </div>
                     )}
@@ -51,17 +126,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ userData, setUserData }) => {
                             <Mail size={16} />
                             Email
                         </label>
-                        {isEditing ? (
-                            <input
-                                type="email"
-                                value={userData.email}
-                                onChange={(e) =>
-                                    setUserData({ ...userData, email: e.target.value })
-                                }
-                            />
-                        ) : (
-                            <span>{userData.email}</span>
-                        )}
+                        <span className="readonly">{userData.email}</span>
                     </div>
 
                     <div className="my-profile-field">
@@ -76,9 +141,11 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ userData, setUserData }) => {
                                 onChange={(e) =>
                                     setUserData({ ...userData, phone: e.target.value })
                                 }
+                                placeholder="np. +48 123 456 789"
+                                disabled={isSaving}
                             />
                         ) : (
-                            <span>{userData.phone}</span>
+                            <span>{userData.phone || "Nie podano"}</span>
                         )}
                     </div>
 
@@ -94,9 +161,11 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ userData, setUserData }) => {
                                 onChange={(e) =>
                                     setUserData({ ...userData, location: e.target.value })
                                 }
+                                placeholder="np. Kraków, Polska"
+                                disabled={isSaving}
                             />
                         ) : (
-                            <span>{userData.location}</span>
+                            <span>{userData.location || "Nie podano"}</span>
                         )}
                     </div>
 
@@ -112,13 +181,22 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ userData, setUserData }) => {
                                     setUserData({ ...userData, bio: e.target.value })
                                 }
                                 rows={3}
+                                placeholder="Opowiedz coś o sobie..."
+                                disabled={isSaving}
+                                maxLength={500}
                             />
                         ) : (
-                            <span>{userData.bio}</span>
+                            <span>{userData.bio || "Brak opisu"}</span>
+                        )}
+                        {isEditing && (
+                            <small className="char-count">
+                                {userData.bio.length}/500 znaków
+                            </small>
                         )}
                     </div>
                 </div>
             </div>
+
             <Achievements />
         </div>
     );

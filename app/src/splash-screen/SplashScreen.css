@@ -21,6 +21,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -30,6 +31,7 @@
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -55,11 +57,9 @@
 .gradient-orb-1 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(
-    circle,
-    rgba(34, 197, 94, 0.6) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle,
+      rgba(34, 197, 94, 0.6) 0%,
+      transparent 70%);
   top: -200px;
   left: -200px;
   animation-delay: 0s;
@@ -68,11 +68,9 @@
 .gradient-orb-2 {
   width: 600px;
   height: 600px;
-  background: radial-gradient(
-    circle,
-    rgba(59, 130, 246, 0.5) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle,
+      rgba(59, 130, 246, 0.5) 0%,
+      transparent 70%);
   bottom: -250px;
   right: -250px;
   animation-delay: 2s;
@@ -81,11 +79,9 @@
 .gradient-orb-3 {
   width: 400px;
   height: 400px;
-  background: radial-gradient(
-    circle,
-    rgba(168, 85, 247, 0.4) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle,
+      rgba(168, 85, 247, 0.4) 0%,
+      transparent 70%);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -93,13 +89,16 @@
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translate(0, 0) scale(1);
   }
+
   33% {
     transform: translate(50px, -50px) scale(1.1);
   }
+
   66% {
     transform: translate(-50px, 50px) scale(0.9);
   }
@@ -130,21 +129,26 @@
     opacity: 0;
     transform: translateY(0) scale(0.5);
   }
+
   25% {
     opacity: 0.5;
   }
+
   50% {
     opacity: 1;
     transform: translateY(-60px) scale(1);
   }
+
   75% {
     opacity: 0.5;
   }
+
   100% {
     opacity: 0;
     transform: translateY(-120px) scale(0.5);
   }
 }
+
 .splash-content {
   position: relative;
   z-index: 10;
@@ -163,21 +167,21 @@
   transform: translate(-50%, -50%);
   width: 400px;
   height: 150px;
-  background: radial-gradient(
-    ellipse,
-    rgba(34, 197, 94, 0.3) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(ellipse,
+      rgba(34, 197, 94, 0.3) 0%,
+      transparent 70%);
   filter: blur(40px);
   animation: splash-pulse 2s ease-in-out infinite;
 }
 
 @keyframes splash-pulse {
+
   0%,
   100% {
     opacity: 0.5;
     transform: translate(-50%, -50%) scale(1);
   }
+
   50% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1.1);
@@ -209,6 +213,7 @@
     opacity: 0;
     transform: translateY(-50px) rotate(-10deg);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) rotate(0deg);
@@ -229,6 +234,7 @@
   from {
     width: 0;
   }
+
   to {
     width: 100%;
   }
@@ -259,6 +265,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -301,11 +308,13 @@
 }
 
 @keyframes shimmer {
+
   0%,
   100% {
     transform: translateX(0);
     opacity: 0;
   }
+
   50% {
     transform: translateX(50%);
     opacity: 1;

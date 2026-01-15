@@ -1,0 +1,317 @@
+.cosmetic-shop {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a1628 0%, #1a2332 50%, #0d1b2a 100%);
+    padding: 120px 5% 2rem;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.cosmetic-shop::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: repeating-linear-gradient(0deg,
+            transparent,
+            transparent 60px,
+            rgba(34, 197, 94, 0.03) 60px,
+            rgba(34, 197, 94, 0.03) 61px),
+        repeating-linear-gradient(90deg,
+            transparent,
+            transparent 60px,
+            rgba(34, 197, 94, 0.03) 60px,
+            rgba(34, 197, 94, 0.03) 61px),
+        radial-gradient(circle at 20% 50%,
+            rgba(34, 197, 94, 0.12) 0%,
+            transparent 50%),
+        radial-gradient(circle at 80% 80%,
+            rgba(59, 130, 246, 0.12) 0%,
+            transparent 50%);
+    pointer-events: none;
+    animation: field-glow 4s ease-in-out infinite;
+}
+
+@keyframes field-glow {
+
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.shop-title-section {
+    flex: 1;
+    min-width: 280px;
+}
+
+.shop-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #f8fafc;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    text-shadow: 0 0 40px rgba(34, 197, 94, 0.2);
+    animation: title-entrance 1s ease-out;
+}
+
+.shop-title svg {
+    color: #22c55e;
+    filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.5));
+    flex-shrink: 0;
+}
+
+@keyframes title-entrance {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.shop-subtitle {
+    font-size: 1.2rem;
+    color: #94a3b8;
+    font-weight: 500;
+    animation: fade-in 1s ease-out 0.3s backwards;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-currency {
+    display: flex;
+    gap: 1.5rem;
+    animation: fade-in 1s ease-out 0.6s backwards;
+    flex-shrink: 0;
+}
+
+.currency-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg,
+            rgba(15, 23, 42, 0.8) 0%,
+            rgba(26, 35, 50, 0.6) 100%);
+    border-radius: 16px;
+    border: 2px solid rgba(34, 197, 94, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.currency-item:hover {
+    border-color: #22c55e;
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(34, 197, 94, 0.3);
+}
+
+.currency-item.premium {
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.currency-item.premium:hover {
+    border-color: #a855f7;
+    box-shadow: 0 15px 40px rgba(168, 85, 247, 0.3);
+}
+
+.currency-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+}
+
+.currency-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.currency-label {
+    font-size: 0.875rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.currency-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.shop-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 350px));
+    gap: 2rem;
+    animation: fade-in 1s ease-out 1.2s backwards;
+    justify-content: center;
+}
+
+.no-items {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg,
+            rgba(15, 23, 42, 0.6) 0%,
+            rgba(26, 35, 50, 0.4) 100%);
+    border-radius: 20px;
+    border: 2px solid rgba(94, 103, 118, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.no-items p {
+    font-size: 1.2rem;
+    color: #94a3b8;
+    margin: 0;
+}
+
+@media (max-width: 1024px) {
+    .shop-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .cosmetic-shop {
+        padding: 90px 4% 1.5rem;
+    }
+
+    .shop-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .shop-title-section {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .shop-title {
+        font-size: 2.2rem;
+        gap: 0.75rem;
+    }
+
+    .shop-title svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    .shop-subtitle {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .user-currency {
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .currency-item {
+        flex: 1;
+        min-width: 0;
+        padding: 1rem 1.25rem;
+    }
+
+    .shop-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cosmetic-shop {
+        padding: 80px 3% 1.5rem;
+    }
+
+    .shop-header {
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .shop-title {
+        font-size: 1.75rem;
+        gap: 0.5rem;
+    }
+
+    .shop-title svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .shop-subtitle {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .user-currency {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .currency-item {
+        width: 100%;
+        justify-content: space-between;
+        padding: 0.875rem 1.25rem;
+    }
+
+    .currency-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .currency-label {
+        font-size: 0.75rem;
+    }
+
+    .currency-value {
+        font-size: 1.25rem;
+    }
+
+    .shop-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+}

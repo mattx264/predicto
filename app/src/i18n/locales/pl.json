@@ -2,7 +2,7 @@
   "nav": {
     "home": "Strona główna",
     "dashboard": "Dashboard",
-    "shop":"Sklep",
+    "shop": "Sklep",
     "rooms": "Pokoje",
     "ranking": "Ranking",
     "howToPlay": "Jak grać",
@@ -10,7 +10,8 @@
     "login": "Zaloguj się",
     "register": "Zarejestruj się",
     "notifications": "Powiadomienia",
-    "profile": "Zobacz profil"
+    "profile": "Zobacz profil",
+    "inventory": "Ekwipunek"
   },
   "common": {
     "welcome": "Witaj",

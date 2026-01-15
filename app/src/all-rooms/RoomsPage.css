@@ -2,6 +2,17 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
   padding-top: 80px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .rooms-container {
@@ -16,6 +27,19 @@
   align-items: center;
   margin-bottom: 3rem;
   gap: 2rem;
+  animation: slideInFromTop 0.6s ease-out;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header-content {
@@ -36,11 +60,41 @@
   width: 40px;
   height: 40px;
   color: #22c55e;
+  animation: iconPop 0.6s ease-out 0.2s both;
+}
+
+@keyframes iconPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+
+  60% {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 .page-subtitle {
   color: #94a3b8;
   font-size: 1.1rem;
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .create-room-btn {
@@ -58,6 +112,19 @@
   transition: all 0.3s ease;
   box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
   white-space: nowrap;
+  animation: slideInFromRight 0.6s ease-out 0.4s both;
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .create-room-btn:hover {
@@ -74,38 +141,62 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
   padding: 0.5rem;
   border-radius: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  animation: fadeInScale 0.5s ease-out 0.6s both;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .toggle-btn {
   flex: 1;
   padding: 1rem 1.5rem;
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 12px;
   color: #94a3b8;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   color: #cbd5e1;
 }
 
 .toggle-btn.active {
-  background: linear-gradient(
-    135deg,
-    rgba(34, 197, 94, 0.2) 0%,
-    rgba(59, 130, 246, 0.2) 100%
-  );
+  background: rgba(34, 197, 94, 0.1);
   color: #22c55e;
-  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.15);
+}
+
+.rooms-filters {
+  animation: fadeInUp 0.5s ease-out 0.7s both;
+}
+
+.rooms-stats {
+  animation: fadeInUp 0.5s ease-out 0.8s both;
+}
+
+.rooms-grid {
+  animation: fadeInUp 0.5s ease-out 0.9s both;
 }
 
 @media (max-width: 768px) {
@@ -160,6 +251,7 @@
     font-size: 0.9rem;
   }
 }
+
 .connection-status {
   display: inline-flex;
   align-items: center;
@@ -223,6 +315,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -238,6 +331,7 @@
   border-radius: 8px;
   color: #991b1b;
   margin-bottom: 1.5rem;
+  animation: slideInFromTop 0.5s ease-out 0.5s both;
 }
 
 .loading-state {
@@ -247,6 +341,7 @@
   justify-content: center;
   padding: 3rem;
   gap: 1rem;
+  animation: fadeIn 0.4s ease-out;
 }
 
 .spinner {
@@ -262,6 +357,7 @@
   color: #6b7280;
   font-size: 1rem;
 }
+
 .join-room-button {
   margin-top: 12px;
   width: 100%;
@@ -326,11 +422,29 @@
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
+.animate-cards {
+  animation: staggerFadeIn 0.6s ease-out both;
+}
+
+@keyframes staggerFadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(20px);
   }
+
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

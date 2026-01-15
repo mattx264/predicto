@@ -1,3 +1,4 @@
+// UserProfileModal.tsx
 import React, { useState, useEffect } from "react";
 import { X, User, Wallet, Settings, Shield, Calendar } from "lucide-react";
 import "./UserProfileModal.css";
@@ -5,16 +6,18 @@ import ProfileTab from "./tabs/ProfileTab";
 import SecurityTab from "./tabs/SecurityTab";
 import SettingsTab from "./tabs/SettingsTab";
 import WalletTab from "./tabs/WalletTab";
+import { useAuth } from "../auth/AuthContext";
+import authService from "../services/signalr/auth.service";
 
 
 interface UserProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  username: string;
   onOpenTopUp: () => void;
 }
 
 export interface UserData {
+  userId: number;
   username: string;
   email: string;
   phone: string;
@@ -39,26 +42,27 @@ export interface SettingsData {
 const UserProfileModal: React.FC<UserProfileModalProps> = ({
   isOpen,
   onClose,
-  username,
-  onOpenTopUp, // ✅ NOWE
+  onOpenTopUp,
 }) => {
+  const { user, token } = useAuth();
   const [activeTab, setActiveTab] = useState<
     "profile" | "settings" | "wallet" | "security"
   >("profile");
   const [shouldRender, setShouldRender] = useState(false);
 
   const [userData, setUserData] = useState<UserData>({
-    username: username,
-    email: "http://localhost:5173/",
-    phone: "+48 123 456 789",
-    location: "Kraków, Polska",
-    joinDate: "2024-01-15",
-    bio: "Miłośnik piłki nożnej i typowania meczów",
+    userId: user?.id || 0,
+    username: user?.name || "",
+    email: user?.email || "",
+    phone: "",
+    location: "",
+    joinDate: token ? authService.getJoinDate(token) : new Date().toISOString(),
+    bio: "",
     avatar: "",
-    balance: 250.5,
-    totalDeposits: 500,
-    totalWithdrawals: 249.5,
-    achievements: 12,
+    balance: 0,
+    totalDeposits: 0,
+    totalWithdrawals: 0,
+    achievements: 0,
   });
 
   const [settings, setSettings] = useState<SettingsData>({
@@ -69,6 +73,17 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
     privateProfile: false,
   });
 
+  useEffect(() => {
+    if (user && token) {
+      setUserData((prev) => ({
+        ...prev,
+        userId: user.id || 0,
+        username: user.name || "",
+        email: user.email || "",
+        joinDate: authService.getJoinDate(token),
+      }));
+    }
+  }, [user, token]);
   useEffect(() => {
     if (isOpen) {
       setShouldRender(false);
@@ -170,10 +185,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
           )}
 
           {activeTab === "wallet" && (
-            <WalletTab
-              userData={userData}
-              onOpenTopUp={handleTopUpClick}
-            />
+            <WalletTab userData={userData} onOpenTopUp={handleTopUpClick} />
           )}
 
           {activeTab === "settings" && (

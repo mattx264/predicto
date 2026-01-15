@@ -169,16 +169,18 @@ const RoomComments: React.FC<RoomCommentsProps> = ({
     <div className="room-comments">
       <div className="comments-header">
         <div className="comments-title-section">
-          <MessageCircle className="comments-icon" size={24} />
+          <div className="title-icon-wrapper">
+            <MessageCircle size={20} />
+          </div>
           <div>
-            <h2 className="comments-title">Komentarze</h2>
+            <h2 className="comments-title">Dyskusja</h2>
             <p className="comments-subtitle">
               {comments.length}{" "}
               {comments.length === 1
                 ? "komentarz"
                 : comments.length < 5
-                ? "komentarze"
-                : "komentarzy"}
+                  ? "komentarze"
+                  : "komentarzy"}
             </p>
           </div>
         </div>
@@ -187,40 +189,43 @@ const RoomComments: React.FC<RoomCommentsProps> = ({
       <div className="comments-input-section">
         <textarea
           className="comments-textarea"
-          placeholder="Dodaj komentarz o turnieju..."
+          placeholder="Podziel się opinią o turnieju..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           rows={3}
         />
-        <button
-          className="comments-submit-button"
-          onClick={handleAddComment}
-          disabled={newComment.trim() === ""}
-        >
-          <Send size={20} />
-          <span>Dodaj komentarz</span>
-        </button>
+        <div className="input-actions">
+          <button
+            className="comments-submit-button"
+            onClick={handleAddComment}
+            disabled={newComment.trim() === ""}
+          >
+            <Send size={18} />
+            <span>Opublikuj</span>
+          </button>
+        </div>
       </div>
 
       <div className="comments-list">
         {sortedComments.length === 0 ? (
           <div className="no-comments">
-            <MessageCircle size={48} />
+            <div className="no-comments-icon">
+              <MessageCircle size={32} />
+            </div>
             <p>Brak komentarzy</p>
-            <span>Bądź pierwszy i dodaj komentarz o turnieju!</span>
+            <span>Bądź pierwszy i rozpocznij dyskusję!</span>
           </div>
         ) : (
           sortedComments.map((comment) => (
             <div
               key={comment.id}
-              className={`comment-item ${
-                comment.userId === currentUserId ? "own-comment" : ""
-              } ${comment.isPinned ? "pinned-comment" : ""}`}
+              className={`comment-item ${comment.userId === currentUserId ? "own-comment" : ""
+                } ${comment.isPinned ? "pinned-comment" : ""}`}
             >
               {comment.isPinned && (
                 <div className="comment-pinned-badge">
                   <Pin size={12} />
-                  <span>Przypięty komentarz</span>
+                  <span>Przypięty</span>
                 </div>
               )}
 
@@ -237,11 +242,10 @@ const RoomComments: React.FC<RoomCommentsProps> = ({
 
                   <div className="comment-text">{comment.content}</div>
 
-                  <div className="comment-actions">
+                  <div className="comment-footer">
                     <button
-                      className={`comment-like-btn ${
-                        comment.likedByUser ? "liked" : ""
-                      }`}
+                      className={`comment-like-btn ${comment.likedByUser ? "liked" : ""
+                        }`}
                       onClick={() => handleLike(comment.id)}
                     >
                       <ThumbsUp size={14} />

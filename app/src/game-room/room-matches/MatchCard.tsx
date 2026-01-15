@@ -36,9 +36,8 @@ const MatchCard: React.FC<MatchCardProps> = ({
 
   return (
     <div
-      className={`match-card ${match.status} ${
-        isVictoryMatch() ? "victory-card" : ""
-      }`}
+      className={`match-card ${match.status} ${isVictoryMatch() ? "victory-card" : ""
+        }`}
     >
       {isVictoryMatch() && <VictoryParticles show={true} type="fireworks" />}
 
@@ -110,7 +109,6 @@ const MatchCard: React.FC<MatchCardProps> = ({
         />
       )}
 
-      {/* {match.status === "live" && ( */}
       <div className="live-actions-container">
         <button className="btn-watch-live" onClick={() => onWatchLive(match)}>
           <MessageSquare size={16} />
@@ -124,7 +122,6 @@ const MatchCard: React.FC<MatchCardProps> = ({
           Zobacz typy
         </button>
       </div>
-      {/* )} */}
 
       {match.status === "upcoming" && isParticipant && (
         <button

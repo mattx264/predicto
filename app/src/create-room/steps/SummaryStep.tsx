@@ -62,7 +62,6 @@ const SummaryStep: React.FC<Props> = ({
         </p>
       </div>
 
-      {/* Wyświetl błąd jeśli wystąpił */}
       {error && (
         <div
           className="error-message"

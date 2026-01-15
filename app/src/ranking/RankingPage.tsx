@@ -9,6 +9,7 @@ import {
   Award,
   Filter,
   Sparkles,
+  ChevronDown,
 } from "lucide-react";
 import "./RankingPage.css";
 
@@ -178,10 +179,12 @@ const RankingPage: React.FC = () => {
         return <span className="rank-number-large">#{rank}</span>;
     }
   };
+
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value as "all" | "month" | "week";
     setTimeFilter(value);
   };
+
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case "up":
@@ -199,52 +202,61 @@ const RankingPage: React.FC = () => {
 
   return (
     <div className="ranking-page">
+      <div className="ranking-bg-glow" />
+
       <div className="ranking-container">
         <div className="ranking-header">
           <div className="header-content-rank">
             <h1 className="page-title-rank">
-              <Trophy className="title-icon-rank" />
-              Globalny Ranking
+              <div className="title-icon-wrapper">
+                <Trophy size={28} />
+              </div>
+              Ranking Globalny
             </h1>
             <p className="page-subtitle-rank">
-              Najlepsi typerzy w całej społeczności Predicto
+              Elita typerów społeczności Predicto
             </p>
           </div>
 
-          <div className="time-filter">
-            <Filter className="filter-icon-rank" size={20} />
-            <select
-              value={timeFilter}
-              onChange={handleFilterChange}
-              className="time-select"
-            >
-              <option value="all">Cały czas</option>
-              <option value="month">Ten miesiąc</option>
-              <option value="week">Ten tydzień</option>
-            </select>
+          <div className="filter-wrapper">
+            <div className="time-filter">
+              <Filter className="filter-icon-rank" size={18} />
+              <select
+                value={timeFilter}
+                onChange={handleFilterChange}
+                className="time-select"
+              >
+                <option value="all">Cały czas</option>
+                <option value="month">Ten miesiąc</option>
+                <option value="week">Ten tydzień</option>
+              </select>
+              <ChevronDown size={16} className="select-arrow" />
+            </div>
           </div>
         </div>
 
         <div className="podium-section">
           <div className="podium-container">
             <div className="podium-place second">
-              <div className="podium-card">
-                <Medal className="podium-medal silver-medal" size={32} />
+              <div className="podium-card silver">
+                <div className="medal-wrapper silver">
+                  <Medal size={28} />
+                </div>
                 <div className="podium-avatar silver-avatar">
                   {getPodiumPlayer(2)?.avatar}
                 </div>
                 <h3 className="podium-name">{getPodiumPlayer(2)?.username}</h3>
-                <p className="podium-points">
+                <p className="podium-points silver-points">
                   {getPodiumPlayer(2)?.totalPoints} pkt
                 </p>
                 <div className="podium-stats">
                   <div className="podium-stat">
                     <Trophy size={14} />
-                    <span>{getPodiumPlayer(2)?.roomsWon} zwycięstw</span>
+                    <span>{getPodiumPlayer(2)?.roomsWon} win</span>
                   </div>
                   <div className="podium-stat">
                     <Target size={14} />
-                    <span>{getPodiumPlayer(2)?.winRate}% win rate</span>
+                    <span>{getPodiumPlayer(2)?.winRate}%</span>
                   </div>
                 </div>
               </div>
@@ -253,11 +265,16 @@ const RankingPage: React.FC = () => {
               </div>
             </div>
 
+            {/* 1st Place */}
             <div className="podium-place first">
               <div className="podium-card champion">
-                <Sparkles className="champion-sparkle sparkle-1" size={20} />
-                <Sparkles className="champion-sparkle sparkle-2" size={16} />
-                <Crown className="podium-medal gold-medal" size={40} />
+                <div className="sparkles-container">
+                  <Sparkles className="champion-sparkle sparkle-1" size={24} />
+                  <Sparkles className="champion-sparkle sparkle-2" size={18} />
+                </div>
+                <div className="medal-wrapper gold">
+                  <Crown size={36} />
+                </div>
                 <div className="podium-avatar gold-avatar">
                   {getPodiumPlayer(1)?.avatar}
                 </div>
@@ -268,11 +285,11 @@ const RankingPage: React.FC = () => {
                 <div className="podium-stats">
                   <div className="podium-stat">
                     <Trophy size={14} />
-                    <span>{getPodiumPlayer(1)?.roomsWon} zwycięstw</span>
+                    <span>{getPodiumPlayer(1)?.roomsWon} win</span>
                   </div>
                   <div className="podium-stat">
                     <Target size={14} />
-                    <span>{getPodiumPlayer(1)?.winRate}% win rate</span>
+                    <span>{getPodiumPlayer(1)?.winRate}%</span>
                   </div>
                 </div>
               </div>
@@ -281,24 +298,27 @@ const RankingPage: React.FC = () => {
               </div>
             </div>
 
+            {/* 3rd Place */}
             <div className="podium-place third">
-              <div className="podium-card">
-                <Medal className="podium-medal bronze-medal" size={32} />
+              <div className="podium-card bronze">
+                <div className="medal-wrapper bronze">
+                  <Medal size={28} />
+                </div>
                 <div className="podium-avatar bronze-avatar">
                   {getPodiumPlayer(3)?.avatar}
                 </div>
                 <h3 className="podium-name">{getPodiumPlayer(3)?.username}</h3>
-                <p className="podium-points">
+                <p className="podium-points bronze-points">
                   {getPodiumPlayer(3)?.totalPoints} pkt
                 </p>
                 <div className="podium-stats">
                   <div className="podium-stat">
                     <Trophy size={14} />
-                    <span>{getPodiumPlayer(3)?.roomsWon} zwycięstw</span>
+                    <span>{getPodiumPlayer(3)?.roomsWon} win</span>
                   </div>
                   <div className="podium-stat">
                     <Target size={14} />
-                    <span>{getPodiumPlayer(3)?.winRate}% win rate</span>
+                    <span>{getPodiumPlayer(3)?.winRate}%</span>
                   </div>
                 </div>
               </div>
@@ -310,7 +330,7 @@ const RankingPage: React.FC = () => {
         </div>
 
         {currentUser && currentUser.rank > 3 && (
-          <div className="current-user-card">
+          <div className="current-user-section">
             <div className="current-user-label">
               <Award className="current-icon" size={20} />
               <span>Twoja pozycja</span>
@@ -328,8 +348,7 @@ const RankingPage: React.FC = () => {
                     {currentUser.username}
                   </span>
                   <span className="player-subtitle">
-                    {currentUser.correctPredictions}/
-                    {currentUser.totalPredictions} trafień
+                    {currentUser.correctPredictions}/{currentUser.totalPredictions} trafień
                   </span>
                 </div>
               </div>
@@ -337,31 +356,31 @@ const RankingPage: React.FC = () => {
               <div className="stats-col">
                 <div className="stat-item-rank">
                   <Trophy size={16} className="stat-icon-small" />
-                  <span>{currentUser.roomsWon} zwycięstw</span>
+                  <span>{currentUser.roomsWon} win</span>
                 </div>
                 <div className="stat-item-rank">
                   <Target size={16} className="stat-icon-small" />
-                  <span>{currentUser.winRate}% win rate</span>
+                  <span>{currentUser.winRate}%</span>
                 </div>
               </div>
 
               <div className="points-col">
                 <span className="points-large">{currentUser.totalPoints}</span>
-                <span className="points-label-small">punktów</span>
+                <span className="points-label-small">PKT</span>
               </div>
             </div>
           </div>
         )}
 
         <div className="ranking-list-section">
-          <h2 className="section-title-rank">Pełny ranking</h2>
+          <h2 className="section-title-rank">Pełny Ranking</h2>
 
           <div className="ranking-list-full">
             {players.map((player) => (
               <div
                 key={player.id}
                 className={`ranking-item-detail ${player.id === currentUserId ? "is-current" : ""
-                  } ${player.rank <= 3 ? "top-three" : ""}`}
+                  } ${player.rank <= 3 ? "top-three-row" : ""}`}
                 onClick={() => navigate(`/profile/${player.id}`)}
               >
                 <div className="rank-col">
@@ -379,8 +398,7 @@ const RankingPage: React.FC = () => {
                       )}
                     </span>
                     <span className="player-subtitle">
-                      {player.correctPredictions}/{player.totalPredictions}{" "}
-                      trafień
+                      {player.correctPredictions} trafień
                     </span>
                   </div>
                 </div>
@@ -388,19 +406,18 @@ const RankingPage: React.FC = () => {
                 <div className="stats-col">
                   <div className="stat-item-rank">
                     <Trophy size={16} className="stat-icon-small" />
-                    <span>
-                      {player.roomsWon}/{player.roomsPlayed} pokoi
-                    </span>
+                    <span className="hide-mobile">{player.roomsWon}/{player.roomsPlayed}</span>
+                    <span className="show-mobile">{player.roomsWon}</span>
                   </div>
                   <div className="stat-item-rank">
                     <Target size={16} className="stat-icon-small" />
-                    <span>{player.winRate}% win rate</span>
+                    <span>{player.winRate}%</span>
                   </div>
                 </div>
 
                 <div className="points-col">
                   <span className="points-large">{player.totalPoints}</span>
-                  <span className="points-label-small">punktów</span>
+                  <span className="points-label-small">PKT</span>
                 </div>
               </div>
             ))}

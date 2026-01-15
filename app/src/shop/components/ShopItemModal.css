@@ -1,0 +1,1008 @@
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-backdrop.open {
+    opacity: 1;
+    pointer-events: all;
+    animation: backdrop-fade-in 0.3s ease;
+}
+
+@keyframes backdrop-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-container {
+    position: relative;
+    max-width: 900px;
+    width: 100%;
+    height: fit-content;
+    max-height: 85vh;
+    display: flex;
+    animation: modal-slide-in 0.4s ease;
+}
+
+@keyframes modal-slide-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+}
+
+.modal-close-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 30px rgba(239, 68, 68, 0.6);
+}
+
+.modal-content {
+    display: flex;
+    gap: 0;
+    background: transparent;
+    border-radius: 24px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: visible;
+    flex: 1;
+    align-self: stretch;
+}
+
+.modal-content::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 3px;
+    background: transparent;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 1;
+    z-index: 0;
+    animation: border-expand 0.8s ease 0.5s backwards;
+}
+
+@keyframes border-expand {
+    from {
+        clip-path: inset(0 calc(100% - 300px) 0 0);
+    }
+
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+.modal-content.common::before {
+    background: linear-gradient(135deg, #94a3b8, #cbd5e1, #94a3b8);
+    animation:
+        border-expand 0.8s ease 0.5s backwards,
+        glow-pulse 2s ease-in-out infinite;
+}
+
+.modal-content.rare::before {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa, #3b82f6);
+    animation:
+        border-expand 0.8s ease 0.5s backwards,
+        glow-pulse 2s ease-in-out infinite;
+}
+
+.modal-content.epic::before {
+    background: linear-gradient(135deg, #a855f7, #c084fc, #a855f7);
+    animation:
+        border-expand 0.8s ease 0.5s backwards,
+        glow-pulse 2s ease-in-out infinite;
+}
+
+.modal-content.legendary::before {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24, #f59e0b);
+    animation:
+        border-expand 0.8s ease 0.5s backwards,
+        glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.modal-image-section {
+    flex: 0 0 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: card-entrance 0.5s ease backwards;
+    z-index: 2;
+}
+
+@keyframes card-entrance {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-item-card {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(135deg,
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s ease;
+    animation: card-float 3s ease-in-out infinite;
+}
+
+@keyframes card-float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.modal-rarity-glow {
+    position: absolute;
+    inset: -30px;
+    opacity: 0.3;
+    filter: blur(50px);
+    pointer-events: none;
+    animation: glow-pulse-inner 3s ease-in-out infinite;
+}
+
+@keyframes glow-pulse-inner {
+
+    0%,
+    100% {
+        opacity: 0.2;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.modal-item-card.common .modal-rarity-glow {
+    background: #94a3b8;
+}
+
+.modal-item-card.rare .modal-rarity-glow {
+    background: #3b82f6;
+}
+
+.modal-item-card.epic .modal-rarity-glow {
+    background: #a855f7;
+}
+
+.modal-item-card.legendary .modal-rarity-glow {
+    background: #f59e0b;
+}
+
+.modal-item-image {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    border-radius: 16px;
+    z-index: 1;
+}
+
+.modal-frame-preview {
+    position: absolute;
+    inset: 30px;
+    border: 6px solid currentColor;
+    border-radius: 16px;
+    pointer-events: none;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
+
+.modal-item-card.common .modal-frame-preview {
+    border-color: #94a3b8;
+}
+
+.modal-item-card.rare .modal-frame-preview {
+    border-color: #3b82f6;
+}
+
+.modal-item-card.epic .modal-frame-preview {
+    border-color: #a855f7;
+}
+
+.modal-item-card.legendary .modal-frame-preview {
+    border-color: #f59e0b;
+}
+
+.modal-details-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    animation: details-slide-in 0.6s ease 0.5s backwards;
+    position: relative;
+    min-width: 0;
+    padding-left: 1.5rem;
+    z-index: 1;
+}
+
+.modal-details-section>*:last-child {
+    margin-top: auto;
+}
+
+@keyframes details-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.modal-type-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.type-icon-modal {
+    font-size: 1.5rem;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin: 0;
+    background: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.modal-details-section.common .modal-title {
+    background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.modal-details-section.rare .modal-title {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.modal-details-section.epic .modal-title {
+    background: linear-gradient(135deg, #a855f7, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.modal-details-section.legendary .modal-title {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.modal-rarity-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.modal-rarity-badge.common {
+    background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+    color: #1e293b;
+    box-shadow: 0 4px 15px rgba(148, 163, 184, 0.4);
+}
+
+.modal-rarity-badge.rare {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.modal-rarity-badge.epic {
+    background: linear-gradient(135deg, #a855f7, #c084fc);
+    color: white;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+}
+
+.modal-rarity-badge.legendary {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    color: #1e293b;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+.modal-description {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.modal-details-section.common .modal-description {
+    color: #cbd5e1;
+}
+
+.modal-details-section.rare .modal-description {
+    color: #93c5fd;
+}
+
+.modal-details-section.epic .modal-description {
+    color: #d8b4fe;
+}
+
+.modal-details-section.legendary .modal-description {
+    color: #fcd34d;
+}
+
+.modal-collection-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: 2px solid;
+    border-radius: 10px;
+}
+
+.modal-details-section.common .modal-collection-info {
+    border-color: rgba(148, 163, 184, 0.4);
+}
+
+.modal-details-section.rare .modal-collection-info {
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.modal-details-section.epic .modal-collection-info {
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+.modal-details-section.legendary .modal-collection-info {
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.collection-label-modal {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+}
+
+.collection-value-modal {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-details-section.common .collection-value-modal {
+    color: #cbd5e1;
+}
+
+.modal-details-section.rare .collection-value-modal {
+    color: #60a5fa;
+}
+
+.modal-details-section.epic .collection-value-modal {
+    color: #c084fc;
+}
+
+.modal-details-section.legendary .collection-value-modal {
+    color: #fbbf24;
+}
+
+.modal-section-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 0.5rem 0;
+}
+
+.modal-details-section.common .modal-section-title {
+    color: #cbd5e1;
+}
+
+.modal-details-section.rare .modal-section-title {
+    color: #93c5fd;
+}
+
+.modal-details-section.epic .modal-section-title {
+    color: #d8b4fe;
+}
+
+.modal-details-section.legendary .modal-section-title {
+    color: #fcd34d;
+}
+
+.modal-features {
+    background: transparent;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 2px solid;
+}
+
+.modal-details-section.common .modal-features {
+    border-color: rgba(148, 163, 184, 0.4);
+}
+
+.modal-details-section.rare .modal-features {
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.modal-details-section.epic .modal-features {
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+.modal-details-section.legendary .modal-features {
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.modal-features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.modal-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.modal-details-section.common .modal-feature-item {
+    color: #cbd5e1;
+}
+
+.modal-details-section.rare .modal-feature-item {
+    color: #93c5fd;
+}
+
+.modal-details-section.epic .modal-feature-item {
+    color: #d8b4fe;
+}
+
+.modal-details-section.legendary .modal-feature-item {
+    color: #fcd34d;
+}
+
+.feature-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    color: white;
+    font-weight: 900;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+.modal-details-section.common .feature-check {
+    background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+}
+
+.modal-details-section.rare .feature-check {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+
+.modal-details-section.epic .feature-check {
+    background: linear-gradient(135deg, #a855f7, #c084fc);
+}
+
+.modal-details-section.legendary .feature-check {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.modal-discount {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.discount-text {
+    color: white;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-price-section {
+    background: transparent;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 2px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.modal-details-section.common .modal-price-section {
+    border-color: rgba(148, 163, 184, 0.4);
+}
+
+.modal-details-section.rare .modal-price-section {
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.modal-details-section.epic .modal-price-section {
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+.modal-details-section.legendary .modal-price-section {
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.modal-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.price-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-details-section.common .price-label {
+    color: #94a3b8;
+}
+
+.modal-details-section.rare .price-label {
+    color: #3b82f6;
+}
+
+.modal-details-section.epic .price-label {
+    color: #a855f7;
+}
+
+.modal-details-section.legendary .price-label {
+    color: #f59e0b;
+}
+
+.price-value {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 900;
+}
+
+.modal-details-section.common .price-value {
+    color: #cbd5e1;
+}
+
+.modal-details-section.rare .price-value {
+    color: #93c5fd;
+}
+
+.modal-details-section.epic .price-value {
+    color: #d8b4fe;
+}
+
+.modal-details-section.legendary .price-value {
+    color: #fcd34d;
+}
+
+.original-price-info {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-decoration: line-through;
+}
+
+.insufficient-funds {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    padding: 0.5rem;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-purchase-btn {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.modal-details-section.common .modal-purchase-btn {
+    background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+    box-shadow: 0 4px 20px rgba(148, 163, 184, 0.4);
+    color: #1e293b;
+}
+
+.modal-details-section.rare .modal-purchase-btn {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+}
+
+.modal-details-section.epic .modal-purchase-btn {
+    background: linear-gradient(135deg, #a855f7, #c084fc);
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+}
+
+.modal-details-section.legendary .modal-purchase-btn {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+    color: #1e293b;
+}
+
+.modal-purchase-btn:hover:not(.disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.modal-purchase-btn.disabled {
+    background: linear-gradient(135deg, #64748b, #475569);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+@media (max-width: 1024px) {
+    .modal-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem;
+    }
+
+    .modal-content::before {
+        animation: border-pulse-expand 1s ease 0.5s backwards;
+    }
+
+    @keyframes border-pulse-expand {
+        0% {
+            opacity: 0;
+            transform: scale(0.5);
+            filter: blur(20px);
+        }
+
+        50% {
+            opacity: 1;
+            filter: blur(10px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px);
+        }
+    }
+
+    .modal-image-section {
+        flex: none;
+    }
+
+    .modal-details-section {
+        padding-left: 0;
+        padding-top: 1rem;
+        animation: details-slide-up 0.6s ease 0.5s backwards;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-details-section>*:last-child {
+        margin-top: auto;
+    }
+
+    @keyframes details-slide-up {
+        from {
+            opacity: 0;
+            transform: translateY(100%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-backdrop {
+        padding: 0.75rem;
+        align-items: stretch;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .modal-container {
+        max-height: none;
+        height: 100%;
+    }
+
+    .modal-close-btn {
+        top: 0.25rem;
+        right: 0.25rem;
+        width: 40px;
+        height: 40px;
+    }
+
+    .modal-content {
+        padding: 1rem;
+        gap: 0;
+        height: 100%;
+    }
+
+    .modal-image-section {
+        flex: 0 0 auto;
+    }
+
+    .modal-item-card {
+        width: 200px;
+        height: 200px;
+    }
+
+    .modal-details-section {
+        gap: 0.6rem;
+        padding-top: 0.75rem;
+        padding-left: 0;
+        flex: 1;
+    }
+
+    .modal-title {
+        font-size: 1.2rem;
+    }
+
+    .type-icon-modal {
+        font-size: 1.25rem;
+    }
+
+    .modal-rarity-badge {
+        font-size: 0.55rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .modal-description {
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .modal-section-title {
+        font-size: 0.75rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .modal-features {
+        padding: 0.6rem;
+    }
+
+    .modal-features-list {
+        gap: 0.4rem;
+    }
+
+    .modal-feature-item {
+        font-size: 0.7rem;
+        gap: 0.4rem;
+    }
+
+    .feature-check {
+        width: 15px;
+        height: 15px;
+        font-size: 0.6rem;
+    }
+
+    .modal-discount {
+        padding: 0.4rem 0.6rem;
+    }
+
+    .discount-text {
+        font-size: 0.7rem;
+    }
+
+    .modal-price-section {
+        padding: 0.6rem;
+        gap: 0.4rem;
+    }
+
+    .price-label {
+        font-size: 0.7rem;
+    }
+
+    .price-value {
+        font-size: 1.1rem;
+        gap: 0.4rem;
+    }
+
+    .price-value svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .original-price-info {
+        font-size: 0.65rem;
+    }
+
+    .insufficient-funds {
+        font-size: 0.65rem;
+        padding: 0.4rem;
+    }
+
+    .modal-purchase-btn {
+        font-size: 0.8rem;
+        padding: 0.7rem 0.85rem;
+        gap: 0.4rem;
+        margin-top: auto;
+    }
+
+    .modal-purchase-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-backdrop {
+        padding: 0.5rem;
+    }
+
+    .modal-content {
+        padding: 0.75rem;
+    }
+
+    .modal-item-card {
+        width: 160px;
+        height: 160px;
+    }
+
+    .modal-details-section {
+        gap: 0.5rem;
+        padding-top: 0.6rem;
+    }
+
+    .modal-title {
+        font-size: 1rem;
+    }
+
+    .type-icon-modal {
+        font-size: 1.1rem;
+    }
+
+    .modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .modal-description {
+        font-size: 0.7rem;
+    }
+
+    .modal-section-title {
+        font-size: 0.7rem;
+    }
+
+    .modal-feature-item {
+        font-size: 0.65rem;
+    }
+
+    .price-label {
+        font-size: 0.65rem;
+    }
+
+    .price-value {
+        font-size: 1rem;
+    }
+
+    .insufficient-funds {
+        font-size: 0.6rem;
+        padding: 0.35rem;
+    }
+
+    .modal-purchase-btn {
+        font-size: 0.75rem;
+        padding: 0.65rem 0.75rem;
+        margin-top: auto;
+    }
+}

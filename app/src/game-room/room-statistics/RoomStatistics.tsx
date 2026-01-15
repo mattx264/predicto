@@ -22,6 +22,9 @@ import {
   CheckCircle,
   Award,
   Users,
+  PieChart as PieChartIcon,
+  Activity,
+  BarChart2
 } from "lucide-react";
 import "./RoomStatistics.css";
 
@@ -45,15 +48,16 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
 }) => {
   const currentUser = participants.find((p) => p.id === currentUserId);
 
+  // Mock data - w przyszłości dynamiczne
   const pointsHistoryData = [
-    { round: "Kolejka 1", points: 15, user: 20, average: 12 },
-    { round: "Kolejka 2", points: 28, user: 35, average: 22 },
-    { round: "Kolejka 3", points: 42, user: 48, average: 35 },
-    { round: "Kolejka 4", points: 58, user: 65, average: 48 },
-    { round: "Kolejka 5", points: 73, user: 82, average: 60 },
-    { round: "Kolejka 6", points: 91, user: 98, average: 75 },
-    { round: "Kolejka 7", points: 108, user: 115, average: 88 },
-    { round: "Kolejka 8", points: 125, user: 132, average: 102 },
+    { round: "K1", points: 15, user: 20, average: 12 },
+    { round: "K2", points: 28, user: 35, average: 22 },
+    { round: "K3", points: 42, user: 48, average: 35 },
+    { round: "K4", points: 58, user: 65, average: 48 },
+    { round: "K5", points: 73, user: 82, average: 60 },
+    { round: "K6", points: 91, user: 98, average: 75 },
+    { round: "K7", points: 108, user: 115, average: 88 },
+    { round: "K8", points: 125, user: 132, average: 102 },
   ];
 
   const predictionAccuracyData = [
@@ -64,54 +68,65 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
 
   const matchTypePerformanceData = [
     { type: "Remisy", predicted: 8, correct: 5, accuracy: 62.5 },
-    { type: "Wygrane gospodarzy", predicted: 15, correct: 9, accuracy: 60 },
-    { type: "Wygrane gości", predicted: 13, correct: 7, accuracy: 53.8 },
+    { type: "Gospodarze", predicted: 15, correct: 9, accuracy: 60 },
+    { type: "Goście", predicted: 13, correct: 7, accuracy: 53.8 },
   ];
 
   const topPerformersComparison = participants.slice(0, 5).map((p) => ({
-    name: p.username,
+    name: p.username.length > 10 ? p.username.substring(0, 8) + '...' : p.username,
     points: p.totalPoints,
     accuracy: ((p.correctPredictions / 36) * 100).toFixed(1),
   }));
 
-  const renderPieLabel = (entry: {
-    name?: string;
-    value?: number;
-    percent?: number;
-  }) => {
-    const { name, value, percent } = entry;
-    return `${name}: ${value} (${((percent ?? 0) * 100).toFixed(0)}%)`;
+  // Wspólny styl dla tooltipów wykresów
+  const tooltipStyle = {
+    backgroundColor: "rgba(15, 23, 42, 0.95)",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    borderRadius: "12px",
+    padding: "10px",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.5)",
+    color: "#f8fafc",
+    fontSize: "12px",
   };
 
   return (
     <div className="room-statistics">
       <div className="stats-header">
-        <h2 className="section-title">Statystyki i Analizy</h2>
-        <p className="section-description">
-          Szczegółowa analiza Twoich wyników i porównanie z innymi
-        </p>
+        <div className="title-icon-wrapper">
+          <Activity size={24} />
+        </div>
+        <div className="header-text">
+          <h2 className="section-title">Statystyki</h2>
+          <p className="section-description">
+            Analiza wyników i porównanie z innymi graczami
+          </p>
+        </div>
       </div>
 
       <div className="personal-stats-grid">
         <div className="personal-stat-card">
           <div className="stat-card-header">
-            <Target className="stat-card-icon" />
+            <div className="stat-icon-wrapper blue">
+              <Target size={18} />
+            </div>
             <span className="stat-card-title">Celność</span>
           </div>
           <div className="stat-card-value">
             {currentUser
               ? ((currentUser.correctPredictions / 36) * 100).toFixed(1)
               : 0}
-            %
+            <span className="unit">%</span>
           </div>
           <div className="stat-card-label">
-            {currentUser?.correctPredictions || 0} z 36 meczów
+            {currentUser?.correctPredictions || 0} trafień / 36
           </div>
         </div>
 
         <div className="personal-stat-card">
           <div className="stat-card-header">
-            <TrendingUp className="stat-card-icon" />
+            <div className="stat-icon-wrapper yellow">
+              <Trophy size={18} />
+            </div>
             <span className="stat-card-title">Pozycja</span>
           </div>
           <div className="stat-card-value">#{currentUser?.rank || "-"}</div>
@@ -120,38 +135,45 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
 
         <div className="personal-stat-card">
           <div className="stat-card-header">
-            <Trophy className="stat-card-icon" />
+            <div className="stat-icon-wrapper green">
+              <TrendingUp size={18} />
+            </div>
             <span className="stat-card-title">Punkty</span>
           </div>
           <div className="stat-card-value">{currentUser?.totalPoints || 0}</div>
           <div className="stat-card-label">
-            średnio {currentUser ? (currentUser.totalPoints / 8).toFixed(1) : 0}{" "}
-            pkt/kolejka
+            śr. {currentUser ? (currentUser.totalPoints / 8).toFixed(1) : 0}{" "}
+            pkt/kol.
           </div>
         </div>
 
         <div className="personal-stat-card">
           <div className="stat-card-header">
-            <CheckCircle className="stat-card-icon" />
+            <div className="stat-icon-wrapper red">
+              <CheckCircle size={18} />
+            </div>
             <span className="stat-card-title">Seria</span>
           </div>
           <div className="stat-card-value">5</div>
-          <div className="stat-card-label">kolejnych trafień</div>
+          <div className="stat-card-label">rekord trafień z rzędu</div>
         </div>
       </div>
 
       <div className="charts-grid">
         <div className="chart-card full-width">
-          <h3 className="chart-title">
-            <TrendingUp size={20} />
-            Progres punktów w czasie
-          </h3>
-          <p className="chart-description">
-            Porównanie Twoich wyników z liderem i średnią pokoju
-          </p>
+          <div className="chart-header">
+            <div className="chart-icon-box">
+              <TrendingUp size={18} />
+            </div>
+            <div>
+              <h3 className="chart-title">Progres w czasie</h3>
+              <p className="chart-subtitle">Ty vs Lider vs Średnia</p>
+            </div>
+          </div>
+
           <div className="chart-container">
             <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={pointsHistoryData}>
+              <AreaChart data={pointsHistoryData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorUser" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
@@ -162,22 +184,22 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis
                   dataKey="round"
-                  stroke="#94a3b8"
-                  style={{ fontSize: "12px" }}
+                  stroke="#64748b"
+                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tickLine={false}
+                  axisLine={false}
                 />
-                <YAxis stroke="#94a3b8" style={{ fontSize: "12px" }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#1e293b",
-                    border: "1px solid #334155",
-                    borderRadius: "8px",
-                    color: "#f8fafc",
-                  }}
+                <YAxis
+                  stroke="#64748b"
+                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tickLine={false}
+                  axisLine={false}
                 />
-                <Legend />
+                <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }} />
+                <Legend iconType="circle" wrapperStyle={{ paddingTop: '10px' }} />
                 <Area
                   type="monotone"
                   dataKey="user"
@@ -195,6 +217,7 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
                   fill="url(#colorUser)"
                   name="Ty"
                   strokeWidth={3}
+                  activeDot={{ r: 6, strokeWidth: 0, fill: '#fff' }}
                 />
                 <Line
                   type="monotone"
@@ -203,6 +226,7 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
                   strokeDasharray="5 5"
                   name="Średnia"
                   dot={false}
+                  strokeWidth={1}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -210,91 +234,91 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
         </div>
 
         <div className="chart-card">
-          <h3 className="chart-title">
-            <Target size={20} />
-            Dokładność typowań
-          </h3>
-          <p className="chart-description">Rozkład Twoich prognoz</p>
-          <div className="chart-container">
-            <ResponsiveContainer width="100%" height={300}>
+          <div className="chart-header">
+            <div className="chart-icon-box">
+              <PieChartIcon size={18} />
+            </div>
+            <div>
+              <h3 className="chart-title">Dokładność</h3>
+              <p className="chart-subtitle">Rozkład Twoich typów</p>
+            </div>
+          </div>
+
+          <div className="chart-container donut-chart-container">
+            <ResponsiveContainer width="100%" height={260}>
               <PieChart>
                 <Pie
                   data={predictionAccuracyData}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  label={renderPieLabel}
+                  innerRadius={60}
                   outerRadius={80}
-                  fill="#8884d8"
+                  paddingAngle={5}
                   dataKey="value"
+                  stroke="none"
                 >
                   {predictionAccuracyData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#1e293b",
-                    border: "1px solid #334155",
-                    borderRadius: "8px",
-                    color: "#f8fafc",
-                  }}
-                />
+                <Tooltip contentStyle={tooltipStyle} />
               </PieChart>
             </ResponsiveContainer>
-          </div>
-          <div className="chart-legend">
-            {predictionAccuracyData.map((item, index) => (
-              <div key={index} className="legend-item">
-                <div
-                  className="legend-color"
-                  style={{ backgroundColor: item.color }}
-                />
-                <span className="legend-label">{item.name}</span>
-                <span className="legend-value">{item.value}</span>
-              </div>
-            ))}
+            <div className="chart-legend-custom">
+              {predictionAccuracyData.map((item, index) => (
+                <div key={index} className="legend-item-row">
+                  <span className="dot" style={{ background: item.color }}></span>
+                  <span className="label">{item.name}</span>
+                  <span className="val">{item.value}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         <div className="chart-card">
-          <h3 className="chart-title">
-            <Award size={20} />
-            Wydajność według typu meczu
-          </h3>
-          <p className="chart-description">
-            Jak radzisz sobie z różnymi wynikami
-          </p>
+          <div className="chart-header">
+            <div className="chart-icon-box">
+              <BarChart2 size={18} />
+            </div>
+            <div>
+              <h3 className="chart-title">Wydajność</h3>
+              <p className="chart-subtitle">Według typu meczu</p>
+            </div>
+          </div>
+
           <div className="chart-container">
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={matchTypePerformanceData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+              <BarChart data={matchTypePerformanceData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis
                   dataKey="type"
-                  stroke="#94a3b8"
-                  style={{ fontSize: "12px" }}
+                  stroke="#64748b"
+                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tickLine={false}
+                  axisLine={false}
                 />
-                <YAxis stroke="#94a3b8" style={{ fontSize: "12px" }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#1e293b",
-                    border: "1px solid #334155",
-                    borderRadius: "8px",
-                    color: "#f8fafc",
-                  }}
+                <YAxis
+                  stroke="#64748b"
+                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tickLine={false}
+                  axisLine={false}
                 />
-                <Legend />
+                <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend iconType="circle" wrapperStyle={{ paddingTop: '10px' }} />
                 <Bar
                   dataKey="predicted"
                   fill="#3b82f6"
-                  name="Typowane"
-                  radius={[8, 8, 0, 0]}
+                  name="Typy"
+                  radius={[4, 4, 0, 0]}
+                  barSize={12}
                 />
                 <Bar
                   dataKey="correct"
                   fill="#22c55e"
                   name="Trafione"
-                  radius={[8, 8, 0, 0]}
+                  radius={[4, 4, 0, 0]}
+                  barSize={12}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -302,44 +326,49 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
         </div>
 
         <div className="chart-card full-width">
-          <h3 className="chart-title">
-            <Trophy size={20} />
-            Porównanie z TOP 5
-          </h3>
-          <p className="chart-description">
-            Twoja pozycja względem najlepszych graczy
-          </p>
+          <div className="chart-header">
+            <div className="chart-icon-box">
+              <Award size={18} />
+            </div>
+            <div>
+              <h3 className="chart-title">TOP 5 Graczy</h3>
+              <p className="chart-subtitle">Porównanie punktów</p>
+            </div>
+          </div>
+
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={topPerformersComparison} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={topPerformersComparison} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
                 <XAxis
                   type="number"
-                  stroke="#94a3b8"
-                  style={{ fontSize: "12px" }}
+                  stroke="#64748b"
+                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tickLine={false}
+                  axisLine={false}
                 />
                 <YAxis
                   type="category"
                   dataKey="name"
                   stroke="#94a3b8"
-                  style={{ fontSize: "12px" }}
-                  width={120}
+                  tick={{ fontSize: 12, fill: '#cbd5e1', fontWeight: 500 }}
+                  tickLine={false}
+                  axisLine={false}
+                  width={100}
                 />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#1e293b",
-                    border: "1px solid #334155",
-                    borderRadius: "8px",
-                    color: "#f8fafc",
-                  }}
-                />
-                <Legend />
+                <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                 <Bar
                   dataKey="points"
                   fill="#22c55e"
                   name="Punkty"
-                  radius={[0, 8, 8, 0]}
-                />
+                  radius={[0, 6, 6, 0]}
+                  barSize={24}
+                  animationDuration={1500}
+                >
+                  {topPerformersComparison.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={index === 0 ? '#fbbf24' : '#22c55e'} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -349,38 +378,39 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
       <div className="detailed-stats-section">
         <h3 className="section-subtitle">
           <Users size={20} />
-          Szczegółowe statystyki wszystkich graczy
+          Szczegółowa tabela
         </h3>
         <div className="stats-table">
           <div className="stats-table-header">
             <div className="table-cell">Gracz</div>
-            <div className="table-cell">Punkty</div>
-            <div className="table-cell">Trafienia</div>
-            <div className="table-cell">Dokładne</div>
-            <div className="table-cell">Celność</div>
+            <div className="table-cell center">Punkty</div>
+            <div className="table-cell center">Trafienia</div>
+            <div className="table-cell center mobile-hide">Dokładne</div>
+            <div className="table-cell center">Celność</div>
           </div>
           {participants.map((participant) => (
             <div
               key={participant.id}
-              className={`stats-table-row ${
-                participant.id === currentUserId ? "highlight-row" : ""
-              }`}
+              className={`stats-table-row ${participant.id === currentUserId ? "highlight-row" : ""
+                }`}
             >
               <div className="table-cell player-cell">
                 <div className="table-avatar">{participant.avatar}</div>
-                <span>{participant.username}</span>
-                {participant.id === currentUserId && (
-                  <span className="you-badge-table">Ty</span>
-                )}
+                <div className="player-info-col">
+                  <span className="player-name">{participant.username}</span>
+                  {participant.id === currentUserId && (
+                    <span className="you-badge-table">Ty</span>
+                  )}
+                </div>
               </div>
-              <div className="table-cell points-cell">
+              <div className="table-cell center points-cell">
                 {participant.totalPoints}
               </div>
-              <div className="table-cell">{participant.correctPredictions}</div>
-              <div className="table-cell">
+              <div className="table-cell center">{participant.correctPredictions}</div>
+              <div className="table-cell center mobile-hide">
                 {Math.floor(participant.correctPredictions * 0.4)}
               </div>
-              <div className="table-cell accuracy-cell">
+              <div className="table-cell center accuracy-cell">
                 {((participant.correctPredictions / 36) * 100).toFixed(1)}%
               </div>
             </div>

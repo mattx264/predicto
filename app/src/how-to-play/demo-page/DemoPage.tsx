@@ -33,17 +33,14 @@ const ParallaxBackground: React.FC<ParallaxBackgroundProps> = ({
 }) => {
   return (
     <div className="parallax-background">
-      {/* Animated Gradient Mesh */}
       <div
         className="gradient-mesh"
         style={{
-          transform: `translateY(${scrollProgress * 100}px) rotate(${
-            scrollProgress * 45
-          }deg)`,
+          transform: `translateY(${scrollProgress * 100}px) rotate(${scrollProgress * 45
+            }deg)`,
         }}
       />
 
-      {/* Floating Particles */}
       <div className="particles-container">
         {[...Array(30)].map((_, i) => (
           <div
@@ -59,50 +56,44 @@ const ParallaxBackground: React.FC<ParallaxBackgroundProps> = ({
         ))}
       </div>
 
-      {/* Geometric Shapes */}
       <div className="geometric-shapes">
         <div
           className="shape shape-circle"
           style={{
-            transform: `translate(${scrollProgress * -200}px, ${
-              scrollProgress * 150
-            }px) scale(${1 + scrollProgress * 0.5})`,
+            transform: `translate(${scrollProgress * -200}px, ${scrollProgress * 150
+              }px) scale(${1 + scrollProgress * 0.5})`,
             opacity: 0.1 - scrollProgress * 0.05,
           }}
         />
         <div
           className="shape shape-square"
           style={{
-            transform: `translate(${scrollProgress * 250}px, ${
-              scrollProgress * -100
-            }px) rotate(${scrollProgress * 180}deg)`,
+            transform: `translate(${scrollProgress * 250}px, ${scrollProgress * -100
+              }px) rotate(${scrollProgress * 180}deg)`,
             opacity: 0.08 - scrollProgress * 0.04,
           }}
         />
         <div
           className="shape shape-triangle"
           style={{
-            transform: `translate(${scrollProgress * -150}px, ${
-              scrollProgress * 200
-            }px) rotate(${-scrollProgress * 90}deg)`,
+            transform: `translate(${scrollProgress * -150}px, ${scrollProgress * 200
+              }px) rotate(${-scrollProgress * 90}deg)`,
             opacity: 0.06 - scrollProgress * 0.03,
           }}
         />
       </div>
 
-      {/* Section Color Overlays */}
       <div
         className="section-overlay"
         style={{
           background: `linear-gradient(135deg, 
-            ${
-              activeSection === 0
-                ? "rgba(34, 197, 94, 0.05)"
-                : activeSection === 1
-                  ? "rgba(59, 130, 246, 0.05)"
-                  : activeSection === 2
-                    ? "rgba(168, 85, 247, 0.05)"
-                    : "rgba(251, 191, 36, 0.05)"
+            ${activeSection === 0
+              ? "rgba(34, 197, 94, 0.05)"
+              : activeSection === 1
+                ? "rgba(59, 130, 246, 0.05)"
+                : activeSection === 2
+                  ? "rgba(168, 85, 247, 0.05)"
+                  : "rgba(251, 191, 36, 0.05)"
             } 0%, 
             rgba(15, 23, 42, 0) 100%)`,
         }}
@@ -296,7 +287,7 @@ const VideoSection = React.forwardRef<HTMLDivElement, VideoSectionProps>(
     useEffect(() => {
       if (videoRef.current) {
         if (isActive) {
-          videoRef.current.play().catch(() => {});
+          videoRef.current.play().catch(() => { });
           setIsPlaying(true);
         } else {
           videoRef.current.pause();
@@ -310,9 +301,8 @@ const VideoSection = React.forwardRef<HTMLDivElement, VideoSectionProps>(
     return (
       <div
         ref={ref}
-        className={`video-section-wrapper ${isActive ? "active" : ""} ${
-          hasBeenVisited ? "visited" : ""
-        } ${isEven ? "layout-left" : "layout-right"}`}
+        className={`video-section-wrapper ${isActive ? "active" : ""} ${hasBeenVisited ? "visited" : ""
+          } ${isEven ? "layout-left" : "layout-right"}`}
       >
         <div className="video-content">
           <div className={`video-info ${hasBeenVisited ? "visible" : ""}`}>
