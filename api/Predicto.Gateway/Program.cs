@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Predicto.Database;
 using Predicto.Database.Interfaces;
@@ -8,6 +10,7 @@ using Predicto.Gateway.Hubs;
 using Predicto.Gateway.Hubs.Room;
 using Predicto.Gateway.Services;
 using Predicto.Gateway.Services.Room;
+using StackExchange.Redis;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,7 +78,22 @@ builder.Services.AddScoped<IGameRoomService, GameRoomService>();
 
 
 builder.Services.AddFluentEmail(builder.Configuration);
+var redisEndPoints = builder.Configuration["Redis:EndPoints"];
+var redisPort = int.Parse(builder.Configuration["Redis:Port"]!);
+var redisUser = builder.Configuration["Redis:User"];
+var redisPassword = builder.Configuration["Redis:Password"];
 
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.ConfigurationOptions = new ConfigurationOptions
+    {
+        EndPoints = { { redisEndPoints, redisPort } },
+        User = redisUser,
+        Password = redisPassword
+    };
+
+});
 
 
 

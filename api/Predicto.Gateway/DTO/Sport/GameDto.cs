@@ -24,7 +24,7 @@
     {
         public int GameId { get; set; }
         public DateTime GameDate { get; set; }
-        public required string FinalScore { get; set; }
+        public string? FinalScore { get; set; }
         public int TeamId1 { get; set; }
         public int TeamId2 { get; set; }
         public required string TeamName1 { get; set; }

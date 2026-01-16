@@ -15,7 +15,9 @@ namespace Predicto.Gateway.Controllers
         {
             _gameService = gameService;
         }
+
         [HttpGet("get-tournament-by-id/{id}")]
+        [RedisCacheAttribute(3600)]
         public async Task<ActionResult<List<GameListDto>>> GetTeamsByTournamentId(int id)
         {
             var games = await _gameService.GetAll(id);

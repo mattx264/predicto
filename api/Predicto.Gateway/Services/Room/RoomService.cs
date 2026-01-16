@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Distributed;
 using Predicto.Database.Entities;
 using Predicto.Database.Entities.Room;
 using Predicto.Database.Interfaces;
@@ -14,15 +15,18 @@ namespace Predicto.Gateway.Services.Room
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHubContext<RoomsHub> _roomsHub;
         private readonly IHubContext<RoomHub> _roomHub;
+        private readonly IDistributedCache _cache;
 
         public RoomService(
             IUnitOfWork unitOfWork,
+            IDistributedCache cache,
             IHubContext<RoomsHub> roomsHub,
             IHubContext<RoomHub> roomHub)
         {
             _unitOfWork = unitOfWork;
             _roomsHub = roomsHub;
             _roomHub = roomHub;
+            _cache = cache;
         }
 
         public async Task<RoomDTO> CreateRoomAsync(NewRoomDto newRoomDto, int createdByUserId)
@@ -73,13 +77,14 @@ namespace Predicto.Gateway.Services.Room
                 TournamentEndDate = tournament.EndDate,
                 IsUserInRoom = true
             };
-
+           
             await _roomsHub.Clients.Group("SignalR Users").SendAsync("RoomCreated", roomDto);
 
             return roomDto;
         }
         public async Task<List<RoomDTO>> GetRoomsAsync(int? currentUserId = null)
         {
+
             var rooms = await _unitOfWork.Rooms.GetAllAsync();
 
             return rooms.Select(r => new RoomDTO
