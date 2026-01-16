@@ -41,13 +41,20 @@ jobs:
       working-directory: ./app
       run: npm run build
 
-    # Copy build output → ASP.NET's wwwroot
+    # Copy build output → ASP.NET's wwwroot   
     - name: Copy frontend build to wwwroot
+      shell: pwsh
       run: |
         $publish = "${{ github.workspace }}\publish"
-        Copy-Item -Recurse -Force ./app/dist/* $publish/wwwroot/
-        Copy-Item -Recurse -Force ./app/dist/* $publish/wwwroot/ -Container
-        
+        $wwwroot = Join-Path $publish "wwwroot"
+    
+        if (Test-Path $wwwroot) {
+          Remove-Item "$wwwroot\*" -Recurse -Force
+        } else {
+          New-Item -ItemType Directory -Path $wwwroot
+        }
+    
+        Copy-Item -Path "./app/dist/*" -Destination $wwwroot -Recurse -Force    
     - name: Deploy using WebDeploy (msdeploy)
       run: |
         $publish = "${{ github.workspace }}\publish"
