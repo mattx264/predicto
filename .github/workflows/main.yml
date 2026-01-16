@@ -1,0 +1,54 @@
+name: Deploy via WebDeploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:   
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: "10.0.x"
+
+    - name: Restore dependencies
+      run: dotnet restore "api/Predicto.Gateway/Predicto.Gateway.csproj"
+
+    - name: Build project
+      run: dotnet build "api/Predicto.Gateway/Predicto.Gateway.csproj" --configuration Release --no-restore
+
+    - name: Publish project
+      run: dotnet publish "api/Predicto.Gateway/Predicto.Gateway.csproj" --configuration Release --output ./publish
+    # ---------------------------
+    # 1️⃣ BUILD FRONTEND (npm)
+    # ---------------------------
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install npm dependencies
+      working-directory: ./app
+      run: npm install
+
+    - name: Build frontend
+      working-directory: ./app
+      run: npm run build
+
+    # Copy build output → ASP.NET's wwwroot
+    - name: Copy frontend build to wwwroot
+      run: |
+        $publish = "${{ github.workspace }}\publish"
+        Copy-Item -Recurse -Force ./app/build/* $publish/wwwroot/
+        Copy-Item -Recurse -Force ./app/build/* $publish/wwwroot/ -Container
+        
+    - name: Deploy using WebDeploy (msdeploy)
+      run: |
+        $publish = "${{ github.workspace }}\publish"
+        & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -source:contentPath="$publish" -dest:contentPath=mattx2642-001-site22,ComputerName=https://win8210.site4now.net:8172/MsDeploy.axd?site=mattx2642-001-site22,UserName=${{ secrets.WEBDEPLOY_USERNAME }},Password=${{ secrets.WEBDEPLOY_PASSWORD }},AuthType=Basic,IncludeAcls=False -enableRule:AppOffline -verb:sync -allowUntrusted   
