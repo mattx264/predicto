@@ -8,6 +8,7 @@ using Predicto.Database.UnitOfWork;
 using Predicto.Gateway.Extensions;
 using Predicto.Gateway.Hubs;
 using Predicto.Gateway.Hubs.Room;
+using Predicto.Gateway.Middleware;
 using Predicto.Gateway.Services;
 using Predicto.Gateway.Services.Room;
 using StackExchange.Redis;
@@ -118,6 +119,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+// Add global exception handling middleware
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
