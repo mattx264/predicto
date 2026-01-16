@@ -45,8 +45,8 @@ jobs:
     - name: Copy frontend build to wwwroot
       run: |
         $publish = "${{ github.workspace }}\publish"
-        Copy-Item -Recurse -Force ./app/build/* $publish/wwwroot/
-        Copy-Item -Recurse -Force ./app/build/* $publish/wwwroot/ -Container
+        Copy-Item -Recurse -Force ./app/dist/* $publish/wwwroot/
+        Copy-Item -Recurse -Force ./app/dist/* $publish/wwwroot/ -Container
         
     - name: Deploy using WebDeploy (msdeploy)
       run: |
