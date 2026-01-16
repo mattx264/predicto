@@ -1730,9 +1730,9 @@ export interface IOtherGameBetSimpleDto {
 
 export class PlayerBasicInfoDto implements IPlayerBasicInfoDto {
     id?: number;
-    name?: string;
-    position?: string;
-    imageUrl?: string;
+    name?: string | undefined;
+    position?: string | undefined;
+    imageUrl?: string | undefined;
     shirtNumber?: number | undefined;
 
     [key: string]: any;
@@ -1784,9 +1784,9 @@ export class PlayerBasicInfoDto implements IPlayerBasicInfoDto {
 
 export interface IPlayerBasicInfoDto {
     id?: number;
-    name?: string;
-    position?: string;
-    imageUrl?: string;
+    name?: string | undefined;
+    position?: string | undefined;
+    imageUrl?: string | undefined;
     shirtNumber?: number | undefined;
 
     [key: string]: any;
@@ -1854,7 +1854,7 @@ export interface IRegistrationReq {
 
 export class RoomDTO implements IRoomDTO {
     id?: number;
-    name?: string;
+    name!: string;
     description?: string;
     entryFee?: number | undefined;
     users?: RoomUserDTO[];
@@ -1862,8 +1862,8 @@ export class RoomDTO implements IRoomDTO {
     isPublic?: boolean;
     roomStatus?: number;
     tournamentId?: number;
-    tournamentName?: string;
-    tournamentLeague?: string;
+    tournamentName!: string;
+    tournamentLeague?: string | undefined;
     tournamentStartDate?: Date;
     tournamentEndDate?: Date;
     createdAt?: Date;
@@ -1949,7 +1949,7 @@ export class RoomDTO implements IRoomDTO {
 
 export interface IRoomDTO {
     id?: number;
-    name?: string;
+    name: string;
     description?: string;
     entryFee?: number | undefined;
     users?: RoomUserDTO[];
@@ -1957,8 +1957,8 @@ export interface IRoomDTO {
     isPublic?: boolean;
     roomStatus?: number;
     tournamentId?: number;
-    tournamentName?: string;
-    tournamentLeague?: string;
+    tournamentName: string;
+    tournamentLeague?: string | undefined;
     tournamentStartDate?: Date;
     tournamentEndDate?: Date;
     createdAt?: Date;
@@ -2273,7 +2273,7 @@ export interface ITeamUserBetDto {
 export class TournamentDto implements ITournamentDto {
     id?: number;
     sportCategoryId?: number;
-    name?: string;
+    name!: string;
     description?: string | undefined;
     league?: string | undefined;
     matchesCount?: number;
@@ -2339,7 +2339,7 @@ export class TournamentDto implements ITournamentDto {
 export interface ITournamentDto {
     id?: number;
     sportCategoryId?: number;
-    name?: string;
+    name: string;
     description?: string | undefined;
     league?: string | undefined;
     matchesCount?: number;
@@ -2352,8 +2352,8 @@ export interface ITournamentDto {
 
 export class UserDto implements IUserDto {
     id?: number;
-    email?: string;
-    name?: string;
+    email!: string;
+    name!: string;
 
     [key: string]: any;
 
@@ -2400,17 +2400,13 @@ export class UserDto implements IUserDto {
 
 export interface IUserDto {
     id?: number;
-    email?: string;
-    name?: string;
+    email: string;
+    name: string;
 
     [key: string]: any;
 }
 
-export enum UserRoomRole {
-    Participant = "Participant",
-    Admin = "Admin",
-    Moderator = "Moderator",
-}
+export type UserRoomRole = "Participant" | "Admin" | "Moderator";
 
 export class ApiException extends Error {
     override message: string;

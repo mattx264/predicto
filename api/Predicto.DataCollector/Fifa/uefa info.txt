@@ -1,3 +1,2 @@
 ﻿https://match.uefa.com/v5/matches?competitionId=1&fromDate=2025-09-16&limit=30&offset=0&order=ASC&phase=ALL&seasonYear=2026&toDate=2025-09-16&utcOffset=-5
 
-https://match.uefa.com/v5/matches?competitionId=1&fromDate=2025-09-16&limit=30&offset=0&order=ASC&phase=ALL&seasonYear=2026&toDate=2025-09-16&utcOffset=-6

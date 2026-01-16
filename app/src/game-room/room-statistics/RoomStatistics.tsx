@@ -24,7 +24,7 @@ import {
   Users,
   PieChart as PieChartIcon,
   Activity,
-  BarChart2
+  BarChart2,
 } from "lucide-react";
 import "./RoomStatistics.css";
 
@@ -73,7 +73,8 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
   ];
 
   const topPerformersComparison = participants.slice(0, 5).map((p) => ({
-    name: p.username.length > 10 ? p.username.substring(0, 8) + '...' : p.username,
+    name:
+      p.username.length > 10 ? p.username.substring(0, 8) + "..." : p.username,
     points: p.totalPoints,
     accuracy: ((p.correctPredictions / 36) * 100).toFixed(1),
   }));
@@ -173,7 +174,10 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
 
           <div className="chart-container">
             <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={pointsHistoryData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <AreaChart
+                data={pointsHistoryData}
+                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+              >
                 <defs>
                   <linearGradient id="colorUser" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
@@ -184,22 +188,32 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.05)"
+                  vertical={false}
+                />
                 <XAxis
                   dataKey="round"
                   stroke="#64748b"
-                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tick={{ fontSize: 11, fill: "#64748b" }}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis
                   stroke="#64748b"
-                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tick={{ fontSize: 11, fill: "#64748b" }}
                   tickLine={false}
                   axisLine={false}
                 />
-                <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }} />
-                <Legend iconType="circle" wrapperStyle={{ paddingTop: '10px' }} />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  cursor={{ stroke: "rgba(255,255,255,0.1)", strokeWidth: 2 }}
+                />
+                <Legend
+                  iconType="circle"
+                  wrapperStyle={{ paddingTop: "10px" }}
+                />
                 <Area
                   type="monotone"
                   dataKey="user"
@@ -217,7 +231,7 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
                   fill="url(#colorUser)"
                   name="Ty"
                   strokeWidth={3}
-                  activeDot={{ r: 6, strokeWidth: 0, fill: '#fff' }}
+                  activeDot={{ r: 6, strokeWidth: 0, fill: "#fff" }}
                 />
                 <Line
                   type="monotone"
@@ -267,7 +281,10 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
             <div className="chart-legend-custom">
               {predictionAccuracyData.map((item, index) => (
                 <div key={index} className="legend-item-row">
-                  <span className="dot" style={{ background: item.color }}></span>
+                  <span
+                    className="dot"
+                    style={{ background: item.color }}
+                  ></span>
                   <span className="label">{item.name}</span>
                   <span className="val">{item.value}</span>
                 </div>
@@ -289,23 +306,36 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
 
           <div className="chart-container">
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={matchTypePerformanceData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+              <BarChart
+                data={matchTypePerformanceData}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.05)"
+                  vertical={false}
+                />
                 <XAxis
                   dataKey="type"
                   stroke="#64748b"
-                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tick={{ fontSize: 11, fill: "#64748b" }}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis
                   stroke="#64748b"
-                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tick={{ fontSize: 11, fill: "#64748b" }}
                   tickLine={false}
                   axisLine={false}
                 />
-                <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
-                <Legend iconType="circle" wrapperStyle={{ paddingTop: '10px' }} />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  cursor={{ fill: "rgba(255,255,255,0.03)" }}
+                />
+                <Legend
+                  iconType="circle"
+                  wrapperStyle={{ paddingTop: "10px" }}
+                />
                 <Bar
                   dataKey="predicted"
                   fill="#3b82f6"
@@ -338,12 +368,20 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
 
           <div className="chart-container">
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={topPerformersComparison} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
+              <BarChart
+                data={topPerformersComparison}
+                layout="vertical"
+                margin={{ top: 0, right: 30, left: 10, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.05)"
+                  horizontal={false}
+                />
                 <XAxis
                   type="number"
                   stroke="#64748b"
-                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tick={{ fontSize: 11, fill: "#64748b" }}
                   tickLine={false}
                   axisLine={false}
                 />
@@ -351,12 +389,15 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
                   type="category"
                   dataKey="name"
                   stroke="#94a3b8"
-                  tick={{ fontSize: 12, fill: '#cbd5e1', fontWeight: 500 }}
+                  tick={{ fontSize: 12, fill: "#cbd5e1", fontWeight: 500 }}
                   tickLine={false}
                   axisLine={false}
                   width={100}
                 />
-                <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  cursor={{ fill: "rgba(255,255,255,0.03)" }}
+                />
                 <Bar
                   dataKey="points"
                   fill="#22c55e"
@@ -365,8 +406,11 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
                   barSize={24}
                   animationDuration={1500}
                 >
-                  {topPerformersComparison.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={index === 0 ? '#fbbf24' : '#22c55e'} />
+                  {topPerformersComparison.map((_, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={index === 0 ? "#fbbf24" : "#22c55e"}
+                    />
                   ))}
                 </Bar>
               </BarChart>
@@ -391,8 +435,9 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
           {participants.map((participant) => (
             <div
               key={participant.id}
-              className={`stats-table-row ${participant.id === currentUserId ? "highlight-row" : ""
-                }`}
+              className={`stats-table-row ${
+                participant.id === currentUserId ? "highlight-row" : ""
+              }`}
             >
               <div className="table-cell player-cell">
                 <div className="table-avatar">{participant.avatar}</div>
@@ -406,7 +451,9 @@ const RoomStatistics: React.FC<RoomStatisticsProps> = ({
               <div className="table-cell center points-cell">
                 {participant.totalPoints}
               </div>
-              <div className="table-cell center">{participant.correctPredictions}</div>
+              <div className="table-cell center">
+                {participant.correctPredictions}
+              </div>
               <div className="table-cell center mobile-hide">
                 {Math.floor(participant.correctPredictions * 0.4)}
               </div>

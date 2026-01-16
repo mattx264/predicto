@@ -706,7 +706,7 @@ namespace Predicto.DataCollector.Fifa
             //var games = JsonSerializer.Deserialize<List<UefaGameModel>>(gamesJson);
             //   var gamesJson = await File.ReadAllTextAsync($"{path}Games\\2026-01-20.json");
             var gamesJson = await File.ReadAllTextAsync($"{path}Games\\2025-09-16.json");
-           
+
             var games = JsonSerializer.Deserialize<List<UefaGameModel>>(gamesJson);
             foreach (var game in games)
             {
@@ -721,16 +721,16 @@ namespace Predicto.DataCollector.Fifa
                 var gamePlayers = new List<GamePlayerEntity>();
                 var gamePlayerEvents = new List<GamePlayerEventEntity>();
                 var gameScoreEvents = new List<GameScoreEntity>();
-                if(game.playerEvents != null)
+                if (game.playerEvents != null)
                 {
                     game.playerEvents.scorers.ForEach(se =>
                     {
-                       
+
                         var scorerTeam = se.teamId == game.homeTeam.id ? "home" : "away";
                         var gameScoreEntity = new GameScoreEntity()
                         {
                             Phase = se.phase,
-                            PlayerId=se.player.id,
+                            PlayerId = se.player.id,
                             // TeamId = se.teamId,
                             //Score =,
                             TimeScored = se.time.minute + ":" + se.time.second,
@@ -738,79 +738,79 @@ namespace Predicto.DataCollector.Fifa
 
                         gameScoreEvents.Add(gameScoreEntity);
                     });
-                var stadium = await unitOfWork.GameStadium.FindAsync(x => x.UefaId == game.stadium.id);
-                if (stadium == null)
-                {
-                    stadium = new GameStadiumEntity()
+                    var stadium = await unitOfWork.GameStadium.FindAsync(x => x.UefaId == game.stadium.id);
+                    if (stadium == null)
                     {
-                        StadiumName = game.stadium.translations.name.EN,
-                        StadiumNameCityName = game.stadium.city.translations.name.EN,
-                        Address = game.stadium.address,
-                        Capacity = game.stadium.capacity,
-                        ImageUrl = game.stadium.images.MEDIUM_WIDE,
-                        UefaId = game.stadium.id,
+                        stadium = new GameStadiumEntity()
+                        {
+                            StadiumName = game.stadium.translations.name.EN,
+                            StadiumNameCityName = game.stadium.city.translations.name.EN,
+                            Address = game.stadium.address,
+                            Capacity = game.stadium.capacity,
+                            ImageUrl = game.stadium.images.MEDIUM_WIDE,
+                            UefaId = game.stadium.id,
+                            IsActive = true
+                        };
+                    }
+                    var teams = new List<GameTeamEntity>();
+                    var home = await unitOfWork.Team.FindAsync(x => x.UefaId == game.homeTeam.id);
+                    if (home == null)
+                    {
+                        throw new Exception("Team not found by id: " + game.homeTeam.id);
+                    }
+                    var away = await unitOfWork.Team.FindAsync(x => x.UefaId == game.awayTeam.id);
+                    if (away == null)
+                    {
+                        throw new Exception("Team not found by id: " + game.awayTeam.id);
+                    }
+                    teams.Add(new GameTeamEntity()
+                    {
+                        Tactics = null,
+                        Team = home,
                         IsActive = true
+                    });
+                    teams.Add(new GameTeamEntity()
+                    {
+                        Tactics = null,
+                        Team = away,
+                        IsActive = true
+                    });
+                    string? score = null;
+                    if (game.score != null)
+                    {
+                        score = $"{game.score.total.home}: {game.score.total.away}";
+                    }
+                    var gameEntity = new GameEntity()
+                    {
+                        // GamePlayers = gamePlayers,
+                        // GamePlayerEvents = gamePlayerEvents,
+                        GameScoreEvents = gameScoreEvents,
+                        Referee = game.referees.First(x => x.role == "UEFA_DELEGATE").person.translations.name.EN,
+                        Stadium = stadium,
+                        StartGame = game.kickOffTime.dateTime,
+                        UefaId = game.id,
+                        FinalScore = score,
+                        Tournament = chapionsLeague,
+                        Teams = teams,
+                        PlayerOfTheMatchId = game.playerOfTheMatch != null ? game.playerOfTheMatch.player.id : null,
+
                     };
+                    await unitOfWork.Game.AddAsync(gameEntity, 1);
+                    await unitOfWork.CompleteAsync();
                 }
-                var teams = new List<GameTeamEntity>();
-                var home = await unitOfWork.Team.FindAsync(x => x.UefaId == game.homeTeam.id);
-                if (home == null)
-                {
-                    throw new Exception("Team not found by id: " + game.homeTeam.id);
-                }
-                var away = await unitOfWork.Team.FindAsync(x => x.UefaId == game.awayTeam.id);
-                if (away == null)
-                {
-                    throw new Exception("Team not found by id: " + game.awayTeam.id);
-                }
-                teams.Add(new GameTeamEntity()
-                {
-                    Tactics = null,
-                    Team = home,
-                    IsActive = true
-                });
-                teams.Add(new GameTeamEntity()
-                {
-                    Tactics = null,
-                    Team = away,
-                    IsActive = true
-                });
-                string? score = null;
-                if (game.score != null)
-                {
-                    score = $"{game.score.total.home}: {game.score.total.away}";
-                }
-                var gameEntity = new GameEntity()
-                {
-                    // GamePlayers = gamePlayers,
-                    // GamePlayerEvents = gamePlayerEvents,
-                    GameScoreEvents= gameScoreEvents,
-                    Referee = game.referees.First(x => x.role == "UEFA_DELEGATE").person.translations.name.EN,
-                    Stadium = stadium,
-                    StartGame = game.kickOffTime.dateTime,
-                    UefaId = game.id,
-                    FinalScore = score,
-                    Tournament = chapionsLeague,
-                    Teams = teams,
-                    PlayerOfTheMatchId = game.playerOfTheMatch != null ? game.playerOfTheMatch.id : null,
 
-                };
-                await unitOfWork.Game.AddAsync(gameEntity, 1);
-                await unitOfWork.CompleteAsync();
+                //File.WriteAllText("countries.json", countries, Encoding.gamesJson);
+
+                //    string[] fileEntries = Directory.GetFiles($"{path}Games", "*.json");
+                //        foreach (var file in fileEntries)
+                //        {
+                //            var jsonText = await File.ReadAllTextAsync(file);
+
+                //    var games = JsonSerializer.Deserialize<List<dynamic>>(jsonText);
+                //}
+
             }
-
-            //File.WriteAllText("countries.json", countries, Encoding.gamesJson);
-
-            //    string[] fileEntries = Directory.GetFiles($"{path}Games", "*.json");
-            //        foreach (var file in fileEntries)
-            //        {
-            //            var jsonText = await File.ReadAllTextAsync(file);
-
-            //    var games = JsonSerializer.Deserialize<List<dynamic>>(jsonText);
-            //}
-
         }
-
 
         private string? GetValueListByLable(HtmlDocument doc, string listSelector, string labelSelector, string labelName, string valueSelector, int? praboblyIndex = null)
         {
