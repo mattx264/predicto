@@ -62,11 +62,16 @@ namespace Predicto.Gateway.Hubs.Room
                         connectionId, room.Users?.Count ?? 0);
 
                     await Clients.Caller.SendAsync("GetRoom", room);
+                    
                 }
                 else
                 {
                     _logger.LogWarning("❌ Room {RoomId} not found", roomId);
                 }
+                // var userBet= await _roomService.GetUserBetAndPoints(roomId, userId);
+                //await Clients.Caller.SendAsync("UserBetAndPoints", room);
+               // await Clients.Caller.SendAsync("Games", room);
+               // var games = await _roomService.GetGamesInRoomAsync(roomId);
             }
             catch (Exception ex)
             {

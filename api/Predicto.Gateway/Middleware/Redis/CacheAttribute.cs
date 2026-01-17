@@ -1,18 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using Predicto.Gateway.Middleware.Redis;
 using System.Text.Json;
 
 [AttributeUsage(AttributeTargets.Method)]
-public class RedisCacheAttribute : Attribute, IAsyncActionFilter
+public class CacheAttribute : Attribute, IAsyncActionFilter
 {
     private readonly int _durationSeconds;
-
-    public RedisCacheAttribute(int durationSeconds = 60)
+    private readonly bool useRedis = false;
+    public CacheAttribute(int durationSeconds = 60)
     {
         _durationSeconds = durationSeconds;
     }
+
+
 
     public async Task OnActionExecutionAsync(
         ActionExecutingContext context,
@@ -20,7 +22,11 @@ public class RedisCacheAttribute : Attribute, IAsyncActionFilter
     {
         var services = context.HttpContext.RequestServices;
 
-        var cache = services.GetRequiredService<IDistributedCache>();
+        var cache = services.GetRequiredService<ICacheService>();
+        if (cache == null)
+        {
+            throw new Exception("ICacheService is not available");
+        }
         var jsonOptions = services
             .GetRequiredService<IOptions<JsonOptions>>()
             .Value
@@ -28,7 +34,7 @@ public class RedisCacheAttribute : Attribute, IAsyncActionFilter
 
         var cacheKey = RedisCacheHelper.GenerateCacheKey(context.HttpContext.Request.Path);
 
-        var cachedData = await cache.GetStringAsync(cacheKey);
+        var cachedData = cache.GetString(cacheKey);
         if (cachedData != null)
         {
             var result = JsonSerializer.Deserialize<object>(
@@ -45,16 +51,12 @@ public class RedisCacheAttribute : Attribute, IAsyncActionFilter
             var json = JsonSerializer.Serialize(
                 objectResult.Value, jsonOptions);
 
-            await cache.SetStringAsync(
+            cache.SetString(
                 cacheKey,
                 json,
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow =
-                        TimeSpan.FromSeconds(_durationSeconds)
-                });
+              _durationSeconds);
         }
     }
 
-   
+
 }

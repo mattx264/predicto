@@ -7,6 +7,7 @@ using Predicto.Gateway.DTO.Room;
 using Predicto.Gateway.DTO.Rooms;
 using Predicto.Gateway.Hubs;
 using Predicto.Gateway.Hubs.Room;
+using Predicto.Gateway.Middleware.Redis;
 
 namespace Predicto.Gateway.Services.Room
 {
@@ -15,11 +16,11 @@ namespace Predicto.Gateway.Services.Room
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHubContext<RoomsHub> _roomsHub;
         private readonly IHubContext<RoomHub> _roomHub;
-        private readonly IDistributedCache _cache;
+        private readonly ICacheService _cache;
 
         public RoomService(
             IUnitOfWork unitOfWork,
-            IDistributedCache cache,
+            ICacheService cache,
             IHubContext<RoomsHub> roomsHub,
             IHubContext<RoomHub> roomHub)
         {

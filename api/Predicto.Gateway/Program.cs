@@ -9,6 +9,7 @@ using Predicto.Gateway.Extensions;
 using Predicto.Gateway.Hubs;
 using Predicto.Gateway.Hubs.Room;
 using Predicto.Gateway.Middleware;
+using Predicto.Gateway.Middleware.Redis;
 using Predicto.Gateway.Services;
 using Predicto.Gateway.Services.Room;
 using StackExchange.Redis;
@@ -75,48 +76,59 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IGameRoomService, GameRoomService>();
-
-
-
 builder.Services.AddFluentEmail(builder.Configuration);
-var redisEndPoints = builder.Configuration["Redis:EndPoints"];
-var redisPort = int.Parse(builder.Configuration["Redis:Port"]!);
-var redisUser = builder.Configuration["Redis:User"];
-var redisPassword = builder.Configuration["Redis:Password"];
 
-
-builder.Services.AddStackExchangeRedisCache(options =>
+var isReditOn = Convert.ToBoolean(builder.Configuration["Redis:IsTurnOn"]);
+if (isReditOn == true)
 {
-    options.ConfigurationOptions = new ConfigurationOptions
-    {
-        EndPoints = { { redisEndPoints, redisPort } },
-        User = redisUser,
-        Password = redisPassword
-    };
+    builder.Services.AddSingleton<ICacheService, RedisCacheService>();
 
-});
+
+    var redisEndPoints = builder.Configuration["Redis:EndPoints"];
+    var redisPort = int.Parse(builder.Configuration["Redis:Port"]!);
+    var redisUser = builder.Configuration["Redis:User"];
+    var redisPassword = builder.Configuration["Redis:Password"];
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.ConfigurationOptions = new ConfigurationOptions
+        {
+            EndPoints = { { redisEndPoints, redisPort } },
+            User = redisUser,
+            Password = redisPassword
+        };
+
+    });
+}
+else
+{
+    builder.Services.AddMemoryCache();
+
+    builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
+}
+
+
 
 
 
 builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "https://localhost:3000",
-                "http://localhost:5174",
-                "http://127.0.0.1:5173",
-                "http://blog.predicto.gg",
-                "https://blog.predicto.gg",
-                "http://predicto.gg"
-              )
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.WithOrigins(
+                    "http://localhost:5173",
+                    "http://localhost:3000",
+                    "https://localhost:3000",
+                    "http://localhost:5174",
+                    "http://127.0.0.1:5173",
+                    "http://blog.predicto.gg",
+                    "https://blog.predicto.gg",
+                    "http://predicto.gg"
+                  )
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
     });
-});
 
 var app = builder.Build();
 // Add global exception handling middleware
