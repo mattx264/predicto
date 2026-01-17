@@ -1,7 +1,7 @@
 import React from "react";
 import { CheckCircle, XCircle, Minus, Star } from "lucide-react";
 import type { Match } from "../../types/types";
-
+import "./UserPredictionDisplay.css";
 interface UserPredictionDisplayProps {
   match: Match;
   prediction: {

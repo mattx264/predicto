@@ -1,7 +1,7 @@
 import React from "react";
 import MatchCard from "./MatchCard";
 import type { Match } from "../../types/types";
-
+import "./MatchesList.css";
 interface MatchesListProps {
   matches: Match[];
   isParticipant: boolean;

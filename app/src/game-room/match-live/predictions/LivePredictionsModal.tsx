@@ -1,5 +1,5 @@
 import React from "react";
-import { XCircle } from "lucide-react";
+import { XCircle, Users, BarChart3, TrendingUp } from "lucide-react";
 import "./LivePredictionsModal.css";
 
 interface Match {
@@ -66,67 +66,86 @@ const LivePredictionsModal: React.FC<LivePredictionsModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="live-predictions-header">
-          <h3>Typy społeczności</h3>
+          <div className="header-title-wrapper">
+            <div className="header-icon-box">
+              <Users size={20} />
+            </div>
+            <h3>Głosy Społeczności</h3>
+          </div>
           <button className="live-predictions-close" onClick={onClose}>
             <XCircle size={24} />
           </button>
         </div>
 
         <div className="live-predictions-match-info">
-          <span className="team-name">{match.homeTeam}</span>
-          {match.actualScore && (
-            <span className="live-score">
-              {match.actualScore.home} - {match.actualScore.away}
-            </span>
+          <span className="team-name home">{match.homeTeam}</span>
+          {match.actualScore ? (
+            <div className="live-score-badge">
+              <span className="score-val">{match.actualScore.home}</span>
+              <span className="score-sep">:</span>
+              <span className="score-val">{match.actualScore.away}</span>
+            </div>
+          ) : (
+            <span className="vs-badge">VS</span>
           )}
-          <span className="team-name">{match.awayTeam}</span>
+          <span className="team-name away">{match.awayTeam}</span>
         </div>
 
         <div className="prediction-stats">
-          <p className="stats-description">
-            Zobacz, jak typowała reszta graczy w tym pokoju ({totalPredictions}{" "}
-            {totalPredictions === 1
-              ? "głos"
-              : totalPredictions > 1 && totalPredictions < 5
-              ? "głosy"
-              : "głosów"}
-            ).
-          </p>
-          <div className="stat-item">
-            <div className="stat-labels">
-              <span>Wygrana {match.homeTeam}</span>
-              <span>{homeWinPercentage.toFixed(1)}%</span>
+          <div className="stats-intro">
+            <BarChart3 size={18} className="intro-icon" />
+            <p className="stats-description">
+              Analiza <strong>{totalPredictions}</strong> {totalPredictions === 1 ? "typu" : "typów"} graczy
+            </p>
+          </div>
+
+          <div className="stat-bars-wrapper">
+            <div className="stat-item">
+              <div className="stat-labels">
+                <span className="label-team">Wygrana {match.homeTeam}</span>
+                <span className="label-percent">{homeWinPercentage.toFixed(0)}%</span>
+              </div>
+              <div className="stat-bar-container">
+                <div
+                  className="stat-bar home"
+                  style={{ width: `${homeWinPercentage}%` }}
+                ></div>
+              </div>
             </div>
-            <div className="stat-bar-container">
-              <div
-                className="stat-bar home"
-                style={{ width: `${homeWinPercentage}%` }}
-              ></div>
+
+            <div className="stat-item">
+              <div className="stat-labels">
+                <span className="label-team">Remis</span>
+                <span className="label-percent">{drawPercentage.toFixed(0)}%</span>
+              </div>
+              <div className="stat-bar-container">
+                <div
+                  className="stat-bar draw"
+                  style={{ width: `${drawPercentage}%` }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="stat-item">
+              <div className="stat-labels">
+                <span className="label-team">Wygrana {match.awayTeam}</span>
+                <span className="label-percent">{awayWinPercentage.toFixed(0)}%</span>
+              </div>
+              <div className="stat-bar-container">
+                <div
+                  className="stat-bar away"
+                  style={{ width: `${awayWinPercentage}%` }}
+                ></div>
+              </div>
             </div>
           </div>
-          <div className="stat-item">
-            <div className="stat-labels">
-              <span>Remis</span>
-              <span>{drawPercentage.toFixed(1)}%</span>
-            </div>
-            <div className="stat-bar-container">
-              <div
-                className="stat-bar draw"
-                style={{ width: `${drawPercentage}%` }}
-              ></div>
-            </div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-labels">
-              <span>Wygrana {match.awayTeam}</span>
-              <span>{awayWinPercentage.toFixed(1)}%</span>
-            </div>
-            <div className="stat-bar-container">
-              <div
-                className="stat-bar away"
-                style={{ width: `${awayWinPercentage}%` }}
-              ></div>
-            </div>
+
+          <div className="trend-footer">
+            <TrendingUp size={16} />
+            <span>Większość graczy stawia na <strong>
+              {homeWinPercentage > awayWinPercentage && homeWinPercentage > drawPercentage ? match.homeTeam :
+                awayWinPercentage > homeWinPercentage && awayWinPercentage > drawPercentage ? match.awayTeam : "Remis"}
+            </strong></span>
           </div>
         </div>
       </div>

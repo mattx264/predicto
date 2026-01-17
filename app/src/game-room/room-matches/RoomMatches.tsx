@@ -156,14 +156,14 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
         prevMatches.map((m) =>
           m.id === matchId
             ? {
-                ...m,
-                userPrediction: {
-                  home: payload.home,
-                  away: payload.away,
-                  winner: payload.winner,
-                  joker: payload.joker,
-                },
-              }
+              ...m,
+              userPrediction: {
+                home: payload.home,
+                away: payload.away,
+                winner: payload.winner,
+                joker: payload.joker,
+              },
+            }
             : m
         )
       );

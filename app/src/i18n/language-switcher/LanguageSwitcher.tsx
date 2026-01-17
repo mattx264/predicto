@@ -58,9 +58,8 @@ const LanguageSwitcher: React.FC = () => {
             {languages.map((lang) => (
               <button
                 key={lang.code}
-                className={`language-option ${
-                  i18n.language === lang.code ? "active" : ""
-                }`}
+                className={`language-option ${i18n.language === lang.code ? "active" : ""
+                  }`}
                 onClick={() => changeLanguage(lang.code)}
               >
                 <span className={`fi fi-${lang.flag} flag-icon`}></span>

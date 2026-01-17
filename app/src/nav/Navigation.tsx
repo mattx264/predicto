@@ -88,11 +88,13 @@ const Navigation: React.FC<NavigationProps> = ({
     },
   ];
 
-  const navItems = allNavItems.filter(
-    (item) =>
-      (!item.authRequired || isAuthenticated) &&
-      (!item.hideWhenAuthenticated || !isAuthenticated)
-  );
+  const navItems = React.useMemo(() => {
+    return allNavItems.filter(
+      (item) =>
+        (!item.authRequired || isAuthenticated) &&
+        (!item.hideWhenAuthenticated || !isAuthenticated)
+    );
+  }, [isAuthenticated, t]);
 
   useEffect(() => {
     const handleScroll = () => {

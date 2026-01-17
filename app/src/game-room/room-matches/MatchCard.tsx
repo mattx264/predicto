@@ -3,6 +3,7 @@ import { BarChart, Clock, Lock, MessageSquare, Trophy } from "lucide-react";
 import VictoryParticles from "./victory-effect/VictoryEffect";
 import UserPredictionDisplay from "./UserPredictionDisplay";
 import type { Match } from "../../types/types";
+import "./MatchCard.css";
 
 interface MatchCardProps {
   match: Match;
@@ -22,7 +23,7 @@ const MatchCard: React.FC<MatchCardProps> = ({
   const getMatchStatusBadge = (match: Match) => {
     switch (match.status) {
       case "live":
-        return <span className="match-status live">LIVE</span>;
+        return <span className="match-status live"><span className="live-dot"></span> LIVE</span>;
       case "finished":
         return <span className="match-status finished">Zakończony</span>;
       case "upcoming":
@@ -43,9 +44,9 @@ const MatchCard: React.FC<MatchCardProps> = ({
 
       {isVictoryMatch() && (
         <div className="victory-banner">
-          <Trophy size={16} />
-          <span>Perfekcyjny typ!</span>
-          <Trophy size={16} />
+          <Trophy size={14} className="trophy-icon" />
+          <span>PERFECT SCORE!</span>
+          <Trophy size={14} className="trophy-icon" />
         </div>
       )}
 
@@ -56,7 +57,6 @@ const MatchCard: React.FC<MatchCardProps> = ({
             {new Date(match.date).toLocaleString("pl-PL", {
               day: "2-digit",
               month: "2-digit",
-              year: "numeric",
               hour: "2-digit",
               minute: "2-digit",
             })}
@@ -68,73 +68,79 @@ const MatchCard: React.FC<MatchCardProps> = ({
       <div className="match-teams">
         <div className="team home">
           <span className="team-name">{match.homeTeam}</span>
-          {match.homeTeamLogo && (
+          {match.homeTeamLogo ? (
             <img
               srcSet={match.homeTeamLogo}
               alt={match.homeTeam}
               className="match-team-logo"
             />
+          ) : (
+            <div className="team-logo-placeholder">{match.homeTeam[0]}</div>
           )}
         </div>
 
         <div className="match-center">
           {match.actualScore ? (
-            <>
+            <div className="score-display-match">
               <span className="actual-score">{match.actualScore.home}</span>
-              <span className="vs">-</span>
+              <span className="score-divider">:</span>
               <span className="actual-score">{match.actualScore.away}</span>
-            </>
+            </div>
           ) : (
             <span className="vs">VS</span>
           )}
         </div>
 
         <div className="team away">
-          {match.awayTeamLogo && (
+          {match.awayTeamLogo ? (
             <img
               srcSet={match.awayTeamLogo}
               alt={match.awayTeam}
               className="match-team-logo"
             />
+          ) : (
+            <div className="team-logo-placeholder">{match.awayTeam[0]}</div>
           )}
           <span className="team-name">{match.awayTeam}</span>
         </div>
       </div>
 
       {match.userPrediction && (
-        <UserPredictionDisplay
-          match={match}
-          prediction={match.userPrediction}
-          points={match.points}
-        />
+        <div className="prediction-wrapper">
+          <UserPredictionDisplay
+            match={match}
+            prediction={match.userPrediction}
+            points={match.points}
+          />
+        </div>
       )}
 
       <div className="live-actions-container">
-        <button className="btn-watch-live" onClick={() => onWatchLive(match)}>
+        <button className="btn-action watch-live" onClick={() => onWatchLive(match)}>
           <MessageSquare size={16} />
-          Komentuj
+          Czat
         </button>
         <button
-          className="btn-view-predictions"
+          className="btn-action view-predictions"
           onClick={() => onViewPredictions(match)}
         >
           <BarChart size={16} />
-          Zobacz typy
+          Statystyki
         </button>
       </div>
 
       {match.status === "upcoming" && isParticipant && (
         <button
-          className="btn-predict"
+          className={`btn-predict ${match.userPrediction ? "edit-mode" : ""}`}
           onClick={() => onPredictClick(match.id)}
         >
-          {match.userPrediction ? "Zmień typ" : "Typuj wynik"}
+          {match.userPrediction ? "Edytuj typ" : "Typuj wynik"}
         </button>
       )}
 
       {match.status === "upcoming" && !isParticipant && (
         <div className="locked-prediction">
-          <Lock size={16} />
+          <Lock size={14} />
           <span>Dołącz do pokoju, aby typować</span>
         </div>
       )}

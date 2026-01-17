@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { XCircle, Star } from "lucide-react";
 import type { Match } from "../../types/types";
+import "./PredictionModal.css";
 
 interface PredictionModalProps {
   match: Match;
@@ -78,33 +79,38 @@ const PredictionModal: React.FC<PredictionModalProps> = ({
 
         <div className="modal-match-info">
           <div className="modal-team-container">
-            {match.homeTeamLogo && (
+            {match.homeTeamLogo ? (
               <img
                 srcSet={match.homeTeamLogo}
                 alt={match.homeTeam}
                 className="modal-team-logo"
               />
+            ) : (
+              <div className="modal-team-logo-placeholder">
+                {match.homeTeam[0]}
+              </div>
             )}
-            <span className="modal-team">{match.homeTeam}</span>
           </div>
-          <span className="modal-vs">vs</span>
+          <span className="modal-vs">VS</span>
           <div className="modal-team-container">
-            <span className="modal-team">{match.awayTeam}</span>
-            {match.awayTeamLogo && (
+            {match.awayTeamLogo ? (
               <img
                 srcSet={match.awayTeamLogo}
                 alt={match.awayTeam}
                 className="modal-team-logo"
               />
+            ) : (
+              <div className="modal-team-logo-placeholder">
+                {match.awayTeam[0]}
+              </div>
             )}
           </div>
         </div>
 
         <div className="prediction-type-selector">
           <button
-            className={`type-btn ${
-              predictionType === "winner" ? "active" : ""
-            }`}
+            className={`type-btn ${predictionType === "winner" ? "active" : ""
+              }`}
             onClick={() => setPredictionType("winner")}
           >
             Wybierz zwycięzcę
@@ -134,25 +140,22 @@ const PredictionModal: React.FC<PredictionModalProps> = ({
           {predictionType === "winner" ? (
             <div className="winner-selection">
               <button
-                className={`winner-btn ${
-                  selectedWinner === "home" ? "active" : ""
-                }`}
+                className={`winner-btn ${selectedWinner === "home" ? "active" : ""
+                  }`}
                 onClick={() => setSelectedWinner("home")}
               >
                 {match.homeTeam}
               </button>
               <button
-                className={`winner-btn ${
-                  selectedWinner === "draw" ? "active" : ""
-                }`}
+                className={`winner-btn ${selectedWinner === "draw" ? "active" : ""
+                  }`}
                 onClick={() => setSelectedWinner("draw")}
               >
                 Remis
               </button>
               <button
-                className={`winner-btn ${
-                  selectedWinner === "away" ? "active" : ""
-                }`}
+                className={`winner-btn ${selectedWinner === "away" ? "active" : ""
+                  }`}
                 onClick={() => setSelectedWinner("away")}
               >
                 {match.awayTeam}
