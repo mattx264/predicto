@@ -1,4 +1,9 @@
-import { Client, RoomDTO, TournamentDto, NewRoomDto } from "../nsawg/client";
+import {
+  Client,
+  type NewRoomDto,
+  type RoomDTO,
+  type TournamentDto,
+} from "../nsawg/client";
 import type { CreateRoomRequest } from "../../types/types";
 import apiService from "./api.service";
 
@@ -32,7 +37,7 @@ class RoomService {
   constructor() {
     this.client = new Client(
       apiService.getBackendUrl(),
-      new AuthenticatedHttpClient()
+      new AuthenticatedHttpClient(),
     );
   }
 
@@ -57,14 +62,14 @@ class RoomService {
       throw new Error("Musisz być zalogowany, aby utworzyć pokój");
     }
 
-    const newRoomDto = new NewRoomDto({
+    const newRoomDto: NewRoomDto = {
       name: data.name,
       description: data.description,
       tournamentId: data.tournamentId,
       maxParticipants: data.maxParticipants,
       entryFee: data.entryFee,
       isPrivate: data.isPrivate,
-    });
+    };
 
     try {
       await this.client.createRoom(newRoomDto);

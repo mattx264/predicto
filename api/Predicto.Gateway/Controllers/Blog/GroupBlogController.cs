@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Predicto.Gateway.DTO.Group;
 using Predicto.Gateway.Services;
 
 namespace Predicto.Gateway.Controllers.Blog
@@ -14,7 +15,7 @@ namespace Predicto.Gateway.Controllers.Blog
             _groupService = groupService;
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<List<GroupDto>>> Get()
         {
             return Ok(await _groupService.GetAllGroups());
         }

@@ -8,7 +8,11 @@ export class RoomHubService {
 
   async connect(
     roomId: string,
-    onRoomDataReceived: (room: RoomDTO) => void
+    onRoomDataReceived: (room: RoomDTO) => void,
+    //   onUsersDataReceived: (users: RoomUserDetailsDTO[]) => void,
+
+    //  onGamesDataReceived: (room: GameListDto) => void,
+    //  onGetUserBetsAndPoints: (roomGames: RoomGameDto) => void,
   ): Promise<void> {
     const connectionKey = `room-${roomId}`;
 
@@ -35,6 +39,17 @@ export class RoomHubService {
       onRoomDataReceived(room);
     });
 
+    // connection.on("UsersUpdated", (users: RoomUserDetailsDTO[]) => {
+    //   onUsersDataReceived(users);
+    // });
+
+    // connection.on("GetGames", (room: GameListDto) => {
+    //   onGamesDataReceived(room);
+    // });
+    // connection.on("GetUserBetsAndPoints", (roomGames: RoomGameDto) => {
+    //   onGetUserBetsAndPoints(roomGames);
+    // });
+
     this.connections.set(connectionKey, connection);
 
     try {
@@ -48,7 +63,7 @@ export class RoomHubService {
             Authorization: token ? `Bearer ${token}` : "",
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.ok) {
@@ -91,7 +106,7 @@ export class RoomHubService {
 
   async disconnectAll(): Promise<void> {
     const promises = Array.from(this.connections.keys()).map((key) =>
-      this.disconnect(key.replace("room-", ""))
+      this.disconnect(key.replace("room-", "")),
     );
     await Promise.all(promises);
   }

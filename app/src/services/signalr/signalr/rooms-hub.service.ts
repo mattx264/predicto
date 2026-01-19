@@ -9,17 +9,17 @@ export class RoomsHubService {
   async connect(
     onRoomsUpdate: (rooms: RoomDTO[]) => void,
     onRoomCreated?: (room: RoomDTO) => void,
-    onUserJoined?: (data: {
-      roomId: number;
-      userId: number;
-      userName: string;
-      participantsCount: number;
-    }) => void,
-    onUserLeft?: (data: {
-      roomId: number;
-      userId: number;
-      participantsCount: number;
-    }) => void
+    // onUserJoined?: (data: {
+    //   roomId: number;
+    //   userId: number;
+    //   userName: string;
+    //   participantsCount: number;
+    // }) => void,
+    // onUserLeft?: (data: {
+    //   roomId: number;
+    //   userId: number;
+    //   participantsCount: number;
+    // }) => void
   ): Promise<void> {
     if (
       this.connection &&
@@ -41,32 +41,32 @@ export class RoomsHubService {
       });
     }
 
-    if (onUserJoined) {
-      this.connection.on(
-        "UserJoined",
-        (data: {
-          roomId: number;
-          userId: number;
-          userName: string;
-          participantsCount: number;
-        }) => {
-          onUserJoined(data);
-        }
-      );
-    }
+    // if (onUserJoined) {
+    //   this.connection.on(
+    //     "UserJoined",
+    //     (data: {
+    //       roomId: number;
+    //       userId: number;
+    //       userName: string;
+    //       participantsCount: number;
+    //     }) => {
+    //       onUserJoined(data);
+    //     }
+    //   );
+    // }
 
-    if (onUserLeft) {
-      this.connection.on(
-        "UserLeft",
-        (data: {
-          roomId: number;
-          userId: number;
-          participantsCount: number;
-        }) => {
-          onUserLeft(data);
-        }
-      );
-    }
+    // if (onUserLeft) {
+    //   this.connection.on(
+    //     "UserLeft",
+    //     (data: {
+    //       roomId: number;
+    //       userId: number;
+    //       participantsCount: number;
+    //     }) => {
+    //       onUserLeft(data);
+    //     }
+    //   );
+    // }
 
     try {
       await signalRService.startConnection(this.connection, "RoomsHub");
@@ -81,8 +81,8 @@ export class RoomsHubService {
     if (this.connection) {
       this.connection.off("GetRooms");
       this.connection.off("RoomCreated");
-      this.connection.off("UserJoined");
-      this.connection.off("UserLeft");
+      //this.connection.off("UserJoined");
+      // this.connection.off("UserLeft");
 
       await signalRService.stopConnection(this.connection);
       this.connection = null;

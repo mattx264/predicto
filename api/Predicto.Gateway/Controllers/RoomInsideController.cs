@@ -10,20 +10,15 @@ namespace Predicto.Gateway.Controllers
     [ApiController]
     [Authorize]
     [Route("api/[controller]")]
-    public class RoomInsideController : ControllerBase
+    public class TesterHelperController : ControllerBase
     {
         private readonly IRoomService _roomService;
 
-        public RoomInsideController(IRoomService roomService)
+        public TesterHelperController(IRoomService roomService)
         {
             _roomService = roomService;
         }
-        [HttpGet("UsersInRoom")]
-        [Authorize]
-        public async Task<IActionResult> UsersInRoom(int gameid)
-        {
-            throw new NotImplementedException();
-        }
+      
 
         [HttpPost("{gameid}/sent-invitation-email")]
         [Authorize]

@@ -48,7 +48,7 @@ namespace Predicto.Gateway.Services.Room
 
         }
 
-        public async Task<List<RoomGameDto>> GetGames(int roomId, int userId)
+        public async Task<List<RoomGameDto>> GetGamesBetsAndPoints(int roomId, int userId)
         {
 
             var room = await _unitOfWork.Rooms.GetByIdAsync(roomId);
@@ -57,6 +57,10 @@ namespace Predicto.Gateway.Services.Room
                 throw new Exception("Room not exists: " + roomId);
             }
             var userRoom = room.Participants.FirstOrDefault(x => x.UserId == userId);
+            if(userRoom == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
             var userBets = userRoom?.RoomUserBets?.ToList();
 
             if (userRoom == null)
@@ -172,7 +176,7 @@ namespace Predicto.Gateway.Services.Room
     public interface IGameRoomService
     {
         Task BetGame(RoomGameBetDto roomGameBets, int userId);
-        Task<List<RoomGameDto>> GetGames(int roomId, int userId);
+        Task<List<RoomGameDto>> GetGamesBetsAndPoints(int roomId, int userId);
         Task<List<OtherGameBetSimpleDto>> GetOtherBet(int roomId, int gameId, int userId);
     }
 

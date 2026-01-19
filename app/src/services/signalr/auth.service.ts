@@ -1,4 +1,9 @@
-import { Client, LoginReq, RegistrationReq, UserDto } from "../nsawg/client";
+import {
+  Client,
+  type LoginReq,
+  type RegistrationReq,
+  type UserDto,
+} from "../nsawg/client";
 import apiService from "./api.service";
 
 interface LoginResponse {
@@ -22,10 +27,10 @@ class AuthService {
   }
 
   async login(email: string, password: string): Promise<string> {
-    const loginData = new LoginReq({
+    const loginData: LoginReq = {
       email,
       password,
-    });
+    };
 
     try {
       const response = await this.client.login(loginData);
@@ -60,14 +65,14 @@ class AuthService {
     username: string,
     email: string,
     password: string,
-    lang: string = "pl"
+    lang: string = "pl",
   ): Promise<void> {
-    const registerData = new RegistrationReq({
+    const registerData: RegistrationReq = {
       username,
       email,
       password,
       lang,
-    });
+    };
 
     try {
       await this.client.register(registerData);
@@ -89,11 +94,11 @@ class AuthService {
       return null;
     }
 
-    const userDto = new UserDto({
+    const userDto: UserDto = {
       id: parseInt(decoded.sub || "0"),
       name: decoded.email?.split("@")[0] || "User",
       email: decoded.email || "",
-    });
+    };
 
     return userDto;
   }
@@ -106,7 +111,7 @@ class AuthService {
         atob(base64)
           .split("")
           .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-          .join("")
+          .join(""),
       );
       return JSON.parse(jsonPayload);
     } catch (error) {

@@ -3,22 +3,29 @@ using Predicto.Database.Entities.Sport;
 using Predicto.Database.Interfaces;
 using Predicto.Gateway.DTO.Group;
 using Predicto.Gateway.DTO.Sport;
+using Predicto.Gateway.Middleware.Redis;
 
 namespace Predicto.Gateway.Services
 {
     public class GameService : IGameService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICacheService _cacheService;
 
-        public GameService(IUnitOfWork unitOfWork)
+        public GameService(IUnitOfWork unitOfWork, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
+            _cacheService = cacheService;
         }
         public async Task<List<GameListDto>> GetAll(int tournamentId)
         {
-
+            var cacheData=_cacheService.Get<List<GameListDto>>("GameService-GetAll");
+            if (cacheData != null)
+            {
+                return cacheData;
+            }
             var games = await _unitOfWork.Game.WhereAsync(x=>x.TournamentId== tournamentId);
-            return games.Select(g => new GameListDto
+             var gameList = games.Select(g => new GameListDto
             {
                 Id = g.Id,
                 StartTime = g.StartGame,
@@ -31,6 +38,8 @@ namespace Predicto.Gateway.Services
 
                 FinalScore = g.FinalScore
             }).ToList();
+            _cacheService.Set("GameService-GetAll", gameList, 60*60);
+            return gameList;
         }
         public async Task<GameDetailsDto> GetByIdAsync(int id)
         {

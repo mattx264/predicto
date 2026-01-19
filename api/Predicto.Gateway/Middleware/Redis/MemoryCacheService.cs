@@ -27,10 +27,24 @@ namespace Predicto.Gateway.Middleware.Redis
 
             if (absoluteExpirationSec.HasValue)
             {
-              var absoluteExpiration=TimeSpan.FromSeconds(absoluteExpirationSec.Value);
+                var absoluteExpiration = TimeSpan.FromSeconds(absoluteExpirationSec.Value);
                 options.SetAbsoluteExpiration(absoluteExpiration);
             }
 
+            _cache.Set(key, value, options);
+        }
+        public T? Get<T>(string key)
+        {
+            return _cache.TryGetValue(key, out T value) ? value : default;
+        }
+        public void Set<T>(string key, T value, int? absoluteExpirationSec)
+        {
+            var options = new MemoryCacheEntryOptions();
+            if (absoluteExpirationSec.HasValue)
+            {
+                var absoluteExpiration = TimeSpan.FromSeconds(absoluteExpirationSec.Value);
+                options.SetAbsoluteExpiration(absoluteExpiration);
+            }
             _cache.Set(key, value, options);
         }
         //public T? Get<T>(string key)

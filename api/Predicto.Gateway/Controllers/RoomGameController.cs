@@ -20,14 +20,14 @@ namespace Predicto.Gateway.Controllers
             _gameRoomService = gameRoomService;
         }
 
-        [HttpGet("all")]
+        [HttpGet("getGamesBetsAndPoints")]
         [Authorize]
-        public async Task<ActionResult<List<RoomGameDto>>> GetAllGames(int roomId)
+        public async Task<ActionResult<List<RoomGameDto>>> GetGamesBetsAndPoints(int roomId)
         {
             try
             {
                 var userId = User.GetUserId();
-                var room = await _gameRoomService.GetGames(roomId, userId);
+                var room = await _gameRoomService.GetGamesBetsAndPoints(roomId, userId);
                 return Ok(room);
             }
             catch (UnauthorizedAccessException)
@@ -62,7 +62,7 @@ namespace Predicto.Gateway.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost("bet-game")]
         [Authorize]
         public async Task<IActionResult> BetGame(RoomGameBetDto roomGameBets)
         {

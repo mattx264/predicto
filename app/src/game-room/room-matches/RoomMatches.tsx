@@ -9,11 +9,7 @@ import MatchesTabs from "./matches-tabs/MatchesTabs";
 import { useAuth } from "../../auth/AuthContext";
 import { toast } from "react-toastify";
 import type { Match } from "../../types/types";
-
-import {
-  RoomGameBetDto,
-  RoomGameBetTeamDto,
-} from "../../services/nsawg/client";
+import type { RoomGameBetDto } from "../../services/nsawg/client";
 
 interface RoomMatchesProps {
   tournamentId?: number;
@@ -42,11 +38,11 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState<"upcoming" | "live" | "finished">(
-    "upcoming"
+    "upcoming",
   );
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
   const [selectedLiveMatch, setSelectedLiveMatch] = useState<Match | null>(
-    null
+    null,
   );
   const [livePredictionsMatch, setLivePredictionsMatch] =
     useState<Match | null>(null);
@@ -94,7 +90,7 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
 
   const handlePredictionSubmit = async (
     matchId: string,
-    payload: PredictionPayload
+    payload: PredictionPayload,
   ) => {
     if (!tournamentId || !roomId) {
       console.error("Tournament ID or Room ID is missing");
@@ -135,20 +131,20 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
         throw new Error("Nieprawidłowe dane predykcji");
       }
 
-      const betData = new RoomGameBetDto({
+      const betData: RoomGameBetDto = {
         gameId: parseInt(matchId),
         roomId: Number(roomId),
         roomGameBetTeam: [
-          new RoomGameBetTeamDto({
+          {
             teamId: match.homeTeamId,
             bet: homeScore,
-          }),
-          new RoomGameBetTeamDto({
+          },
+          {
             teamId: match.awayTeamId,
             bet: awayScore,
-          }),
+          },
         ],
-      });
+      };
 
       await gameService.betGame(betData);
 
@@ -156,16 +152,16 @@ const RoomMatches: React.FC<RoomMatchesProps> = ({
         prevMatches.map((m) =>
           m.id === matchId
             ? {
-              ...m,
-              userPrediction: {
-                home: payload.home,
-                away: payload.away,
-                winner: payload.winner,
-                joker: payload.joker,
-              },
-            }
-            : m
-        )
+                ...m,
+                userPrediction: {
+                  home: payload.home,
+                  away: payload.away,
+                  winner: payload.winner,
+                  joker: payload.joker,
+                },
+              }
+            : m,
+        ),
       );
 
       setSelectedMatchId(null);

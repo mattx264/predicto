@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Predicto.Database.Entities.Blog;
 using Predicto.Database.Interfaces;
 using Predicto.Database.UnitOfWork;
+using Predicto.Gateway.DTO.Article;
 using Predicto.Gateway.Services;
 
 namespace Predicto.Gateway.Controllers
@@ -16,20 +18,20 @@ namespace Predicto.Gateway.Controllers
             _unitOfWork = unitOfWork;
         }
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllArticles()
+        public async Task<ActionResult<List<ArticleListDTO>>> GetAllArticles()
         {
             var articles = await _unitOfWork.Article.GetAllAsync();
-            return Ok(articles);
+            return Ok(articles.Select(x => new ArticleListDTO(x)));
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetArticleById(int id)
+        public async Task<ActionResult<ArticleDTO>> GetArticleById(int id)
         {
             var article = await _unitOfWork.Article.GetByIdAsync(id);
             if (article == null)
             {
                 return NotFound();
             }
-            return Ok(article);
+            return Ok(new ArticleDTO(article));
         }
 
     }

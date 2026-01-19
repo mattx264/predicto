@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Predicto.Database.Interfaces;
+using Predicto.Gateway.DTO.Sport;
 using Predicto.Gateway.Services;
 
 namespace Predicto.Gateway.Controllers
@@ -15,13 +16,13 @@ namespace Predicto.Gateway.Controllers
             _gameService = gameService;
         }
         [HttpGet("get-tournament-by-id/{id}")]
-        public async Task<IActionResult> GetTeamsByTournamentId(int id)
+        public async Task<ActionResult<List<GameListDto>>> GetTeamsByTournamentId(int id)
         {
             var games = await _gameService.GetAll(id);
             return Ok(games);
         }
         [HttpGet("details/{id}")]
-        public async Task<IActionResult> GetGameDetailsByGame(int id)
+        public async Task<ActionResult<GameListDto>> GetGameDetailsByGame(int id)
         {
             var game = await _gameService.GetByIdAsync(id);
             return Ok(game);

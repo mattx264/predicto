@@ -12,7 +12,7 @@
     "email-export": "email export --dir src/emails "
   },
   "dependencies": {
-    "@microsoft/signalr": "^9.0.6",
+    "@microsoft/signalr": "^10.0.0",
     "@paypal/react-paypal-js": "^8.9.2",
     "@preact/signals-react": "^3.3.1",
     "flag-icons": "^7.5.0",

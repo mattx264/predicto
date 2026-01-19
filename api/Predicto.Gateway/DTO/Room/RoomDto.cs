@@ -15,16 +15,16 @@ namespace Predicto.Gateway.DTO.Rooms
         public bool IsPublic { get; set; }
         public RoomStatus RoomStatus { get; set; }
         public int TournamentId { get; set; }
-        
+
         public required string TournamentName { get; set; }
         public string? TournamentLeague { get; set; }
         public DateTime TournamentStartDate { get; set; }
         public DateTime TournamentEndDate { get; set; }
-        
+
         public DateTime CreatedAt { get; set; }
         public int CreatedByUserId { get; set; }
-        
-        public bool IsUserInRoom { get; set; } 
+
+        public bool IsUserInRoom { get; set; }
     }
     public class RoomUserDTO
     {
@@ -32,5 +32,11 @@ namespace Predicto.Gateway.DTO.Rooms
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public UserRoomRole UserRoomRole { get; set; }
 
+    }
+    public class RoomUserDetailsDTO : RoomUserDTO
+    {
+        public required string Username { get; set; }
+        public int Points { get; set; }
+        public int Hit { get; set; }//trafienie
     }
 }

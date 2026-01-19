@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Predicto.Gateway.DTO.Rooms;
+using Predicto.Gateway.Services;
 using Predicto.Gateway.Services.Room;
 
 namespace Predicto.Gateway.Hubs.Room
@@ -7,11 +8,15 @@ namespace Predicto.Gateway.Hubs.Room
     public class RoomHub : Hub
     {
         private readonly IRoomService _roomService;
+        private readonly IGameService _gameService;
+        private readonly IGameRoomService _gameRoomService;
         private readonly ILogger<RoomHub> _logger;
 
-        public RoomHub(IRoomService roomService, ILogger<RoomHub> logger)
+        public RoomHub(IRoomService roomService, IGameService gameService, IGameRoomService gameRoomService, ILogger<RoomHub> logger)
         {
             _roomService = roomService;
+            _gameService = gameService;
+            _gameRoomService = gameRoomService;
             _logger = logger;
         }
 
@@ -47,31 +52,40 @@ namespace Predicto.Gateway.Hubs.Room
 
             try
             {
-                var userIdentifier = Context?.UserIdentifier;
-                if (string.IsNullOrEmpty(userIdentifier) || !int.TryParse(userIdentifier, out var userId))
-                {
-                    _logger.LogError("❌ Invalid or missing UserIdentifier: {UserIdentifier}", userIdentifier);
-                    throw new Exception("Invalid or missing UserIdentifier");
-                }
+                //var userIdentifier = Context?.UserIdentifier;
+                //if (string.IsNullOrEmpty(userIdentifier) || !int.TryParse(userIdentifier, out var userId))
+                //{
+                //    _logger.LogError("❌ Invalid or missing UserIdentifier: {UserIdentifier}", userIdentifier);
+                //    throw new Exception("Invalid or missing UserIdentifier");
+                //}
 
-                var room = await _roomService.GetRoomByIdAsync(roomId, userId);
+                //var room = await _roomService.GetRoomByIdAsync(roomId);
 
-                if (room != null)
-                {
-                    _logger.LogInformation("📤 Sending initial room data to ConnectionId: {ConnectionId}, Participants: {Count}",
-                        connectionId, room.Users?.Count ?? 0);
+                //if (room != null)
+                //{
+                //    _logger.LogInformation("📤 Sending initial room data to ConnectionId: {ConnectionId}, Participants: {Count}",
+                //        connectionId, room.Users?.Count ?? 0);
 
-                    await Clients.Caller.SendAsync("GetRoom", room);
-                    
-                }
-                else
-                {
-                    _logger.LogWarning("❌ Room {RoomId} not found", roomId);
-                }
+                //    await Clients.Caller.SendAsync("GetRoom", room);
+
+                //}
+                //else
+                //{
+                //    _logger.LogWarning("❌ Room {RoomId} not found", roomId);
+                //    return;
+                //}
+                //var userBets =await _gameRoomService.GetGamesBetsAndPoints(room.Id, userId);
+                //await Clients.Caller.SendAsync("GetUserBetsAndPoints", userBets);
+                //var games = await _gameService.GetAll(room.TournamentId);
+                //await Clients.Caller.SendAsync("GetGames", games);
+
+
+                //await Clients.Caller.SendAsync("GetUserBetsAndPoints", userBets);
+
                 // var userBet= await _roomService.GetUserBetAndPoints(roomId, userId);
                 //await Clients.Caller.SendAsync("UserBetAndPoints", room);
-               // await Clients.Caller.SendAsync("Games", room);
-               // var games = await _roomService.GetGamesInRoomAsync(roomId);
+                // await Clients.Caller.SendAsync("Games", room);
+                // var games = await _roomService.GetGamesInRoomAsync(roomId);
             }
             catch (Exception ex)
             {

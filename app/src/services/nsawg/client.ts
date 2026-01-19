@@ -20,13 +20,14 @@ export class Client {
     /**
      * @return OK
      */
-    all(): Promise<void> {
+    all(): Promise<ArticleListDTO[]> {
         let url_ = this.baseUrl + "/api/ArticleBlog/all";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -35,25 +36,27 @@ export class Client {
         });
     }
 
-    protected processAll(response: Response): Promise<void> {
+    protected processAll(response: Response): Promise<ArticleListDTO[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ArticleListDTO[];
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ArticleListDTO[]>(null as any);
     }
 
     /**
      * @return OK
      */
-    articleBlog(id: number): Promise<void> {
+    articleBlog(id: number): Promise<ArticleDTO> {
         let url_ = this.baseUrl + "/api/ArticleBlog/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -63,6 +66,7 @@ export class Client {
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -71,25 +75,27 @@ export class Client {
         });
     }
 
-    protected processArticleBlog(response: Response): Promise<void> {
+    protected processArticleBlog(response: Response): Promise<ArticleDTO> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ArticleDTO;
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ArticleDTO>(null as any);
     }
 
     /**
      * @return OK
      */
-    getTournamentById(id: number): Promise<void> {
+    getTournamentById(id: number): Promise<GameListDto[]> {
         let url_ = this.baseUrl + "/api/GameBlog/get-tournament-by-id/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -99,6 +105,7 @@ export class Client {
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -107,25 +114,27 @@ export class Client {
         });
     }
 
-    protected processGetTournamentById(response: Response): Promise<void> {
+    protected processGetTournamentById(response: Response): Promise<GameListDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GameListDto[];
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<GameListDto[]>(null as any);
     }
 
     /**
      * @return OK
      */
-    details(id: number): Promise<void> {
+    details(id: number): Promise<GameListDto> {
         let url_ = this.baseUrl + "/api/GameBlog/details/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -135,6 +144,7 @@ export class Client {
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -143,25 +153,27 @@ export class Client {
         });
     }
 
-    protected processDetails(response: Response): Promise<void> {
+    protected processDetails(response: Response): Promise<GameListDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GameListDto;
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<GameListDto>(null as any);
     }
 
     /**
      * @return OK
      */
-    byId(playerId: number): Promise<void> {
+    byId(playerId: number): Promise<PlayerBlogDto> {
         let url_ = this.baseUrl + "/api/PlayerBlog/by-id/{playerId}";
         if (playerId === undefined || playerId === null)
             throw new globalThis.Error("The parameter 'playerId' must be defined.");
@@ -171,6 +183,7 @@ export class Client {
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -179,25 +192,27 @@ export class Client {
         });
     }
 
-    protected processById(response: Response): Promise<void> {
+    protected processById(response: Response): Promise<PlayerBlogDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PlayerBlogDto;
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<PlayerBlogDto>(null as any);
     }
 
     /**
      * @return OK
      */
-    gameByTournament(id: number): Promise<void> {
+    gameByTournament(id: number): Promise<TeamListDto[]> {
         let url_ = this.baseUrl + "/api/TeamBlog/game-by-tournament/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -207,6 +222,7 @@ export class Client {
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -215,25 +231,27 @@ export class Client {
         });
     }
 
-    protected processGameByTournament(response: Response): Promise<void> {
+    protected processGameByTournament(response: Response): Promise<TeamListDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TeamListDto[];
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<TeamListDto[]>(null as any);
     }
 
     /**
      * @return OK
      */
-    getById(id: number, tournamentId: number): Promise<void> {
+    getById(id: number, tournamentId: number): Promise<TeamListDto> {
         let url_ = this.baseUrl + "/api/TeamBlog/get-by-id/{id}/{tournamentId}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -246,6 +264,7 @@ export class Client {
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -254,19 +273,21 @@ export class Client {
         });
     }
 
-    protected processGetById(response: Response): Promise<void> {
+    protected processGetById(response: Response): Promise<TeamListDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TeamListDto;
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<TeamListDto>(null as any);
     }
 
     /**
@@ -347,7 +368,7 @@ export class Client {
     /**
      * @return OK
      */
-    getTournamentByIdAll(id: number): Promise<GameListDto[]> {
+    getTournamentById2(id: number): Promise<GameListDto[]> {
         let url_ = this.baseUrl + "/api/Game/get-tournament-by-id/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -362,25 +383,17 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetTournamentByIdAll(_response);
+            return this.processGetTournamentById2(_response);
         });
     }
 
-    protected processGetTournamentByIdAll(response: Response): Promise<GameListDto[]> {
+    protected processGetTournamentById2(response: Response): Promise<GameListDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(GameListDto.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GameListDto[];
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -419,8 +432,7 @@ export class Client {
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = GameDetailsDto.fromJS(resultData200);
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GameDetailsDto;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -460,8 +472,7 @@ export class Client {
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RoomDTO.fromJS(resultData200);
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RoomDTO;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -497,15 +508,7 @@ export class Client {
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(RoomDTO.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RoomDTO[];
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -544,8 +547,7 @@ export class Client {
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RoomDTO.fromJS(resultData200);
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RoomDTO;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -581,15 +583,7 @@ export class Client {
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(RoomDTO.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RoomDTO[];
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -601,83 +595,11 @@ export class Client {
     }
 
     /**
-     * @return OK
-     */
-    join(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/Room/{id}/join";
-        if (id === undefined || id === null)
-            throw new globalThis.Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processJoin(_response);
-        });
-    }
-
-    protected processJoin(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    leave(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/Room/{id}/leave";
-        if (id === undefined || id === null)
-            throw new globalThis.Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processLeave(_response);
-        });
-    }
-
-    protected processLeave(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
      * @param roomId (optional) 
      * @return OK
      */
-    allAll(roomId: number | undefined): Promise<RoomGameDto[]> {
-        let url_ = this.baseUrl + "/api/RoomGame/all?";
+    getGamesBetsAndPoints(roomId: number | undefined): Promise<RoomGameDto[]> {
+        let url_ = this.baseUrl + "/api/RoomGame/getGamesBetsAndPoints?";
         if (roomId === null)
             throw new globalThis.Error("The parameter 'roomId' cannot be null.");
         else if (roomId !== undefined)
@@ -692,25 +614,17 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAllAll(_response);
+            return this.processGetGamesBetsAndPoints(_response);
         });
     }
 
-    protected processAllAll(response: Response): Promise<RoomGameDto[]> {
+    protected processGetGamesBetsAndPoints(response: Response): Promise<RoomGameDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(RoomGameDto.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RoomGameDto[];
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -756,15 +670,7 @@ export class Client {
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(OtherGameBetSimpleDto.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as OtherGameBetSimpleDto[];
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -778,8 +684,8 @@ export class Client {
     /**
      * @return OK
      */
-    roomGame(body: RoomGameBetDto): Promise<void> {
-        let url_ = this.baseUrl + "/api/RoomGame";
+    betGame(body: RoomGameBetDto): Promise<void> {
+        let url_ = this.baseUrl + "/api/RoomGame/bet-game";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -793,49 +699,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRoomGame(_response);
+            return this.processBetGame(_response);
         });
     }
 
-    protected processRoomGame(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param gameid (optional) 
-     * @return OK
-     */
-    usersInRoom(gameid: number | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/RoomInside/UsersInRoom?";
-        if (gameid === null)
-            throw new globalThis.Error("The parameter 'gameid' cannot be null.");
-        else if (gameid !== undefined)
-            url_ += "gameid=" + encodeURIComponent("" + gameid) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUsersInRoom(_response);
-        });
-    }
-
-    protected processUsersInRoom(response: Response): Promise<void> {
+    protected processBetGame(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -855,7 +723,7 @@ export class Client {
      * @return OK
      */
     sentInvitationEmail(gameid: number, emial: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/RoomInside/{gameid}/sent-invitation-email?";
+        let url_ = this.baseUrl + "/api/TesterHelper/{gameid}/sent-invitation-email?";
         if (gameid === undefined || gameid === null)
             throw new globalThis.Error("The parameter 'gameid' must be defined.");
         url_ = url_.replace("{gameid}", encodeURIComponent("" + gameid));
@@ -877,6 +745,119 @@ export class Client {
     }
 
     protected processSentInvitationEmail(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param roomId (optional) 
+     * @return OK
+     */
+    getUsers(roomId: number | undefined): Promise<RoomUserDetailsDTO[]> {
+        let url_ = this.baseUrl + "/api/RoomUsers/GetUsers?";
+        if (roomId === null)
+            throw new globalThis.Error("The parameter 'roomId' cannot be null.");
+        else if (roomId !== undefined)
+            url_ += "roomId=" + encodeURIComponent("" + roomId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUsers(_response);
+        });
+    }
+
+    protected processGetUsers(response: Response): Promise<RoomUserDetailsDTO[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RoomUserDetailsDTO[];
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RoomUserDetailsDTO[]>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    join(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/RoomUsers/{id}/join";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processJoin(_response);
+        });
+    }
+
+    protected processJoin(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    leave(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/RoomUsers/{id}/leave";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processLeave(_response);
+        });
+    }
+
+    protected processLeave(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -949,15 +930,7 @@ export class Client {
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(TournamentDto.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TournamentDto[];
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1034,9 +1007,7 @@ export class Client {
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : null as any;
-    
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1072,8 +1043,7 @@ export class Client {
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserDto.fromJS(resultData200);
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserDto;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1087,13 +1057,14 @@ export class Client {
     /**
      * @return OK
      */
-    groupBlog(): Promise<void> {
+    groupBlog(): Promise<GroupDto[]> {
         let url_ = this.baseUrl + "/api/GroupBlog";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -1102,7 +1073,95 @@ export class Client {
         });
     }
 
-    protected processGroupBlog(response: Response): Promise<void> {
+    protected processGroupBlog(response: Response): Promise<GroupDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GroupDto[];
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GroupDto[]>(null as any);
+    }
+
+    /**
+     * @param roomId (optional) 
+     * @param userId (optional) 
+     * @return OK
+     */
+    joinRoomMock(roomId: number | undefined, userId: number | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/TesterHelper/join-room-mock?";
+        if (roomId === null)
+            throw new globalThis.Error("The parameter 'roomId' cannot be null.");
+        else if (roomId !== undefined)
+            url_ += "roomId=" + encodeURIComponent("" + roomId) + "&";
+        if (userId === null)
+            throw new globalThis.Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processJoinRoomMock(_response);
+        });
+    }
+
+    protected processJoinRoomMock(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param roomId (optional) 
+     * @param userId (optional) 
+     * @return OK
+     */
+    leaveRoomMock(roomId: number | undefined, userId: number | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/TesterHelper/leave-room-mock?";
+        if (roomId === null)
+            throw new globalThis.Error("The parameter 'roomId' cannot be null.");
+        else if (roomId !== undefined)
+            url_ += "roomId=" + encodeURIComponent("" + roomId) + "&";
+        if (userId === null)
+            throw new globalThis.Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processLeaveRoomMock(_response);
+        });
+    }
+
+    protected processLeaveRoomMock(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1118,55 +1177,45 @@ export class Client {
     }
 }
 
-export class EmailTemplateDto implements IEmailTemplateDto {
-    toAddress!: string;
-    templateId?: number;
-    userId?: number;
+export interface ArticleDTO {
+    id?: number;
+    slug?: string;
+    title?: string;
+    shortDescription?: string;
+    author?: string;
+    createOn?: Date;
+    tag?: string;
+    content?: string;
+    tournamentId?: number | undefined;
+    isActive?: boolean;
+    createdDate?: Date;
+    createdBy?: number;
+    modifiedDate?: Date;
+    modifiedBy?: number;
 
     [key: string]: any;
-
-    constructor(data?: IEmailTemplateDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.toAddress = _data["toAddress"];
-            this.templateId = _data["templateId"];
-            this.userId = _data["userId"];
-        }
-    }
-
-    static fromJS(data: any): EmailTemplateDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new EmailTemplateDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["toAddress"] = this.toAddress;
-        data["templateId"] = this.templateId;
-        data["userId"] = this.userId;
-        return data;
-    }
 }
 
-export interface IEmailTemplateDto {
+export interface ArticleListDTO {
+    id?: number;
+    slug?: string;
+    title?: string;
+    shortDescription?: string;
+    author?: string;
+    createOn?: Date;
+    tag?: string;
+    content?: string;
+    tournamentId?: number | undefined;
+    isActive?: boolean;
+    createdDate?: Date;
+    createdBy?: number;
+    modifiedDate?: Date;
+    modifiedBy?: number;
+
+    [key: string]: any;
+}
+
+export interface EmailTemplateDto {
     toAddress: string;
     templateId?: number;
     userId?: number;
@@ -1174,87 +1223,7 @@ export interface IEmailTemplateDto {
     [key: string]: any;
 }
 
-export class GameDetailsDto implements IGameDetailsDto {
-    id?: number;
-    startTime?: Date;
-    teams!: GameDetailsTeamDto[];
-    finalScore?: string | undefined;
-    tournamentId?: number;
-    referee?: string | undefined;
-    headToHead!: HeadToHeadDto[];
-
-    [key: string]: any;
-
-    constructor(data?: IGameDetailsDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-        if (!data) {
-            this.teams = [];
-            this.headToHead = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : undefined as any;
-            if (Array.isArray(_data["teams"])) {
-                this.teams = [] as any;
-                for (let item of _data["teams"])
-                    this.teams!.push(GameDetailsTeamDto.fromJS(item));
-            }
-            this.finalScore = _data["finalScore"];
-            this.tournamentId = _data["tournamentId"];
-            this.referee = _data["referee"];
-            if (Array.isArray(_data["headToHead"])) {
-                this.headToHead = [] as any;
-                for (let item of _data["headToHead"])
-                    this.headToHead!.push(HeadToHeadDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): GameDetailsDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GameDetailsDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["startTime"] = this.startTime ? this.startTime.toISOString() : undefined as any;
-        if (Array.isArray(this.teams)) {
-            data["teams"] = [];
-            for (let item of this.teams)
-                data["teams"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["finalScore"] = this.finalScore;
-        data["tournamentId"] = this.tournamentId;
-        data["referee"] = this.referee;
-        if (Array.isArray(this.headToHead)) {
-            data["headToHead"] = [];
-            for (let item of this.headToHead)
-                data["headToHead"].push(item ? item.toJSON() : undefined as any);
-        }
-        return data;
-    }
-}
-
-export interface IGameDetailsDto {
+export interface GameDetailsDto {
     id?: number;
     startTime?: Date;
     teams: GameDetailsTeamDto[];
@@ -1266,78 +1235,7 @@ export interface IGameDetailsDto {
     [key: string]: any;
 }
 
-export class GameDetailsTeamDto implements IGameDetailsTeamDto {
-    id?: number;
-    name?: string;
-    logoUrl!: string;
-    tactic?: string | undefined;
-    players!: PlayerBasicInfoDto[];
-    coach!: string;
-    formLastGames!: string;
-
-    [key: string]: any;
-
-    constructor(data?: IGameDetailsTeamDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-        if (!data) {
-            this.players = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.logoUrl = _data["logoUrl"];
-            this.tactic = _data["tactic"];
-            if (Array.isArray(_data["players"])) {
-                this.players = [] as any;
-                for (let item of _data["players"])
-                    this.players!.push(PlayerBasicInfoDto.fromJS(item));
-            }
-            this.coach = _data["coach"];
-            this.formLastGames = _data["formLastGames"];
-        }
-    }
-
-    static fromJS(data: any): GameDetailsTeamDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GameDetailsTeamDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["logoUrl"] = this.logoUrl;
-        data["tactic"] = this.tactic;
-        if (Array.isArray(this.players)) {
-            data["players"] = [];
-            for (let item of this.players)
-                data["players"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["coach"] = this.coach;
-        data["formLastGames"] = this.formLastGames;
-        return data;
-    }
-}
-
-export interface IGameDetailsTeamDto {
+export interface GameDetailsTeamDto {
     id?: number;
     name?: string;
     logoUrl: string;
@@ -1349,69 +1247,7 @@ export interface IGameDetailsTeamDto {
     [key: string]: any;
 }
 
-export class GameListDto implements IGameListDto {
-    id?: number;
-    startTime?: Date;
-    teams!: GameListTeamDto[];
-    finalScore?: string | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IGameListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-        if (!data) {
-            this.teams = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : undefined as any;
-            if (Array.isArray(_data["teams"])) {
-                this.teams = [] as any;
-                for (let item of _data["teams"])
-                    this.teams!.push(GameListTeamDto.fromJS(item));
-            }
-            this.finalScore = _data["finalScore"];
-        }
-    }
-
-    static fromJS(data: any): GameListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GameListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["startTime"] = this.startTime ? this.startTime.toISOString() : undefined as any;
-        if (Array.isArray(this.teams)) {
-            data["teams"] = [];
-            for (let item of this.teams)
-                data["teams"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["finalScore"] = this.finalScore;
-        return data;
-    }
-}
-
-export interface IGameListDto {
+export interface GameListDto {
     id?: number;
     startTime?: Date;
     teams: GameListTeamDto[];
@@ -1420,55 +1256,7 @@ export interface IGameListDto {
     [key: string]: any;
 }
 
-export class GameListTeamDto implements IGameListTeamDto {
-    id?: number;
-    name!: string;
-    logoUrl!: string;
-
-    [key: string]: any;
-
-    constructor(data?: IGameListTeamDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.logoUrl = _data["logoUrl"];
-        }
-    }
-
-    static fromJS(data: any): GameListTeamDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GameListTeamDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["logoUrl"] = this.logoUrl;
-        return data;
-    }
-}
-
-export interface IGameListTeamDto {
+export interface GameListTeamDto {
     id?: number;
     name: string;
     logoUrl: string;
@@ -1476,70 +1264,30 @@ export interface IGameListTeamDto {
     [key: string]: any;
 }
 
-export class HeadToHeadDto implements IHeadToHeadDto {
-    gameId?: number;
-    gameDate?: Date;
-    finalScore!: string;
-    teamId1?: number;
-    teamId2?: number;
-    teamName1!: string;
-    teamName2!: string;
+export interface GroupDto {
+    id?: number;
+    name: string;
+    teams: GroupTeamDto[];
 
     [key: string]: any;
-
-    constructor(data?: IHeadToHeadDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.gameId = _data["gameId"];
-            this.gameDate = _data["gameDate"] ? new Date(_data["gameDate"].toString()) : undefined as any;
-            this.finalScore = _data["finalScore"];
-            this.teamId1 = _data["teamId1"];
-            this.teamId2 = _data["teamId2"];
-            this.teamName1 = _data["teamName1"];
-            this.teamName2 = _data["teamName2"];
-        }
-    }
-
-    static fromJS(data: any): HeadToHeadDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new HeadToHeadDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["gameId"] = this.gameId;
-        data["gameDate"] = this.gameDate ? this.gameDate.toISOString() : undefined as any;
-        data["finalScore"] = this.finalScore;
-        data["teamId1"] = this.teamId1;
-        data["teamId2"] = this.teamId2;
-        data["teamName1"] = this.teamName1;
-        data["teamName2"] = this.teamName2;
-        return data;
-    }
 }
 
-export interface IHeadToHeadDto {
+export interface GroupTeamDto {
+    teamName: string;
+    won?: number;
+    lost?: number;
+    drawn?: number;
+    played?: number;
+    points?: number;
+    goalsDiference?: number;
+
+    [key: string]: any;
+}
+
+export interface HeadToHeadDto {
     gameId?: number;
     gameDate?: Date;
-    finalScore: string;
+    finalScore?: string | undefined;
     teamId1?: number;
     teamId2?: number;
     teamName1: string;
@@ -1548,116 +1296,14 @@ export interface IHeadToHeadDto {
     [key: string]: any;
 }
 
-export class LoginReq implements ILoginReq {
-    email!: string;
-    password!: string;
-
-    [key: string]: any;
-
-    constructor(data?: ILoginReq) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.email = _data["email"];
-            this.password = _data["password"];
-        }
-    }
-
-    static fromJS(data: any): LoginReq {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoginReq();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["email"] = this.email;
-        data["password"] = this.password;
-        return data;
-    }
-}
-
-export interface ILoginReq {
+export interface LoginReq {
     email: string;
     password: string;
 
     [key: string]: any;
 }
 
-export class NewRoomDto implements INewRoomDto {
-    name?: string;
-    description?: string;
-    tournamentId?: number;
-    maxParticipants?: number;
-    entryFee?: number | undefined;
-    isPrivate?: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: INewRoomDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.tournamentId = _data["tournamentId"];
-            this.maxParticipants = _data["maxParticipants"];
-            this.entryFee = _data["entryFee"];
-            this.isPrivate = _data["isPrivate"];
-        }
-    }
-
-    static fromJS(data: any): NewRoomDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new NewRoomDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["tournamentId"] = this.tournamentId;
-        data["maxParticipants"] = this.maxParticipants;
-        data["entryFee"] = this.entryFee;
-        data["isPrivate"] = this.isPrivate;
-        return data;
-    }
-}
-
-export interface INewRoomDto {
+export interface NewRoomDto {
     name?: string;
     description?: string;
     tournamentId?: number;
@@ -1668,58 +1314,7 @@ export interface INewRoomDto {
     [key: string]: any;
 }
 
-export class OtherGameBetSimpleDto implements IOtherGameBetSimpleDto {
-    teamId?: number;
-    win?: number;
-    draw?: number;
-    totalCount?: number;
-
-    [key: string]: any;
-
-    constructor(data?: IOtherGameBetSimpleDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.teamId = _data["teamId"];
-            this.win = _data["win"];
-            this.draw = _data["draw"];
-            this.totalCount = _data["totalCount"];
-        }
-    }
-
-    static fromJS(data: any): OtherGameBetSimpleDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new OtherGameBetSimpleDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["teamId"] = this.teamId;
-        data["win"] = this.win;
-        data["draw"] = this.draw;
-        data["totalCount"] = this.totalCount;
-        return data;
-    }
-}
-
-export interface IOtherGameBetSimpleDto {
+export interface OtherGameBetSimpleDto {
     teamId?: number;
     win?: number;
     draw?: number;
@@ -1728,61 +1323,7 @@ export interface IOtherGameBetSimpleDto {
     [key: string]: any;
 }
 
-export class PlayerBasicInfoDto implements IPlayerBasicInfoDto {
-    id?: number;
-    name?: string | undefined;
-    position?: string | undefined;
-    imageUrl?: string | undefined;
-    shirtNumber?: number | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IPlayerBasicInfoDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.position = _data["position"];
-            this.imageUrl = _data["imageUrl"];
-            this.shirtNumber = _data["shirtNumber"];
-        }
-    }
-
-    static fromJS(data: any): PlayerBasicInfoDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new PlayerBasicInfoDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["position"] = this.position;
-        data["imageUrl"] = this.imageUrl;
-        data["shirtNumber"] = this.shirtNumber;
-        return data;
-    }
-}
-
-export interface IPlayerBasicInfoDto {
+export interface PlayerBasicInfoDto {
     id?: number;
     name?: string | undefined;
     position?: string | undefined;
@@ -1792,58 +1333,44 @@ export interface IPlayerBasicInfoDto {
     [key: string]: any;
 }
 
-export class RegistrationReq implements IRegistrationReq {
-    username!: string;
-    email!: string;
-    lang!: string;
-    password!: string;
+export interface PlayerBlogDto {
+    id?: number;
+    slug?: string;
+    name: string;
+    firstName: string;
+    lastName: string;
+    age?: number | undefined;
+    birthday?: Date | undefined;
+    birthPlace?: string | undefined;
+    birthCountry?: string | undefined;
+    nationality?: string | undefined;
+    height?: number | undefined;
+    weight?: number | undefined;
+    shirtNumber?: number | undefined;
+    position?: string | undefined;
+    photoUrl?: string | undefined;
+    marketValue?: number | undefined;
+    bio?: string | undefined;
+    teamName?: string;
+    matchesPlayed?: number;
+    minutesplayed?: number;
+    goals?: number;
+    saves?: number | undefined;
+    cleansheets?: number | undefined;
+    passingAccuracy?: number | undefined;
+    topSpeed?: number | undefined;
+    distanceCovered?: number | undefined;
+    yellowCards?: number;
+    redCards?: number;
+    tackles?: number | undefined;
+    ballsRecovered?: number | undefined;
+    assists?: number | undefined;
+    totalAttempts?: number | undefined;
 
     [key: string]: any;
-
-    constructor(data?: IRegistrationReq) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.username = _data["username"];
-            this.email = _data["email"];
-            this.lang = _data["lang"];
-            this.password = _data["password"];
-        }
-    }
-
-    static fromJS(data: any): RegistrationReq {
-        data = typeof data === 'object' ? data : {};
-        let result = new RegistrationReq();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["username"] = this.username;
-        data["email"] = this.email;
-        data["lang"] = this.lang;
-        data["password"] = this.password;
-        return data;
-    }
 }
 
-export interface IRegistrationReq {
+export interface RegistrationReq {
     username: string;
     email: string;
     lang: string;
@@ -1852,102 +1379,7 @@ export interface IRegistrationReq {
     [key: string]: any;
 }
 
-export class RoomDTO implements IRoomDTO {
-    id?: number;
-    name!: string;
-    description?: string;
-    entryFee?: number | undefined;
-    users?: RoomUserDTO[];
-    maxUsers?: number | undefined;
-    isPublic?: boolean;
-    roomStatus?: number;
-    tournamentId?: number;
-    tournamentName!: string;
-    tournamentLeague?: string | undefined;
-    tournamentStartDate?: Date;
-    tournamentEndDate?: Date;
-    createdAt?: Date;
-    createdByUserId?: number;
-    isUserInRoom?: boolean;
-
-    [key: string]: any;
-
-    constructor(data?: IRoomDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.entryFee = _data["entryFee"];
-            if (Array.isArray(_data["users"])) {
-                this.users = [] as any;
-                for (let item of _data["users"])
-                    this.users!.push(RoomUserDTO.fromJS(item));
-            }
-            this.maxUsers = _data["maxUsers"];
-            this.isPublic = _data["isPublic"];
-            this.roomStatus = _data["roomStatus"];
-            this.tournamentId = _data["tournamentId"];
-            this.tournamentName = _data["tournamentName"];
-            this.tournamentLeague = _data["tournamentLeague"];
-            this.tournamentStartDate = _data["tournamentStartDate"] ? new Date(_data["tournamentStartDate"].toString()) : undefined as any;
-            this.tournamentEndDate = _data["tournamentEndDate"] ? new Date(_data["tournamentEndDate"].toString()) : undefined as any;
-            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : undefined as any;
-            this.createdByUserId = _data["createdByUserId"];
-            this.isUserInRoom = _data["isUserInRoom"];
-        }
-    }
-
-    static fromJS(data: any): RoomDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoomDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["entryFee"] = this.entryFee;
-        if (Array.isArray(this.users)) {
-            data["users"] = [];
-            for (let item of this.users)
-                data["users"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["maxUsers"] = this.maxUsers;
-        data["isPublic"] = this.isPublic;
-        data["roomStatus"] = this.roomStatus;
-        data["tournamentId"] = this.tournamentId;
-        data["tournamentName"] = this.tournamentName;
-        data["tournamentLeague"] = this.tournamentLeague;
-        data["tournamentStartDate"] = this.tournamentStartDate ? this.tournamentStartDate.toISOString() : undefined as any;
-        data["tournamentEndDate"] = this.tournamentEndDate ? this.tournamentEndDate.toISOString() : undefined as any;
-        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : undefined as any;
-        data["createdByUserId"] = this.createdByUserId;
-        data["isUserInRoom"] = this.isUserInRoom;
-        return data;
-    }
-}
-
-export interface IRoomDTO {
+export interface RoomDTO {
     id?: number;
     name: string;
     description?: string;
@@ -1968,66 +1400,7 @@ export interface IRoomDTO {
     [key: string]: any;
 }
 
-export class RoomGameBetDto implements IRoomGameBetDto {
-    gameId?: number;
-    roomId?: number;
-    roomGameBetTeam!: RoomGameBetTeamDto[];
-
-    [key: string]: any;
-
-    constructor(data?: IRoomGameBetDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-        if (!data) {
-            this.roomGameBetTeam = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.gameId = _data["gameId"];
-            this.roomId = _data["roomId"];
-            if (Array.isArray(_data["roomGameBetTeam"])) {
-                this.roomGameBetTeam = [] as any;
-                for (let item of _data["roomGameBetTeam"])
-                    this.roomGameBetTeam!.push(RoomGameBetTeamDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): RoomGameBetDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoomGameBetDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["gameId"] = this.gameId;
-        data["roomId"] = this.roomId;
-        if (Array.isArray(this.roomGameBetTeam)) {
-            data["roomGameBetTeam"] = [];
-            for (let item of this.roomGameBetTeam)
-                data["roomGameBetTeam"].push(item ? item.toJSON() : undefined as any);
-        }
-        return data;
-    }
-}
-
-export interface IRoomGameBetDto {
+export interface RoomGameBetDto {
     gameId?: number;
     roomId?: number;
     roomGameBetTeam: RoomGameBetTeamDto[];
@@ -2035,118 +1408,14 @@ export interface IRoomGameBetDto {
     [key: string]: any;
 }
 
-export class RoomGameBetTeamDto implements IRoomGameBetTeamDto {
-    teamId?: number;
-    bet!: string;
-
-    [key: string]: any;
-
-    constructor(data?: IRoomGameBetTeamDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.teamId = _data["teamId"];
-            this.bet = _data["bet"];
-        }
-    }
-
-    static fromJS(data: any): RoomGameBetTeamDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoomGameBetTeamDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["teamId"] = this.teamId;
-        data["bet"] = this.bet;
-        return data;
-    }
-}
-
-export interface IRoomGameBetTeamDto {
+export interface RoomGameBetTeamDto {
     teamId?: number;
     bet: string;
 
     [key: string]: any;
 }
 
-export class RoomGameDto implements IRoomGameDto {
-    gameId?: number;
-    teams!: TeamUserBetDto[];
-    roomId?: number;
-
-    [key: string]: any;
-
-    constructor(data?: IRoomGameDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-        if (!data) {
-            this.teams = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.gameId = _data["gameId"];
-            if (Array.isArray(_data["teams"])) {
-                this.teams = [] as any;
-                for (let item of _data["teams"])
-                    this.teams!.push(TeamUserBetDto.fromJS(item));
-            }
-            this.roomId = _data["roomId"];
-        }
-    }
-
-    static fromJS(data: any): RoomGameDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoomGameDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["gameId"] = this.gameId;
-        if (Array.isArray(this.teams)) {
-            data["teams"] = [];
-            for (let item of this.teams)
-                data["teams"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["roomId"] = this.roomId;
-        return data;
-    }
-}
-
-export interface IRoomGameDto {
+export interface RoomGameDto {
     gameId?: number;
     teams: TeamUserBetDto[];
     roomId?: number;
@@ -2154,113 +1423,33 @@ export interface IRoomGameDto {
     [key: string]: any;
 }
 
-export class RoomUserDTO implements IRoomUserDTO {
-    id?: number;
-    userRoomRole?: UserRoomRole;
-
-    [key: string]: any;
-
-    constructor(data?: IRoomUserDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.userRoomRole = _data["userRoomRole"];
-        }
-    }
-
-    static fromJS(data: any): RoomUserDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new RoomUserDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["userRoomRole"] = this.userRoomRole;
-        return data;
-    }
-}
-
-export interface IRoomUserDTO {
+export interface RoomUserDetailsDTO {
+    username: string;
+    points?: number;
+    hit?: number;
     id?: number;
     userRoomRole?: UserRoomRole;
 
     [key: string]: any;
 }
 
-export class TeamUserBetDto implements ITeamUserBetDto {
-    bet?: string | undefined;
+export interface RoomUserDTO {
+    id?: number;
+    userRoomRole?: UserRoomRole;
+
+    [key: string]: any;
+}
+
+export interface TeamListDto {
     id?: number;
     name?: string;
     slug?: string;
     imageUrl?: string;
 
     [key: string]: any;
-
-    constructor(data?: ITeamUserBetDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.bet = _data["bet"];
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.slug = _data["slug"];
-            this.imageUrl = _data["imageUrl"];
-        }
-    }
-
-    static fromJS(data: any): TeamUserBetDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TeamUserBetDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["bet"] = this.bet;
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["slug"] = this.slug;
-        data["imageUrl"] = this.imageUrl;
-        return data;
-    }
 }
 
-export interface ITeamUserBetDto {
+export interface TeamUserBetDto {
     bet?: string | undefined;
     id?: number;
     name?: string;
@@ -2270,73 +1459,7 @@ export interface ITeamUserBetDto {
     [key: string]: any;
 }
 
-export class TournamentDto implements ITournamentDto {
-    id?: number;
-    sportCategoryId?: number;
-    name!: string;
-    description?: string | undefined;
-    league?: string | undefined;
-    matchesCount?: number;
-    startDate?: Date;
-    endDate?: Date;
-    logoUrl?: string | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: ITournamentDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.sportCategoryId = _data["sportCategoryId"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.league = _data["league"];
-            this.matchesCount = _data["matchesCount"];
-            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : undefined as any;
-            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : undefined as any;
-            this.logoUrl = _data["logoUrl"];
-        }
-    }
-
-    static fromJS(data: any): TournamentDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TournamentDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["sportCategoryId"] = this.sportCategoryId;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["league"] = this.league;
-        data["matchesCount"] = this.matchesCount;
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : undefined as any;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : undefined as any;
-        data["logoUrl"] = this.logoUrl;
-        return data;
-    }
-}
-
-export interface ITournamentDto {
+export interface TournamentDto {
     id?: number;
     sportCategoryId?: number;
     name: string;
@@ -2350,55 +1473,7 @@ export interface ITournamentDto {
     [key: string]: any;
 }
 
-export class UserDto implements IUserDto {
-    id?: number;
-    email!: string;
-    name!: string;
-
-    [key: string]: any;
-
-    constructor(data?: IUserDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            this.id = _data["id"];
-            this.email = _data["email"];
-            this.name = _data["name"];
-        }
-    }
-
-    static fromJS(data: any): UserDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        data["email"] = this.email;
-        data["name"] = this.name;
-        return data;
-    }
-}
-
-export interface IUserDto {
+export interface UserDto {
     id?: number;
     email: string;
     name: string;

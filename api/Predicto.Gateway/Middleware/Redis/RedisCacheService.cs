@@ -108,9 +108,9 @@ namespace Predicto.Gateway.Middleware.Redis
             _cache.SetString(key, value);
 
         }
-        public string Get<T>(string key)
+        public T? Get<T>(string key)
         {
-            return _cache.GetString(key);
+            throw new NotImplementedException();
         }
 
         public void Remove(string key)
@@ -118,7 +118,7 @@ namespace Predicto.Gateway.Middleware.Redis
             throw new NotImplementedException();
         }
 
-        public void Set<T>(string key, T value, TimeSpan? absoluteExpiration = null)
+        public void Set<T>(string key, T value, int? absoluteExpirationSec)
         {
             throw new NotImplementedException();
         }

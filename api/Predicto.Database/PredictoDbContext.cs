@@ -23,7 +23,7 @@ namespace Predicto.Database
         public DbSet<RoomUserBetEntity> RoomUserBet => Set<RoomUserBetEntity>();
         public DbSet<TournamentTeamEntity> TournamentTeam => Set<TournamentTeamEntity>();
 
-        
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -36,7 +36,7 @@ namespace Predicto.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-           
+
             //make unique column for article slug
             modelBuilder.Entity<ArticleEntity>()
                 .HasIndex(a => a.Slug)
@@ -63,11 +63,11 @@ namespace Predicto.Database
                  .WithOne(t => t.Game)
                  .HasForeignKey(t => t.GameId);
 
-        //    modelBuilder.Entity<RoomEntity>()
-        //.HasMany(r => r.Participants)
-        //.WithMany(u => u.JoinedRooms);
-        //    base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<RoomEntity>()
+                      .HasQueryFilter(c => c.IsActive);
+            modelBuilder.Entity<RoomUserEntity>()
+           .HasQueryFilter(c => c.IsActive);
 
         }
 

@@ -11,13 +11,13 @@ import {
   setRoomsLoading,
   setRoomsError,
   addRoom,
-  updateRoomParticipants,
+  //updateRoomParticipants,
 } from "../signals/rooms.signals";
 import {
   mapRoomDtoToRoom,
   type Room,
-  type UserJoinedEvent,
-  type UserLeftEvent,
+  // type UserJoinedEvent,
+  // type UserLeftEvent,
 } from "../types/types";
 import type { RoomDTO } from "../services/nsawg/client";
 
@@ -64,23 +64,23 @@ export const useRooms = (): UseRoomsReturn => {
           addRoom(mappedRoom);
         };
 
-        const handleUserJoined = (event: UserJoinedEvent) => {
-          if (!isMounted) return;
+        // const handleUserJoined = (event: UserJoinedEvent) => {
+        //   if (!isMounted) return;
 
-          updateRoomParticipants(event.roomId, event.participantsCount);
-        };
+        //   updateRoomParticipants(event.roomId, event.participantsCount);
+        // };
 
-        const handleUserLeft = (event: UserLeftEvent) => {
-          if (!isMounted) return;
+        // const handleUserLeft = (event: UserLeftEvent) => {
+        //   if (!isMounted) return;
 
-          updateRoomParticipants(event.roomId, event.participantsCount);
-        };
+        //   updateRoomParticipants(event.roomId, event.participantsCount);
+        // };
 
         await roomsHubService.connect(
           handleRoomsReceived,
           handleRoomCreated,
-          handleUserJoined,
-          handleUserLeft
+          //  handleUserJoined,
+          //   handleUserLeft
         );
 
         if (isMounted) {
@@ -92,7 +92,7 @@ export const useRooms = (): UseRoomsReturn => {
         console.error("❌ Error connecting to RoomsHub:", error);
         setConnectionStatus("error");
         setRoomsError(
-          error instanceof Error ? error.message : "Failed to connect to rooms"
+          error instanceof Error ? error.message : "Failed to connect to rooms",
         );
         setRoomsLoading(false);
       }

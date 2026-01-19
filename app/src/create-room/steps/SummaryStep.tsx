@@ -13,8 +13,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import PrizePoolPreview from "../prize-pool-preview/PrizePoolPreview";
-import { TournamentDto } from "../../services/nsawg/client";
 import type { RoomFormData } from "../../types/types";
+import type { TournamentDto } from "../../services/nsawg/client";
 
 interface Props {
   formData: RoomFormData;
@@ -111,10 +111,10 @@ const SummaryStep: React.FC<Props> = ({
               <span className="item-value">
                 {selectedTemplate.startDate && selectedTemplate.endDate
                   ? `${new Date(selectedTemplate.startDate).toLocaleDateString(
-                    "pl-PL"
-                  )} - ${new Date(selectedTemplate.endDate).toLocaleDateString(
-                    "pl-PL"
-                  )}`
+                      "pl-PL",
+                    )} - ${new Date(
+                      selectedTemplate.endDate,
+                    ).toLocaleDateString("pl-PL")}`
                   : "Brak danych o dacie"}
               </span>
             </div>

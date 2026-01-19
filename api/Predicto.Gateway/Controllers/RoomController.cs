@@ -67,7 +67,7 @@ namespace Predicto.Gateway.Controllers
         {
 
             var userId = User.TryGetUserId();
-            var room = await _roomService.GetRoomByIdAsync(id, userId);
+            var room = await _roomService.GetRoomByIdAsync(id);
             if (room == null)
                 return NotFound();
             return Ok(room);
@@ -89,53 +89,6 @@ namespace Predicto.Gateway.Controllers
             }
         }
 
-        [HttpPost("{id}/join")]
-        [Authorize]
-        public async Task<IActionResult> JoinRoom(int id)
-        {
-            try
-            {
-                var userId = User.GetUserId();
-                await _roomService.JoinRoomAsync(id, userId);
-                return Ok(new { message = "Pomyślnie dołączono do pokoju!" });
-            }
-            catch (ArgumentException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "error by joining to room", error = ex.Message });
-            }
-        }
-
-        [HttpPost("{id}/leave")]
-        [Authorize]
-        public async Task<IActionResult> LeaveRoom(int id)
-        {
-            try
-            {
-                var userId = User.GetUserId();
-                await _roomService.LeaveRoomAsync(id, userId);
-                return Ok(new { message = "Pomyślnie opuszczono pokój." });
-            }
-            catch (ArgumentException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "error leaving room", error = ex.Message });
-            }
-        }
 
        
     }

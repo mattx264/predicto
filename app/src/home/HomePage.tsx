@@ -84,7 +84,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2025 Predicto. Wszelkie prawa zastrzeżone.</p>
+          <p>&copy; 2026 Predicto. Wszelkie prawa zastrzeżone.</p>
         </div>
       </footer>
     </div>

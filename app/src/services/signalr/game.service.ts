@@ -1,4 +1,4 @@
-import { Client, GameListDto, RoomGameBetDto } from "../nsawg/client";
+import { Client, type GameListDto, type RoomGameBetDto } from "../nsawg/client";
 import type { GameApiDTO, GameDetailsDTO, Match } from "../../types/types";
 import { mapGameApiDtoToMatch } from "../../types/types";
 import apiService from "./api.service";
@@ -29,7 +29,7 @@ class GameService {
   constructor() {
     this.client = new Client(
       apiService.getBackendUrl(),
-      new AuthenticatedHttpClient()
+      new AuthenticatedHttpClient(),
     );
   }
 
@@ -65,11 +65,11 @@ class GameService {
       };
 
       //  const response = await this.client.getTournamentByIdAll(tournamentId);
-      const response = await this.client.getTournamentByIdAll(tournamentId);
+      const response = await this.client.getTournamentById2(tournamentId);
       return response
         .map((g) => mapGameApiDtoToMatch(toGameApiDTO(g)))
         .sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
     } catch (error) {
       console.error("Error fetching games:", error);
@@ -86,7 +86,7 @@ class GameService {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -103,7 +103,7 @@ class GameService {
 
   async betGame(betData: RoomGameBetDto): Promise<void> {
     try {
-      await this.client.roomGame(betData);
+      await this.client.betGame(betData);
     } catch (error) {
       console.error("Error placing bet:", error);
 
