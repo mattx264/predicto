@@ -30,7 +30,6 @@ const HowToPlay: React.FC = () => {
 
         <div className="content-grid">
           <div className="instruction-card">
-            <div className="card-number">1</div>
             <div className="card-icon-wrapper">
               <Users className="card-icon" />
             </div>
@@ -57,7 +56,6 @@ const HowToPlay: React.FC = () => {
           </div>
 
           <div className="instruction-card">
-            <div className="card-number">2</div>
             <div className="card-icon-wrapper">
               <Target className="card-icon" />
             </div>
@@ -84,7 +82,6 @@ const HowToPlay: React.FC = () => {
           </div>
 
           <div className="instruction-card">
-            <div className="card-number">3</div>
             <div className="card-icon-wrapper">
               <Star className="card-icon" />
             </div>
@@ -124,7 +121,6 @@ const HowToPlay: React.FC = () => {
           </div>
 
           <div className="instruction-card">
-            <div className="card-number">4</div>
             <div className="card-icon-wrapper">
               <Trophy className="card-icon" />
             </div>

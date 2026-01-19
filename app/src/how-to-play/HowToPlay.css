@@ -1,6 +1,6 @@
 .how-to-play-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a1628 0%, #1a2332 50%, #0d1b2a 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   padding-top: 80px;
   padding-bottom: 4rem;
   position: relative;
@@ -12,20 +12,16 @@
   position: fixed;
   inset: 0;
   background:
-    repeating-linear-gradient(
-      0deg,
+    repeating-linear-gradient(0deg,
       transparent,
       transparent 60px,
       rgba(34, 197, 94, 0.02) 60px,
-      rgba(34, 197, 94, 0.02) 61px
-    ),
-    repeating-linear-gradient(
-      90deg,
+      rgba(34, 197, 94, 0.02) 61px),
+    repeating-linear-gradient(90deg,
       transparent,
       transparent 60px,
       rgba(34, 197, 94, 0.02) 60px,
-      rgba(34, 197, 94, 0.02) 61px
-    );
+      rgba(34, 197, 94, 0.02) 61px);
   pointer-events: none;
   z-index: 0;
   opacity: 0.5;
@@ -67,10 +63,12 @@
 }
 
 @keyframes trophy-bounce {
+
   0%,
   100% {
     transform: translateY(0) scale(1);
   }
+
   50% {
     transform: translateY(-15px) scale(1.1);
   }
@@ -81,6 +79,7 @@
     opacity: 0;
     transform: translateY(-50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -88,33 +87,34 @@
 }
 
 .page-title {
-  font-size: 3.5rem;
+  font-size: clamp(2rem, 6vw, 3.5rem);
   font-weight: 900;
   color: #f8fafc;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 0 0 40px rgba(34, 197, 94, 0.3);
   animation: title-glow 3s ease-in-out infinite;
 }
 
 @keyframes title-glow {
+
   0%,
   100% {
     filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.3));
   }
+
   50% {
     filter: drop-shadow(0 0 40px rgba(34, 197, 94, 0.6));
   }
 }
 
 .page-subtitle {
-  font-size: 1.35rem;
-  color: #94a3b8;
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  color: #cbd5e1;
   max-width: 700px;
   margin: 0 auto;
   font-weight: 500;
@@ -123,57 +123,52 @@
 
 .content-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 500px), 1fr));
   gap: 2.5rem;
   margin-bottom: 5rem;
 }
 
 .instruction-card {
   position: relative;
-  background: linear-gradient(
-    135deg,
-    rgba(15, 23, 42, 0.8) 0%,
-    rgba(26, 35, 50, 0.6) 100%
-  );
-  border: 3px solid rgba(34, 197, 94, 0.3);
-  border-radius: 24px;
-  padding: 3.5rem 2.5rem 2.5rem;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+  backdrop-filter: blur(10px);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 20px;
+  padding: 2.5rem;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: card-slide-up 0.6s ease-out;
   animation-fill-mode: both;
-  backdrop-filter: blur(10px);
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .instruction-card::before {
-  content: "";
+  content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #22c55e 0%, #3b82f6 100%);
-  animation: line-slide 3s linear infinite;
-}
-
-@keyframes line-slide {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  inset: 0;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(59, 130, 246, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.6;
+  transition: opacity 0.4s ease;
 }
 
 .instruction-card:nth-child(1) {
   animation-delay: 0.1s;
 }
+
 .instruction-card:nth-child(2) {
   animation-delay: 0.2s;
 }
+
 .instruction-card:nth-child(3) {
   animation-delay: 0.3s;
 }
+
 .instruction-card:nth-child(4) {
   animation-delay: 0.4s;
 }
@@ -183,6 +178,7 @@
     opacity: 0;
     transform: translateY(50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -190,11 +186,12 @@
 }
 
 .instruction-card:hover {
-  border-color: #22c55e;
-  transform: translateY(-10px);
-  box-shadow:
-    0 25px 50px rgba(34, 197, 94, 0.4),
-    0 0 0 1px rgba(34, 197, 94, 0.2) inset;
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(34, 197, 94, 0.2);
+}
+
+.instruction-card:hover::before {
+  opacity: 1;
 }
 
 .card-number {
@@ -203,7 +200,7 @@
   left: 2.5rem;
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -212,27 +209,29 @@
   font-weight: 900;
   color: white;
   box-shadow:
-    0 10px 30px rgba(34, 197, 94, 0.6),
-    0 0 0 4px rgba(10, 22, 40, 0.9),
+    0 10px 30px rgba(16, 185, 129, 0.6),
+    0 0 0 4px rgba(15, 23, 42, 0.9),
     0 0 0 6px rgba(34, 197, 94, 0.4);
   animation: number-pulse 2s ease-in-out infinite;
   z-index: 10;
 }
 
 @keyframes number-pulse {
+
   0%,
   100% {
     transform: scale(1);
     box-shadow:
-      0 10px 30px rgba(34, 197, 94, 0.6),
-      0 0 0 4px rgba(10, 22, 40, 0.9),
+      0 10px 30px rgba(16, 185, 129, 0.6),
+      0 0 0 4px rgba(15, 23, 42, 0.9),
       0 0 0 6px rgba(34, 197, 94, 0.4);
   }
+
   50% {
     transform: scale(1.08);
     box-shadow:
-      0 12px 40px rgba(34, 197, 94, 0.8),
-      0 0 0 4px rgba(10, 22, 40, 0.9),
+      0 12px 40px rgba(16, 185, 129, 0.8),
+      0 0 0 4px rgba(15, 23, 42, 0.9),
       0 0 0 8px rgba(34, 197, 94, 0.6);
   }
 }
@@ -240,12 +239,8 @@
 .card-icon-wrapper {
   width: 80px;
   height: 80px;
-  background: linear-gradient(
-    135deg,
-    rgba(34, 197, 94, 0.2),
-    rgba(34, 197, 94, 0.05)
-  );
-  border: 3px solid rgba(34, 197, 94, 0.4);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.05));
+  border: 2px solid rgba(34, 197, 94, 0.4);
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -260,12 +255,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    transparent,
-    rgba(34, 197, 94, 0.3),
-    transparent
-  );
+  background: linear-gradient(135deg, transparent, rgba(34, 197, 94, 0.3), transparent);
   transform: translateX(-100%) rotate(45deg);
   animation: shine 3s ease-in-out infinite;
 }
@@ -274,6 +264,7 @@
   0% {
     transform: translateX(-100%) rotate(45deg);
   }
+
   50%,
   100% {
     transform: translateX(200%) rotate(45deg);
@@ -290,7 +281,7 @@
 }
 
 .card-title {
-  font-size: 1.875rem;
+  font-size: clamp(1.5rem, 3vw, 1.875rem);
   font-weight: 900;
   color: #f8fafc;
   margin-bottom: 1.25rem;
@@ -299,7 +290,7 @@
 }
 
 .card-description {
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
   color: #cbd5e1;
   line-height: 1.7;
   margin-bottom: 1.75rem;
@@ -318,9 +309,9 @@
   gap: 0.875rem;
   padding: 1rem 1.25rem;
   background: rgba(15, 23, 42, 0.8);
-  border-radius: 14px;
+  border-radius: 12px;
   color: #cbd5e1;
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
   font-weight: 600;
   transition: all 0.3s ease;
   border: 2px solid rgba(34, 197, 94, 0.2);
@@ -367,7 +358,7 @@
   align-items: center;
   gap: 1.5rem;
   padding: 1.5rem;
-  border-radius: 16px;
+  border-radius: 12px;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -430,7 +421,7 @@
   min-width: 80px;
   padding: 0.625rem 1.25rem;
   border-radius: 25px;
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 2vw, 1.25rem);
   font-weight: 900;
   text-align: center;
   flex-shrink: 0;
@@ -440,7 +431,7 @@
 }
 
 .points-row.perfect .points-badge {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: linear-gradient(135deg, #10b981, #059669);
   color: white;
 }
 
@@ -462,7 +453,7 @@
 
 .points-desc strong {
   color: #f8fafc;
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 2vw, 1.125rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -470,7 +461,7 @@
 
 .points-desc span {
   color: #94a3b8;
-  font-size: 0.95rem;
+  font-size: clamp(0.8rem, 1.5vw, 0.95rem);
   line-height: 1.5;
 }
 
@@ -486,6 +477,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -499,6 +491,7 @@
   gap: 1.25rem;
   margin-bottom: 3rem;
   position: relative;
+  flex-wrap: wrap;
 }
 
 .tips-header::before {
@@ -522,17 +515,19 @@
 }
 
 @keyframes bulb-glow {
+
   0%,
   100% {
     filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.6));
   }
+
   50% {
     filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.9));
   }
 }
 
 .tips-header h2 {
-  font-size: 2.25rem;
+  font-size: clamp(1.625rem, 4vw, 2.25rem);
   font-weight: 900;
   color: #f8fafc;
   text-transform: uppercase;
@@ -541,17 +536,13 @@
 
 .tips-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 1.75rem;
 }
 
 .tip-card {
   padding: 2rem;
-  background: linear-gradient(
-    135deg,
-    rgba(251, 191, 36, 0.1) 0%,
-    rgba(251, 191, 36, 0.05) 100%
-  );
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
   border: 2px solid rgba(251, 191, 36, 0.3);
   border-radius: 20px;
   transition: all 0.3s ease;
@@ -579,18 +570,12 @@
 .tip-card:hover {
   border-color: #fbbf24;
   transform: translateY(-8px);
-  box-shadow:
-    0 20px 40px rgba(251, 191, 36, 0.3),
-    0 0 0 1px rgba(251, 191, 36, 0.2) inset;
-  background: linear-gradient(
-    135deg,
-    rgba(251, 191, 36, 0.15) 0%,
-    rgba(251, 191, 36, 0.08) 100%
-  );
+  box-shadow: 0 20px 40px rgba(251, 191, 36, 0.3);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(251, 191, 36, 0.08) 100%);
 }
 
 .tip-card h3 {
-  font-size: 1.375rem;
+  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
   font-weight: 800;
   color: #fbbf24;
   margin-bottom: 1rem;
@@ -599,7 +584,7 @@
 }
 
 .tip-card p {
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
   color: #cbd5e1;
   line-height: 1.7;
   font-weight: 500;
@@ -612,7 +597,7 @@
 }
 
 .faq-title {
-  font-size: 2.25rem;
+  font-size: clamp(1.625rem, 4vw, 2.25rem);
   font-weight: 900;
   color: #f8fafc;
   text-align: center;
@@ -644,17 +629,14 @@
 
 .faq-item {
   padding: 2.25rem;
-  background: linear-gradient(
-    135deg,
-    rgba(15, 23, 42, 0.8) 0%,
-    rgba(26, 35, 50, 0.6) 100%
-  );
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
   border: 2px solid rgba(59, 130, 246, 0.3);
   border-radius: 20px;
   transition: all 0.3s ease;
   position: relative;
   backdrop-filter: blur(10px);
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .faq-item::before {
@@ -681,7 +663,7 @@
 }
 
 .faq-item h3 {
-  font-size: 1.375rem;
+  font-size: clamp(1.125rem, 2.5vw, 1.375rem);
   font-weight: 800;
   color: #3b82f6;
   margin-bottom: 1rem;
@@ -691,7 +673,7 @@
 }
 
 .faq-item p {
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
   color: #cbd5e1;
   line-height: 1.8;
   font-weight: 500;
@@ -700,32 +682,29 @@
 .cta-section {
   text-align: center;
   padding: 4rem 3rem;
-  background: linear-gradient(
-    135deg,
-    rgba(10, 22, 40, 0.9) 0%,
-    rgba(26, 35, 50, 0.7) 100%
-  );
-  border: 3px solid rgba(34, 197, 94, 0.4);
-  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 20px;
   animation: fadeInUp 0.6s ease-out 0.7s;
   animation-fill-mode: both;
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(15px);
-  box-shadow:
-    0 20px 60px rgba(34, 197, 94, 0.4),
-    0 0 0 1px rgba(34, 197, 94, 0.2) inset;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
 .cta-section::before {
-  content: "";
+  content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #22c55e 0%, #3b82f6 50%, #22c55e 100%);
-  animation: line-slide 3s linear infinite;
+  inset: 0;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(59, 130, 246, 0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 1;
 }
 
 .cta-section::after {
@@ -743,6 +722,7 @@
   0% {
     transform: translate(-50%, -50%) rotate(0deg);
   }
+
   100% {
     transform: translate(-50%, -50%) rotate(360deg);
   }
@@ -760,17 +740,19 @@
 }
 
 @keyframes play-pulse {
+
   0%,
   100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.1);
   }
 }
 
 .cta-section h2 {
-  font-size: 2.5rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 900;
   color: #f8fafc;
   margin-bottom: 1.25rem;
@@ -781,8 +763,8 @@
 }
 
 .cta-section p {
-  font-size: 1.2rem;
-  color: #94a3b8;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: #cbd5e1;
   margin-bottom: 2.5rem;
   font-weight: 500;
   position: relative;
@@ -791,17 +773,15 @@
 
 .cta-button {
   padding: 1.375rem 3.5rem;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border: none;
   border-radius: 16px;
   color: white;
   font-weight: 800;
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 2vw, 1.25rem);
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow:
-    0 10px 40px rgba(34, 197, 94, 0.5),
-    0 0 0 3px rgba(34, 197, 94, 0.2) inset;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   text-transform: uppercase;
   letter-spacing: 1px;
   position: relative;
@@ -810,28 +790,27 @@
 }
 
 .cta-button::before {
-  content: "";
+  content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
 }
 
 .cta-button:hover::before {
-  transform: translateX(100%);
+  width: 400px;
+  height: 400px;
 }
 
 .cta-button:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
   transform: translateY(-4px);
-  box-shadow:
-    0 15px 50px rgba(34, 197, 94, 0.7),
-    0 0 0 4px rgba(34, 197, 94, 0.3) inset;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
 }
 
 .cta-button:active {
@@ -857,12 +836,9 @@
     padding: 1.5rem 4%;
   }
 
-  .page-title {
-    font-size: 2.5rem;
-  }
-
-  .page-subtitle {
-    font-size: 1.1rem;
+  .hero-section {
+    padding: 2rem 0;
+    margin-bottom: 3rem;
   }
 
   .hero-icon {
@@ -872,6 +848,7 @@
 
   .content-grid {
     gap: 2rem;
+    margin-bottom: 3rem;
   }
 
   .instruction-card {
@@ -897,19 +874,6 @@
     height: 34px;
   }
 
-  .card-title {
-    font-size: 1.625rem;
-  }
-
-  .card-description {
-    font-size: 1rem;
-  }
-
-  .feature-item {
-    font-size: 0.9rem;
-    padding: 0.875rem 1rem;
-  }
-
   .points-row {
     flex-direction: column;
     align-items: flex-start;
@@ -920,15 +884,10 @@
   .points-badge {
     min-width: 70px;
     padding: 0.5rem 1rem;
-    font-size: 1.125rem;
   }
 
-  .points-desc strong {
-    font-size: 1rem;
-  }
-
-  .points-desc span {
-    font-size: 0.875rem;
+  .tips-section {
+    margin-bottom: 3rem;
   }
 
   .tips-grid {
@@ -937,6 +896,7 @@
 
   .tips-header {
     gap: 1rem;
+    margin-bottom: 2rem;
   }
 
   .tips-icon {
@@ -944,36 +904,16 @@
     height: 40px;
   }
 
-  .tips-header h2 {
-    font-size: 1.875rem;
-  }
-
   .tip-card {
     padding: 1.5rem;
   }
 
-  .tip-card h3 {
-    font-size: 1.25rem;
-  }
-
-  .tip-card p {
-    font-size: 0.9rem;
-  }
-
-  .faq-title {
-    font-size: 1.875rem;
+  .faq-section {
+    margin-bottom: 3rem;
   }
 
   .faq-item {
     padding: 2rem 1.75rem;
-  }
-
-  .faq-item h3 {
-    font-size: 1.2rem;
-  }
-
-  .faq-item p {
-    font-size: 1rem;
   }
 
   .cta-section {
@@ -985,32 +925,20 @@
     height: 56px;
   }
 
-  .cta-section h2 {
-    font-size: 2rem;
-  }
-
-  .cta-section p {
-    font-size: 1.1rem;
-  }
-
   .cta-button {
     padding: 1.125rem 2.5rem;
-    font-size: 1.125rem;
     width: 100%;
+    max-width: 400px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .how-to-play-container {
     padding: 1rem 3%;
   }
 
-  .page-title {
-    font-size: 2rem;
-  }
-
-  .page-subtitle {
-    font-size: 1rem;
+  .hero-section {
+    padding: 1.5rem 0;
   }
 
   .instruction-card {
@@ -1035,63 +963,21 @@
     height: 30px;
   }
 
-  .card-title {
-    font-size: 1.5rem;
-  }
-
-  .card-description {
-    font-size: 0.95rem;
-  }
-
   .feature-item {
-    font-size: 0.85rem;
     padding: 0.75rem 0.875rem;
   }
 
   .points-badge {
     min-width: 65px;
     padding: 0.5rem 0.875rem;
-    font-size: 1rem;
-  }
-
-  .points-desc strong {
-    font-size: 0.95rem;
-  }
-
-  .points-desc span {
-    font-size: 0.8rem;
   }
 
   .tip-card {
     padding: 1.25rem;
   }
 
-  .tip-card h3 {
-    font-size: 1.125rem;
-  }
-
-  .tip-card p {
-    font-size: 0.85rem;
-  }
-
-  .tips-header h2 {
-    font-size: 1.625rem;
-  }
-
-  .faq-title {
-    font-size: 1.625rem;
-  }
-
   .faq-item {
     padding: 1.75rem 1.5rem;
-  }
-
-  .faq-item h3 {
-    font-size: 1.125rem;
-  }
-
-  .faq-item p {
-    font-size: 0.95rem;
   }
 
   .cta-section {
@@ -1103,16 +989,72 @@
     height: 52px;
   }
 
-  .cta-section h2 {
-    font-size: 1.75rem;
-  }
-
-  .cta-section p {
-    font-size: 1rem;
-  }
-
   .cta-button {
     padding: 1rem 2rem;
-    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .points-row {
+    padding: 1rem;
+  }
+
+  .tips-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .how-to-play-page {
+    padding-top: 60px;
+  }
+
+  .hero-section {
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+  }
+
+  .content-grid {
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .instruction-card {
+    padding: 2.5rem 1.75rem 1.75rem;
+  }
+
+  .tips-section,
+  .faq-section {
+    margin-bottom: 2rem;
+  }
+
+  .cta-section {
+    padding: 2rem 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .how-to-play-container {
+    max-width: 1400px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+
+  .cta-button,
+  .feature-item {
+    min-height: 44px;
   }
 }

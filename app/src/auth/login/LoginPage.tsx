@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff, Sparkles, ArrowLeft } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Sparkles } from "lucide-react";
 import "./LoginPage.css";
 import { getErrorMessageWithFallback } from "../../utils/erroUtils";
 import { useAuth } from "../AuthContext";
@@ -137,10 +137,10 @@ const LoginPage: React.FC = () => {
         ))}
       </div>
 
-      <Link to="/" className="back-button">
+      {/* <Link to="/" className="back-button">
         <ArrowLeft className="back-icon" />
         <span>Powrót</span>
-      </Link>
+      </Link> */}
 
       <div className="auth-container">
         <div className="auth-card">

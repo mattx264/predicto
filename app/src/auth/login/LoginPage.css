@@ -13,7 +13,7 @@ body {
   justify-content: center;
   padding: 100px 2rem 2rem;
   position: relative;
-  background: linear-gradient(135deg, #0a1628 0%, #1a2332 50%, #0d1b2a 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   background-attachment: fixed;
 }
 
@@ -21,34 +21,14 @@ body {
   position: fixed;
   inset: 0;
   background-image:
-    radial-gradient(
-      ellipse at 20% 0%,
-      rgba(34, 197, 94, 0.15) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 80% 0%,
-      rgba(59, 130, 246, 0.15) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(255, 255, 255, 0.03) 0%,
-      transparent 70%
-    );
+    radial-gradient(ellipse at 20% 0%,
+      rgba(34, 197, 94, 0.08) 0%,
+      transparent 50%),
+    radial-gradient(ellipse at 80% 0%,
+      rgba(59, 130, 246, 0.08) 0%,
+      transparent 50%);
   pointer-events: none;
   z-index: 0;
-  animation: stadium-lights 4s ease-in-out infinite;
-}
-
-@keyframes stadium-lights {
-  0%,
-  100% {
-    opacity: 0.8;
-  }
-  50% {
-    opacity: 1;
-  }
 }
 
 .auth-stars {
@@ -57,42 +37,40 @@ body {
   pointer-events: none;
   z-index: 0;
   background-image:
-    repeating-linear-gradient(
-      0deg,
+    repeating-linear-gradient(0deg,
       transparent,
       transparent 50px,
-      rgba(34, 197, 94, 0.03) 50px,
-      rgba(34, 197, 94, 0.03) 51px
-    ),
-    repeating-linear-gradient(
-      90deg,
+      rgba(34, 197, 94, 0.02) 50px,
+      rgba(34, 197, 94, 0.02) 51px),
+    repeating-linear-gradient(90deg,
       transparent,
       transparent 50px,
-      rgba(34, 197, 94, 0.03) 50px,
-      rgba(34, 197, 94, 0.03) 51px
-    );
+      rgba(34, 197, 94, 0.02) 50px,
+      rgba(34, 197, 94, 0.02) 51px);
   opacity: 0.3;
 }
 
 .star {
   position: absolute;
-  width: 3px;
-  height: 3px;
-  background: linear-gradient(45deg, #22c55e, #3b82f6);
+  width: 2px;
+  height: 2px;
+  background: rgba(34, 197, 94, 0.4);
   border-radius: 50%;
   animation: field-sparkle 3s ease-in-out infinite;
-  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 4px rgba(34, 197, 94, 0.3);
 }
 
 @keyframes field-sparkle {
+
   0%,
   100% {
-    opacity: 0.3;
-    transform: scale(1) translateZ(0);
+    opacity: 0.2;
+    transform: scale(1);
   }
+
   50% {
-    opacity: 1;
-    transform: scale(1.8) translateZ(0);
+    opacity: 0.8;
+    transform: scale(1.5);
   }
 }
 
@@ -104,13 +82,9 @@ body {
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  background: linear-gradient(
-    135deg,
-    rgba(34, 197, 94, 0.1),
-    rgba(59, 130, 246, 0.1)
-  );
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(34, 197, 94, 0.3);
+  border: 2px solid rgba(34, 197, 94, 0.4);
   border-radius: 50px;
   color: #22c55e;
   text-decoration: none;
@@ -120,6 +94,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-size: 0.875rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .back-button::before {
@@ -146,9 +121,10 @@ body {
 }
 
 .back-button:hover {
-  background: rgba(34, 197, 94, 0.2);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 1), rgba(30, 41, 59, 1));
   transform: translateX(-5px);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+  border-color: rgba(34, 197, 94, 0.6);
 }
 
 .back-icon {
@@ -171,9 +147,11 @@ body {
     transform: scale(0.8) translateY(30px);
     opacity: 0;
   }
+
   50% {
     transform: scale(1.05) translateY(-10px);
   }
+
   100% {
     transform: scale(1) translateY(0);
     opacity: 1;
@@ -181,47 +159,33 @@ body {
 }
 
 .auth-card {
-  background: linear-gradient(
-    135deg,
-    rgba(10, 22, 40, 0.95) 0%,
-    rgba(26, 35, 50, 0.98) 50%,
-    rgba(13, 27, 42, 0.95) 100%
-  );
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  border: 2px solid rgba(34, 197, 94, 0.2);
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(34, 197, 94, 0.1) inset,
-    0 0 40px rgba(34, 197, 94, 0.1);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   position: relative;
 }
 
 .auth-card::before {
-  content: "";
+  content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #22c55e 0%, #3b82f6 50%, #22c55e 100%);
-  animation: field-line-move 3s linear infinite;
-}
-
-@keyframes field-line-move {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  inset: 0;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(59, 130, 246, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 1;
 }
 
 .auth-header {
   position: relative;
   height: 120px;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+  background: linear-gradient(135deg, #22c55e 0%, #10b981 50%, #059669 100%);
   overflow: hidden;
 }
 
@@ -229,13 +193,11 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 20px,
-    rgba(255, 255, 255, 0.05) 20px,
-    rgba(255, 255, 255, 0.05) 40px
-  );
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 20px,
+      rgba(255, 255, 255, 0.05) 20px,
+      rgba(255, 255, 255, 0.05) 40px);
   animation: grass-wave 20s linear infinite;
 }
 
@@ -243,29 +205,9 @@ body {
   0% {
     transform: translateY(0);
   }
+
   100% {
     transform: translateY(40px);
-  }
-}
-
-.auth-header::after {
-  content: "⚽";
-  position: absolute;
-  font-size: 80px;
-  opacity: 0.1;
-  right: -20px;
-  top: 50%;
-  transform: translateY(-50%);
-  animation: ball-rotate 10s linear infinite;
-  filter: blur(1px);
-}
-
-@keyframes ball-rotate {
-  0% {
-    transform: translateY(-50%) rotate(0deg);
-  }
-  100% {
-    transform: translateY(-50%) rotate(360deg);
   }
 }
 
@@ -308,6 +250,7 @@ body {
     transform: translateY(-30px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -319,6 +262,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -342,11 +286,13 @@ body {
 }
 
 @keyframes star-twinkle {
+
   0%,
   100% {
     opacity: 0.4;
     transform: scale(1);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.5);
@@ -356,18 +302,6 @@ body {
 .auth-form-container {
   padding: 2rem;
   position: relative;
-}
-
-.auth-form-container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, #22c55e, transparent);
-  border-radius: 2px;
 }
 
 .auth-form {
@@ -388,6 +322,7 @@ body {
     transform: translateX(-30px);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -398,19 +333,16 @@ body {
   position: absolute;
   left: 1rem;
   top: 1rem;
-  color: #64748b;
-  transition:
-    color 0.3s ease,
-    filter 0.3s ease;
+  color: #94a3b8;
+  transition: color 0.3s ease, filter 0.3s ease;
   pointer-events: none;
-  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.3));
 }
 
 .input-group:hover .input-icon,
 .input-group:focus-within .input-icon {
   color: #22c55e;
   transform: scale(1.1);
-  filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
+  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.6));
 }
 
 .auth-input {
@@ -439,10 +371,13 @@ body {
   outline: none;
   border-color: #22c55e;
   background: rgba(15, 23, 42, 0.9);
-  box-shadow:
-    0 0 0 4px rgba(34, 197, 94, 0.1),
-    0 0 20px rgba(34, 197, 94, 0.2);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
   transform: translateY(-2px);
+}
+
+.auth-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .auth-input.error {
@@ -451,19 +386,22 @@ body {
 }
 
 @keyframes shake {
+
   0%,
   100% {
     transform: translateX(0);
   }
+
   25% {
     transform: translateX(-10px);
   }
+
   75% {
     transform: translateX(10px);
   }
 }
 
-.input-group > div[style*="color: #ef4444"] {
+.input-group>div[style*="color: #ef4444"] {
   position: absolute;
   bottom: 2px;
   left: 4px;
@@ -478,6 +416,7 @@ body {
     opacity: 0;
     transform: translateY(-5px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -503,13 +442,18 @@ body {
   transform: scale(1.1);
 }
 
+.password-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .forgot-password {
   text-align: right;
   animation: fade-in 0.7s ease-out;
 }
 
 .forgot-link {
-  color: #64748b;
+  color: #94a3b8;
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 600;
@@ -541,7 +485,7 @@ body {
   position: relative;
   width: 100%;
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border: none;
   border-radius: 12px;
   color: white;
@@ -549,46 +493,47 @@ body {
   font-size: 1rem;
   cursor: pointer;
   overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow:
-    0 8px 25px rgba(34, 197, 94, 0.4),
-    0 0 0 2px rgba(34, 197, 94, 0.2) inset;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .auth-submit-btn::before {
-  content: "";
+  content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  z-index: 0;
 }
 
 .auth-submit-btn:hover:not(:disabled)::before {
-  transform: translateX(100%);
+  width: 300px;
+  height: 300px;
 }
 
 .auth-submit-btn:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow:
-    0 12px 40px rgba(34, 197, 94, 0.6),
-    0 0 0 3px rgba(34, 197, 94, 0.3) inset;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
 }
 
 .auth-submit-btn:active:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 .auth-submit-btn:disabled {
-  opacity: 0.6;
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.4), rgba(75, 85, 99, 0.4));
   cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
 }
 
 .btn-content {
@@ -606,10 +551,6 @@ body {
   background: linear-gradient(135deg, #3b82f6 0%, #22c55e 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
-}
-
-.auth-submit-btn:hover:not(:disabled) .btn-gradient-overlay {
-  opacity: 1;
 }
 
 .spinner {
@@ -632,11 +573,13 @@ body {
 }
 
 @keyframes sparkle-pulse {
+
   0%,
   100% {
     opacity: 1;
     transform: scale(1) rotate(0deg);
   }
+
   50% {
     opacity: 0.7;
     transform: scale(1.2) rotate(180deg);
@@ -651,7 +594,7 @@ body {
 }
 
 .toggle-text {
-  color: #64748b;
+  color: #94a3b8;
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
   font-weight: 500;
@@ -670,7 +613,7 @@ body {
 }
 
 .toggle-link:hover {
-  color: #16a34a;
+  color: #10b981;
   transform: translateY(-2px);
 }
 
@@ -702,8 +645,8 @@ body {
   right: -4rem;
   width: 250px;
   height: 250px;
-  background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
-  opacity: 0.2;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(59, 130, 246, 0.15));
+  opacity: 0.8;
 }
 
 .blur-2 {
@@ -711,19 +654,21 @@ body {
   left: -4rem;
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, #3b82f6 0%, #22c55e 100%);
-  opacity: 0.15;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(34, 197, 94, 0.15));
+  opacity: 0.8;
   animation-delay: 2s;
 }
 
 @keyframes stadium-light-pulse {
+
   0%,
   100% {
-    opacity: 0.2;
+    opacity: 0.6;
     transform: scale(1);
   }
+
   50% {
-    opacity: 0.4;
+    opacity: 1;
     transform: scale(1.2);
   }
 }
@@ -845,12 +790,27 @@ body {
 .input-group:nth-child(1) {
   animation-delay: 0.1s;
 }
+
 .input-group:nth-child(2) {
   animation-delay: 0.2s;
 }
+
 .input-group:nth-child(3) {
   animation-delay: 0.3s;
 }
+
 .input-group:nth-child(4) {
   animation-delay: 0.4s;
+}
+
+.error-message {
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  font-size: 14px;
+  text-align: center;
+  animation: error-fade-in 0.3s ease;
 }

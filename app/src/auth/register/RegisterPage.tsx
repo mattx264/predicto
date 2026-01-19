@@ -7,7 +7,7 @@ import {
   EyeOff,
   User,
   Sparkles,
-  ArrowLeft,
+
 } from "lucide-react";
 import { getErrorMessage } from "../../utils/erroUtils";
 import { useAuth } from "../AuthContext";
@@ -193,10 +193,10 @@ const RegisterPage: React.FC = () => {
         ))}
       </div>
 
-      <Link to="/" className="back-button">
+      {/* <Link to="/" className="back-button">
         <ArrowLeft className="back-icon" />
         <span>Powrót</span>
-      </Link>
+      </Link> */}
 
       <div className="auth-container">
         <div className="auth-card">
