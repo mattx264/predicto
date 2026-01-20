@@ -15,13 +15,13 @@ namespace Predicto.Gateway.Controllers
         {
             _gameService = gameService;
         }
-        [HttpGet("get-tournament-by-id/{id}")]
+        [HttpGet("get-tournament-by-id-blog/{id}")]
         public async Task<ActionResult<List<GameListDto>>> GetTeamsByTournamentId(int id)
         {
             var games = await _gameService.GetAll(id);
             return Ok(games);
         }
-        [HttpGet("details/{id}")]
+        [HttpGet("details-blog/{id}")]
         public async Task<ActionResult<GameListDto>> GetGameDetailsByGame(int id)
         {
             var game = await _gameService.GetByIdAsync(id);

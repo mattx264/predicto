@@ -65,9 +65,13 @@ namespace Predicto.Database
 
 
             modelBuilder.Entity<RoomEntity>()
-                      .HasQueryFilter(c => c.IsActive);
+                .HasQueryFilter(c => c.IsActive);
+
             modelBuilder.Entity<RoomUserEntity>()
-           .HasQueryFilter(c => c.IsActive);
+                .HasQueryFilter(c => c.IsActive);
+
+            modelBuilder.Entity<RoomUserBetEntity>()
+                 .HasQueryFilter(c => c.IsActive);
 
         }
 

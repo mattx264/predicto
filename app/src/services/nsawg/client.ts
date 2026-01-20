@@ -97,8 +97,8 @@ export class Client {
     /**
      * @return OK
      */
-    getTournamentById(id: number, signal?: AbortSignal): Promise<GameListDto[]> {
-        let url_ = this.baseUrl + "/api/GameBlog/get-tournament-by-id/{id}";
+    getTournamentByIdBlog(id: number, signal?: AbortSignal): Promise<GameListDto[]> {
+        let url_ = this.baseUrl + "/api/GameBlog/get-tournament-by-id-blog/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -113,11 +113,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetTournamentById(_response);
+            return this.processGetTournamentByIdBlog(_response);
         });
     }
 
-    protected processGetTournamentById(response: Response): Promise<GameListDto[]> {
+    protected processGetTournamentByIdBlog(response: Response): Promise<GameListDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -137,8 +137,8 @@ export class Client {
     /**
      * @return OK
      */
-    details(id: number, signal?: AbortSignal): Promise<GameListDto> {
-        let url_ = this.baseUrl + "/api/GameBlog/details/{id}";
+    detailsBlog(id: number, signal?: AbortSignal): Promise<GameListDto> {
+        let url_ = this.baseUrl + "/api/GameBlog/details-blog/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -153,11 +153,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDetails(_response);
+            return this.processDetailsBlog(_response);
         });
     }
 
-    protected processDetails(response: Response): Promise<GameListDto> {
+    protected processDetailsBlog(response: Response): Promise<GameListDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -177,8 +177,8 @@ export class Client {
     /**
      * @return OK
      */
-    byId(playerId: number, signal?: AbortSignal): Promise<PlayerBlogDto> {
-        let url_ = this.baseUrl + "/api/PlayerBlog/by-id/{playerId}";
+    byIdBlog(playerId: number, signal?: AbortSignal): Promise<PlayerBlogDto> {
+        let url_ = this.baseUrl + "/api/PlayerBlog/by-id-blog/{playerId}";
         if (playerId === undefined || playerId === null)
             throw new globalThis.Error("The parameter 'playerId' must be defined.");
         url_ = url_.replace("{playerId}", encodeURIComponent("" + playerId));
@@ -193,11 +193,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processById(_response);
+            return this.processByIdBlog(_response);
         });
     }
 
-    protected processById(response: Response): Promise<PlayerBlogDto> {
+    protected processByIdBlog(response: Response): Promise<PlayerBlogDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -217,8 +217,8 @@ export class Client {
     /**
      * @return OK
      */
-    gameByTournament(id: number, signal?: AbortSignal): Promise<TeamListDto[]> {
-        let url_ = this.baseUrl + "/api/TeamBlog/game-by-tournament/{id}";
+    rankingByTournamentBlog(id: number, signal?: AbortSignal): Promise<TeamListDto[]> {
+        let url_ = this.baseUrl + "/api/TeamBlog/ranking-by-tournament-blog/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -233,11 +233,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGameByTournament(_response);
+            return this.processRankingByTournamentBlog(_response);
         });
     }
 
-    protected processGameByTournament(response: Response): Promise<TeamListDto[]> {
+    protected processRankingByTournamentBlog(response: Response): Promise<TeamListDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -257,8 +257,48 @@ export class Client {
     /**
      * @return OK
      */
-    getById(id: number, tournamentId: number, signal?: AbortSignal): Promise<TeamDetailsDto> {
-        let url_ = this.baseUrl + "/api/TeamBlog/get-by-id/{id}/{tournamentId}";
+    gameByTournamentBlog(id: number, signal?: AbortSignal): Promise<TeamListDto[]> {
+        let url_ = this.baseUrl + "/api/TeamBlog/game-by-tournament-blog/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGameByTournamentBlog(_response);
+        });
+    }
+
+    protected processGameByTournamentBlog(response: Response): Promise<TeamListDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TeamListDto[];
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<TeamListDto[]>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getByIdBlog(id: number, tournamentId: number, signal?: AbortSignal): Promise<TeamDetailsDto> {
+        let url_ = this.baseUrl + "/api/TeamBlog/get-by-id-blog/{id}/{tournamentId}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -276,11 +316,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetById(_response);
+            return this.processGetByIdBlog(_response);
         });
     }
 
-    protected processGetById(response: Response): Promise<TeamDetailsDto> {
+    protected processGetByIdBlog(response: Response): Promise<TeamDetailsDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -377,7 +417,7 @@ export class Client {
     /**
      * @return OK
      */
-    getTournamentById2(id: number, signal?: AbortSignal): Promise<GameListDto[]> {
+    getTournamentById(id: number, signal?: AbortSignal): Promise<GameListDto[]> {
         let url_ = this.baseUrl + "/api/Game/get-tournament-by-id/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -393,11 +433,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetTournamentById2(_response);
+            return this.processGetTournamentById(_response);
         });
     }
 
-    protected processGetTournamentById2(response: Response): Promise<GameListDto[]> {
+    protected processGetTournamentById(response: Response): Promise<GameListDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -417,7 +457,7 @@ export class Client {
     /**
      * @return OK
      */
-    details2(id: number, signal?: AbortSignal): Promise<GameDetailsDto> {
+    details(id: number, signal?: AbortSignal): Promise<GameDetailsDto> {
         let url_ = this.baseUrl + "/api/Game/details/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -433,11 +473,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDetails2(_response);
+            return this.processDetails(_response);
         });
     }
 
-    protected processDetails2(response: Response): Promise<GameDetailsDto> {
+    protected processDetails(response: Response): Promise<GameDetailsDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -931,6 +971,134 @@ export class Client {
     /**
      * @return OK
      */
+    rankingByTournament(id: number, signal?: AbortSignal): Promise<TeamListDto[]> {
+        let url_ = this.baseUrl + "/api/Team/ranking-by-tournament/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRankingByTournament(_response);
+        });
+    }
+
+    protected processRankingByTournament(response: Response): Promise<TeamListDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TeamListDto[];
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<TeamListDto[]>(null as any);
+    }
+
+    /**
+     * @param tournamentId (optional) 
+     * @return OK
+     */
+    gameByTournament(tournamentId: number | undefined, id: string, signal?: AbortSignal): Promise<TeamListDto[]> {
+        let url_ = this.baseUrl + "/api/Team/game-by-tournament/{id}?";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (tournamentId === null)
+            throw new globalThis.Error("The parameter 'tournamentId' cannot be null.");
+        else if (tournamentId !== undefined)
+            url_ += "tournamentId=" + encodeURIComponent("" + tournamentId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGameByTournament(_response);
+        });
+    }
+
+    protected processGameByTournament(response: Response): Promise<TeamListDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TeamListDto[];
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<TeamListDto[]>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getById(id: number, tournamentId: number, signal?: AbortSignal): Promise<TeamDetailsDto> {
+        let url_ = this.baseUrl + "/api/Team/get-by-id/{id}/{tournamentId}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (tournamentId === undefined || tournamentId === null)
+            throw new globalThis.Error("The parameter 'tournamentId' must be defined.");
+        url_ = url_.replace("{tournamentId}", encodeURIComponent("" + tournamentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetById(_response);
+        });
+    }
+
+    protected processGetById(response: Response): Promise<TeamDetailsDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TeamDetailsDto;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<TeamDetailsDto>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     tournament(signal?: AbortSignal): Promise<TournamentDto[]> {
         let url_ = this.baseUrl + "/api/Tournament";
         url_ = url_.replace(/[?&]$/, "");
@@ -1079,6 +1247,50 @@ export class Client {
             });
         }
         return Promise.resolve<UserDto>(null as any);
+    }
+
+    /**
+     * @param gameId (optional) 
+     * @param teamId (optional) 
+     * @return OK
+     */
+    newGool(gameId: number | undefined, teamId: number | undefined, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/api/GameDataImporter/new-gool?";
+        if (gameId === null)
+            throw new globalThis.Error("The parameter 'gameId' cannot be null.");
+        else if (gameId !== undefined)
+            url_ += "gameId=" + encodeURIComponent("" + gameId) + "&";
+        if (teamId === null)
+            throw new globalThis.Error("The parameter 'teamId' cannot be null.");
+        else if (teamId !== undefined)
+            url_ += "teamId=" + encodeURIComponent("" + teamId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            signal,
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processNewGool(_response);
+        });
+    }
+
+    protected processNewGool(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -1517,7 +1729,6 @@ export interface RoomUserDTO {
 export interface TeamDetailsDto {
     coach: string;
     players: PlayerBasicInfoDto[];
-    formLastGames: string;
     id?: number;
     name?: string;
     slug?: string;

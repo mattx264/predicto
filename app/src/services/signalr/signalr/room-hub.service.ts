@@ -1,7 +1,11 @@
 import * as signalR from "@microsoft/signalr";
 import apiService from "../api.service";
 import { signalRService } from "../signalr.service";
-import type { RoomDTO } from "../../nsawg/client";
+import type {
+  GameListDto,
+  RoomDTO,
+  RoomUserDetailsDTO,
+} from "../../nsawg/client";
 
 export class RoomHubService {
   private connections: Map<string, signalR.HubConnection> = new Map();
@@ -9,7 +13,8 @@ export class RoomHubService {
   async connect(
     roomId: string,
     onRoomDataReceived: (room: RoomDTO) => void,
-    //   onUsersDataReceived: (users: RoomUserDetailsDTO[]) => void,
+    onUsersDataReceived: (users: RoomUserDetailsDTO[]) => void,
+    onGameDataReceived: (room: GameListDto) => void,
 
     //  onGamesDataReceived: (room: GameListDto) => void,
     //  onGetUserBetsAndPoints: (roomGames: RoomGameDto) => void,
@@ -30,6 +35,7 @@ export class RoomHubService {
 
     connection.off("GetRoom");
     connection.off("RoomUpdated");
+    connection.off("GetGame");
 
     connection.on("GetRoom", (room: RoomDTO) => {
       onRoomDataReceived(room);
@@ -39,13 +45,13 @@ export class RoomHubService {
       onRoomDataReceived(room);
     });
 
-    // connection.on("UsersUpdated", (users: RoomUserDetailsDTO[]) => {
-    //   onUsersDataReceived(users);
-    // });
+    connection.on("UsersUpdated", (users: RoomUserDetailsDTO[]) => {
+      onUsersDataReceived(users);
+    });
 
-    // connection.on("GetGames", (room: GameListDto) => {
-    //   onGamesDataReceived(room);
-    // });
+    connection.on("GameUpdate", (room: GameListDto) => {
+      onGameDataReceived(room);
+    });
     // connection.on("GetUserBetsAndPoints", (roomGames: RoomGameDto) => {
     //   onGetUserBetsAndPoints(roomGames);
     // });

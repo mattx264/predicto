@@ -39,6 +39,7 @@ namespace Predicto.Gateway.Services.Room
 
                    GameId = roomGameBets.GameId,
                    TeamId = item.TeamId,
+                   
                    Bet = item.Bet,
                    BetType = isWinnerSide ? BetTypeEnum.WinnerSide : BetTypeEnum.PointSide,
                    IsActive = true

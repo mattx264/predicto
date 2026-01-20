@@ -5,7 +5,9 @@ using Predicto.Database.Entities.Sport;
 using Predicto.Database.Interfaces;
 using Predicto.Database.Interfaces.Repositories;
 using Predicto.Database.Repositories;
+using Predicto.Database.Repositories.Room;
 using Predicto.Database.Repositories.Sport;
+using RoomRepository = Predicto.Database.Repositories.Room.RoomRepository;
 
 namespace Predicto.Database.UnitOfWork
 {
@@ -15,7 +17,7 @@ namespace Predicto.Database.UnitOfWork
         public readonly PredictoDbContext _context;
         public IRepository<UserEntity> Users { get; }
 
-        public IRepository<RoomEntity> Rooms { get; }
+        public IRoomRepository Rooms { get; }
 
         public IRepository<SportCategoryEntity> SportCategory { get; }
 

@@ -17,7 +17,7 @@ namespace Predicto.Gateway.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet("by-id/{playerId}")]
+        [HttpGet("by-id-blog/{playerId}")]
         public async Task<ActionResult<PlayerBlogDto>> GetPlayerById(int playerId)
         {
             var player = await _unitOfWork.Player.FindAsync(a => a.Id == playerId);

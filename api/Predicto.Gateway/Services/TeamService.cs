@@ -1,6 +1,7 @@
 ﻿using Predicto.Database.Interfaces;
 using Predicto.Gateway.DTO.Group;
 using Predicto.Gateway.DTO.Sport;
+using System.Linq;
 
 namespace Predicto.Gateway.Services
 {
@@ -12,32 +13,45 @@ namespace Predicto.Gateway.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<List<TeamListDto>> GetAll()
+        public async Task<List<TeamListDto>> GetAll(int tournamentId)
         {
-            var teams = await _unitOfWork.Team.GetAllAsync();
-            return teams.Select(x => new TeamListDto(x)).ToList();
+            var tournamentTeams = await _unitOfWork.TournamentTeamRepository
+                .WhereAsync(tt => tt.TournamentEntityId == tournamentId);
+            return tournamentTeams.Select(x => new TeamListDto(x.TeamEntity)).ToList();
+        }
+        public async Task<List<TeamListRankingDto>> GetRanking(int tournamentId)
+        {
+            var tournamentTeams = await _unitOfWork.TournamentTeamRepository
+                .WhereAsync(tt => tt.TournamentEntityId == tournamentId);
+
+            return tournamentTeams.Select(x => new TeamListRankingDto(x)
+            {
+                Coach = x.TeamEntity.Coach,
+                Players = x.TeamEntity.Players?.Select(gp => new PlayerBasicInfoDto
+                {
+                    Id = gp.Id,
+                    Name = gp.Name,
+                    ImageUrl = gp.PhotoUrl ?? "",
+                    Position = gp.Position ?? "",
+                    ShirtNumber = gp.NationalTeamNumber
+                }).ToList() ?? new List<PlayerBasicInfoDto>()
+            }).ToList();
         }
 
         public async Task<TeamDetailsDto> GetById(int id, int tournamentId)
         {
             var team = await _unitOfWork.Team.GetByIdAsync(id);
-            var teamTournament = await _unitOfWork.TournamentTeamRepository
-                .FindAsync(tt => tt.TeamEntityId == id && tt.TournamentEntityId == tournamentId);
-            if (teamTournament == null)
-            {
-
-            }
+           
 
             return new TeamDetailsDto(team)
             {
                 Slug = team.Slug,
                 Coach = team.Coach,
-                FormLastGames = teamTournament?.FormLastGames??"",
                 Players = team.Players.Select(gp => new PlayerBasicInfoDto()
                 {
                     Id = gp.Id,
                     Name = gp.Name,
-                    ImageUrl = gp.PhotoUrl??"",
+                    ImageUrl = gp.PhotoUrl ?? "",
                     Position = gp.Position ?? "",
                     ShirtNumber = gp.NationalTeamNumber
                 }).ToList()
@@ -46,7 +60,8 @@ namespace Predicto.Gateway.Services
     }
     public interface ITeamService
     {
-        Task<List<TeamListDto>> GetAll();
+        Task<List<TeamListRankingDto>> GetRanking(int tournamentId);
+        Task<List<TeamListDto>> GetAll(int tournamentId);
         Task<TeamDetailsDto> GetById(int id, int tournamentId);
     }
 }
