@@ -251,7 +251,7 @@ export class Client {
     /**
      * @return OK
      */
-    getById(id: number, tournamentId: number): Promise<TeamListDto> {
+    getById(id: number, tournamentId: number): Promise<TeamDetailsDto> {
         let url_ = this.baseUrl + "/api/TeamBlog/get-by-id/{id}/{tournamentId}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -273,13 +273,13 @@ export class Client {
         });
     }
 
-    protected processGetById(response: Response): Promise<TeamListDto> {
+    protected processGetById(response: Response): Promise<TeamDetailsDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TeamListDto;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as TeamDetailsDto;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -287,7 +287,7 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<TeamListDto>(null as any);
+        return Promise.resolve<TeamDetailsDto>(null as any);
     }
 
     /**
@@ -1095,6 +1095,49 @@ export class Client {
      * @param userId (optional) 
      * @return OK
      */
+    clearAllBetInRoomMock(roomId: number | undefined, userId: number | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/TesterHelper/clear-all-bet-in-room-mock?";
+        if (roomId === null)
+            throw new globalThis.Error("The parameter 'roomId' cannot be null.");
+        else if (roomId !== undefined)
+            url_ += "roomId=" + encodeURIComponent("" + roomId) + "&";
+        if (userId === null)
+            throw new globalThis.Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processClearAllBetInRoomMock(_response);
+        });
+    }
+
+    protected processClearAllBetInRoomMock(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param roomId (optional) 
+     * @param userId (optional) 
+     * @return OK
+     */
     joinRoomMock(roomId: number | undefined, userId: number | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/TesterHelper/join-room-mock?";
         if (roomId === null)
@@ -1436,6 +1479,18 @@ export interface RoomUserDetailsDTO {
 export interface RoomUserDTO {
     id?: number;
     userRoomRole?: UserRoomRole;
+
+    [key: string]: any;
+}
+
+export interface TeamDetailsDto {
+    coach: string;
+    players: PlayerBasicInfoDto[];
+    formLastGames: string;
+    id?: number;
+    name?: string;
+    slug?: string;
+    imageUrl?: string;
 
     [key: string]: any;
 }
