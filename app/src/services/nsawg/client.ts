@@ -20,12 +20,13 @@ export class Client {
     /**
      * @return OK
      */
-    all(): Promise<ArticleListDTO[]> {
+    all(signal?: AbortSignal): Promise<ArticleListDTO[]> {
         let url_ = this.baseUrl + "/api/ArticleBlog/all";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -56,7 +57,7 @@ export class Client {
     /**
      * @return OK
      */
-    articleBlog(id: number): Promise<ArticleDTO> {
+    articleBlog(id: number, signal?: AbortSignal): Promise<ArticleDTO> {
         let url_ = this.baseUrl + "/api/ArticleBlog/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -65,6 +66,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -95,7 +97,7 @@ export class Client {
     /**
      * @return OK
      */
-    getTournamentById(id: number): Promise<GameListDto[]> {
+    getTournamentById(id: number, signal?: AbortSignal): Promise<GameListDto[]> {
         let url_ = this.baseUrl + "/api/GameBlog/get-tournament-by-id/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -104,6 +106,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -134,7 +137,7 @@ export class Client {
     /**
      * @return OK
      */
-    details(id: number): Promise<GameListDto> {
+    details(id: number, signal?: AbortSignal): Promise<GameListDto> {
         let url_ = this.baseUrl + "/api/GameBlog/details/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -143,6 +146,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -173,7 +177,7 @@ export class Client {
     /**
      * @return OK
      */
-    byId(playerId: number): Promise<PlayerBlogDto> {
+    byId(playerId: number, signal?: AbortSignal): Promise<PlayerBlogDto> {
         let url_ = this.baseUrl + "/api/PlayerBlog/by-id/{playerId}";
         if (playerId === undefined || playerId === null)
             throw new globalThis.Error("The parameter 'playerId' must be defined.");
@@ -182,6 +186,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -212,7 +217,7 @@ export class Client {
     /**
      * @return OK
      */
-    gameByTournament(id: number): Promise<TeamListDto[]> {
+    gameByTournament(id: number, signal?: AbortSignal): Promise<TeamListDto[]> {
         let url_ = this.baseUrl + "/api/TeamBlog/game-by-tournament/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -221,6 +226,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -251,7 +257,7 @@ export class Client {
     /**
      * @return OK
      */
-    getById(id: number, tournamentId: number): Promise<TeamDetailsDto> {
+    getById(id: number, tournamentId: number, signal?: AbortSignal): Promise<TeamDetailsDto> {
         let url_ = this.baseUrl + "/api/TeamBlog/get-by-id/{id}/{tournamentId}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -263,6 +269,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -294,7 +301,7 @@ export class Client {
      * @param email (optional) 
      * @return OK
      */
-    singleemail(email: string | undefined): Promise<void> {
+    singleemail(email: string | undefined, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/Email/singleemail?";
         if (email === null)
             throw new globalThis.Error("The parameter 'email' cannot be null.");
@@ -304,6 +311,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
             }
         };
@@ -331,7 +339,7 @@ export class Client {
     /**
      * @return OK
      */
-    send(body: EmailTemplateDto): Promise<void> {
+    send(body: EmailTemplateDto, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/Email/send";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -340,6 +348,7 @@ export class Client {
         let options_: RequestInit = {
             body: content_,
             method: "POST",
+            signal,
             headers: {
                 "Content-Type": "application/json",
             }
@@ -368,7 +377,7 @@ export class Client {
     /**
      * @return OK
      */
-    getTournamentById2(id: number): Promise<GameListDto[]> {
+    getTournamentById2(id: number, signal?: AbortSignal): Promise<GameListDto[]> {
         let url_ = this.baseUrl + "/api/Game/get-tournament-by-id/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -377,6 +386,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -407,7 +417,7 @@ export class Client {
     /**
      * @return OK
      */
-    details2(id: number): Promise<GameDetailsDto> {
+    details2(id: number, signal?: AbortSignal): Promise<GameDetailsDto> {
         let url_ = this.baseUrl + "/api/Game/details/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -416,6 +426,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -446,7 +457,7 @@ export class Client {
     /**
      * @return OK
      */
-    createRoom(body: NewRoomDto): Promise<RoomDTO> {
+    createRoom(body: NewRoomDto, signal?: AbortSignal): Promise<RoomDTO> {
         let url_ = this.baseUrl + "/api/Room/create-room";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -455,6 +466,7 @@ export class Client {
         let options_: RequestInit = {
             body: content_,
             method: "POST",
+            signal,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -486,12 +498,13 @@ export class Client {
     /**
      * @return OK
      */
-    roomAll(): Promise<RoomDTO[]> {
+    roomAll(signal?: AbortSignal): Promise<RoomDTO[]> {
         let url_ = this.baseUrl + "/api/Room";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -522,7 +535,7 @@ export class Client {
     /**
      * @return OK
      */
-    room(id: number): Promise<RoomDTO> {
+    room(id: number, signal?: AbortSignal): Promise<RoomDTO> {
         let url_ = this.baseUrl + "/api/Room/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -531,6 +544,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -561,12 +575,13 @@ export class Client {
     /**
      * @return OK
      */
-    my(): Promise<RoomDTO[]> {
+    my(signal?: AbortSignal): Promise<RoomDTO[]> {
         let url_ = this.baseUrl + "/api/Room/my";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -598,7 +613,7 @@ export class Client {
      * @param roomId (optional) 
      * @return OK
      */
-    getGamesBetsAndPoints(roomId: number | undefined): Promise<RoomGameDto[]> {
+    getGamesBetsAndPoints(roomId: number | undefined, signal?: AbortSignal): Promise<RoomGameDto[]> {
         let url_ = this.baseUrl + "/api/RoomGame/getGamesBetsAndPoints?";
         if (roomId === null)
             throw new globalThis.Error("The parameter 'roomId' cannot be null.");
@@ -608,6 +623,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -640,7 +656,7 @@ export class Client {
      * @param gameId (optional) 
      * @return OK
      */
-    other(roomId: number | undefined, gameId: number | undefined): Promise<OtherGameBetSimpleDto[]> {
+    other(roomId: number | undefined, gameId: number | undefined, signal?: AbortSignal): Promise<OtherGameBetSimpleDto[]> {
         let url_ = this.baseUrl + "/api/RoomGame/other?";
         if (roomId === null)
             throw new globalThis.Error("The parameter 'roomId' cannot be null.");
@@ -654,6 +670,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -684,7 +701,7 @@ export class Client {
     /**
      * @return OK
      */
-    betGame(body: RoomGameBetDto): Promise<void> {
+    betGame(body: RoomGameBetDto, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/RoomGame/bet-game";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -693,6 +710,7 @@ export class Client {
         let options_: RequestInit = {
             body: content_,
             method: "POST",
+            signal,
             headers: {
                 "Content-Type": "application/json",
             }
@@ -722,7 +740,7 @@ export class Client {
      * @param emial (optional) 
      * @return OK
      */
-    sentInvitationEmail(gameid: number, emial: string | undefined): Promise<void> {
+    sentInvitationEmail(gameid: number, emial: string | undefined, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/TesterHelper/{gameid}/sent-invitation-email?";
         if (gameid === undefined || gameid === null)
             throw new globalThis.Error("The parameter 'gameid' must be defined.");
@@ -735,6 +753,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "POST",
+            signal,
             headers: {
             }
         };
@@ -763,7 +782,7 @@ export class Client {
      * @param roomId (optional) 
      * @return OK
      */
-    getUsers(roomId: number | undefined): Promise<RoomUserDetailsDTO[]> {
+    getUsers(roomId: number | undefined, signal?: AbortSignal): Promise<RoomUserDetailsDTO[]> {
         let url_ = this.baseUrl + "/api/RoomUsers/GetUsers?";
         if (roomId === null)
             throw new globalThis.Error("The parameter 'roomId' cannot be null.");
@@ -773,6 +792,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -803,7 +823,7 @@ export class Client {
     /**
      * @return OK
      */
-    join(id: number): Promise<void> {
+    join(id: number, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/RoomUsers/{id}/join";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -812,6 +832,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "POST",
+            signal,
             headers: {
             }
         };
@@ -839,7 +860,7 @@ export class Client {
     /**
      * @return OK
      */
-    leave(id: number): Promise<void> {
+    leave(id: number, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/RoomUsers/{id}/leave";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -848,6 +869,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "POST",
+            signal,
             headers: {
             }
         };
@@ -875,12 +897,13 @@ export class Client {
     /**
      * @return OK
      */
-    scheduler(): Promise<void> {
+    scheduler(signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/Scheduler";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
             }
         };
@@ -908,12 +931,13 @@ export class Client {
     /**
      * @return OK
      */
-    tournament(): Promise<TournamentDto[]> {
+    tournament(signal?: AbortSignal): Promise<TournamentDto[]> {
         let url_ = this.baseUrl + "/api/Tournament";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -944,7 +968,7 @@ export class Client {
     /**
      * @return OK
      */
-    register(body: RegistrationReq): Promise<void> {
+    register(body: RegistrationReq, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/User/register";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -953,6 +977,7 @@ export class Client {
         let options_: RequestInit = {
             body: content_,
             method: "POST",
+            signal,
             headers: {
                 "Content-Type": "application/json",
             }
@@ -981,7 +1006,7 @@ export class Client {
     /**
      * @return OK
      */
-    login(body: LoginReq): Promise<string> {
+    login(body: LoginReq, signal?: AbortSignal): Promise<string> {
         let url_ = this.baseUrl + "/api/User/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -990,6 +1015,7 @@ export class Client {
         let options_: RequestInit = {
             body: content_,
             method: "POST",
+            signal,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
@@ -1021,12 +1047,13 @@ export class Client {
     /**
      * @return OK
      */
-    getCurrentUser(): Promise<UserDto> {
+    getCurrentUser(signal?: AbortSignal): Promise<UserDto> {
         let url_ = this.baseUrl + "/api/User/GetCurrentUser";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -1057,12 +1084,13 @@ export class Client {
     /**
      * @return OK
      */
-    groupBlog(): Promise<GroupDto[]> {
+    groupBlog(signal?: AbortSignal): Promise<GroupDto[]> {
         let url_ = this.baseUrl + "/api/GroupBlog";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
             method: "GET",
+            signal,
             headers: {
                 "Accept": "application/json"
             }
@@ -1095,7 +1123,7 @@ export class Client {
      * @param userId (optional) 
      * @return OK
      */
-    clearAllBetInRoomMock(roomId: number | undefined, userId: number | undefined): Promise<void> {
+    clearAllBetInRoomMock(roomId: number | undefined, userId: number | undefined, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/TesterHelper/clear-all-bet-in-room-mock?";
         if (roomId === null)
             throw new globalThis.Error("The parameter 'roomId' cannot be null.");
@@ -1109,6 +1137,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "POST",
+            signal,
             headers: {
             }
         };
@@ -1138,7 +1167,7 @@ export class Client {
      * @param userId (optional) 
      * @return OK
      */
-    joinRoomMock(roomId: number | undefined, userId: number | undefined): Promise<void> {
+    joinRoomMock(roomId: number | undefined, userId: number | undefined, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/TesterHelper/join-room-mock?";
         if (roomId === null)
             throw new globalThis.Error("The parameter 'roomId' cannot be null.");
@@ -1152,6 +1181,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "POST",
+            signal,
             headers: {
             }
         };
@@ -1181,7 +1211,7 @@ export class Client {
      * @param userId (optional) 
      * @return OK
      */
-    leaveRoomMock(roomId: number | undefined, userId: number | undefined): Promise<void> {
+    leaveRoomMock(roomId: number | undefined, userId: number | undefined, signal?: AbortSignal): Promise<void> {
         let url_ = this.baseUrl + "/api/TesterHelper/leave-room-mock?";
         if (roomId === null)
             throw new globalThis.Error("The parameter 'roomId' cannot be null.");
@@ -1195,6 +1225,7 @@ export class Client {
 
         let options_: RequestInit = {
             method: "POST",
+            signal,
             headers: {
             }
         };
